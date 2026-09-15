@@ -9,7 +9,7 @@ const plans = [
     duration: '1 Month',
     sessions: '8 sessions',
     tag: null,
-    saveBadge: 'SAVE 10%',
+    saveBadge: 'Save 10%',
     priceMonthly: 999,
     priceYearly: 899,
     priceTotal: 999,
@@ -32,7 +32,7 @@ const plans = [
     duration: '3 Months',
     sessions: '24 sessions',
     tag: 'CORE PROGRAM',
-    saveBadge: 'SAVE 25%',
+    saveBadge: 'Save 25%',
     priceMonthly: 1999,
     priceYearly: 1499,
     priceTotal: 5997,
@@ -56,8 +56,8 @@ const plans = [
     name: 'Master Parent',
     duration: '6 Months',
     sessions: '48 sessions',
-    tag: 'BEST VALUE',
-    saveBadge: 'SAVE 35%',
+    tag: null,
+    saveBadge: 'Save 35%',
     priceMonthly: 2999,
     priceYearly: 1949,
     priceTotal: 17994,
@@ -110,291 +110,234 @@ const faqs = [
 ];
 
 export const PaymentPage = ({ onBackToCurriculum, onSubscriptionSuccess }) => {
-  const [activePlanId, setActivePlanId] = useState('family');
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
-  const [billing, setBilling] = useState('yearly');
-  const [autoRenew, setAutoRenew] = useState(true);
-
-  const activePlan = plans.find((p) => p.id === activePlanId) || plans[1];
-
-  const handleChoosePlan = () => {
-    setSelectedPlan(activePlan);
-  };
+  const [billing, setBilling] = useState('monthly');
 
   return (
-    <div className="w-full min-h-screen font-sans" style={{ background: '#edf3f8' }}>
+    <div className="w-full min-h-screen font-sans" style={{ background: 'linear-gradient(135deg, #f8f4ff 0%, #fef0f5 30%, #f0fff4 70%, #f0f8ff 100%)' }}>
 
-      {/* ── TOP DARK GREEN BAR ─────────────────────────────────────────────── */}
-      <div className="w-full bg-[#163b1e] text-white border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-8 py-3 flex items-center justify-between flex-wrap gap-2 text-xs">
-          <button
-            type="button"
-            onClick={onBackToCurriculum}
-            className="inline-flex items-center gap-1.5 font-bold text-white/85 hover:text-white transition-colors cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Back to Lesson Planner</span>
-          </button>
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#489f1f]" />
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9ae6b4]">
-              CHESSKID · PARENT PLANS
+      {/* ── HERO SECTION ──────────────────────────────────────────────── */}
+      <div
+        className="relative overflow-hidden"
+        style={{ background: 'linear-gradient(135deg, #2d4a1e 0%, #3d6120 50%, #1e3a14 100%)' }}
+      >
+        {/* Decorative orbs */}
+        <div
+          className="absolute -top-16 -right-16 w-64 h-64 rounded-full opacity-20 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #b5d46a 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute -bottom-20 -left-10 w-48 h-48 rounded-full opacity-15 pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #c4973a 0%, transparent 70%)' }}
+        />
+
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-8 pb-14">
+          {/* Back + Brand row */}
+          <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={onBackToCurriculum}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Lesson Planner</span>
+            </button>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">
+              ChessKid · Parent Plans
             </span>
           </div>
-        </div>
-      </div>
 
-      {/* ── MAIN FLOATING CARD CONTAINER ──────────────────────────────────── */}
-      <div className="w-full py-8 sm:py-12 px-3 sm:px-6">
-        <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-300/40 border border-slate-200/80 p-6 sm:p-10 lg:p-11">
-
-          {/* Centered Top Pill Badge */}
+          {/* Centred headline */}
           <div className="text-center">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#edf2f7] text-[#4a5568] rounded-full text-[10px] font-black uppercase tracking-widest mb-3 border border-slate-200/60">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#388e17]" />
-              <span>PRICING</span>
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-5">
+              <span className="w-2 h-2 rounded-full bg-[#b5d46a] inline-block" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-white/80">Pricing</span>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="text-2xl sm:text-3xl lg:text-[38px] font-extrabold text-[#1a202c] tracking-tight mb-2.5">
-              Flexible Pricing for Every <span className="text-[#36831e] font-black italic">Family</span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-white mb-4">
+              Simple Transparent{' '}
+              <span style={{ color: '#c4973a', fontStyle: 'italic' }}>Pricing</span>
             </h1>
-
-            {/* Subtitle */}
-            <p className="text-xs sm:text-sm text-gray-500 max-w-lg mx-auto leading-relaxed mb-6 font-medium">
+            <p className="text-sm sm:text-base text-white/70 leading-relaxed max-w-md mx-auto mb-8">
               Teach chess to your child at home — even if you've never played before.
-              <br className="hidden sm:inline" /> Pick the plan designed to fit your family's journey.
+              Pick the plan that fits your family.
             </p>
 
-            {/* Yearly / Monthly Toggle */}
-            <div className="inline-flex items-center bg-[#edf2f7] p-1 rounded-2xl border border-slate-200/80 mb-8">
-              <button
-                type="button"
-                onClick={() => setBilling('yearly')}
-                className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer flex items-center gap-2 ${
-                  billing === 'yearly'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900'
-                }`}
-              >
-                <span>Yearly</span>
-                <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-[#e8f5e9] text-[#2e7d32] border border-[#c8e6c9]">
-                  SAVE 30%
-                </span>
-              </button>
+            {/* Billing Toggle */}
+            <div className="inline-flex items-center bg-white/10 border border-white/20 rounded-xl p-1.5">
               <button
                 type="button"
                 onClick={() => setBilling('monthly')}
-                className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition-all cursor-pointer ${
+                className={`px-5 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer ${
                   billing === 'monthly'
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-900'
+                    ? 'bg-white text-gray-800 shadow-sm'
+                    : 'text-white/70 hover:text-white'
                 }`}
               >
                 Monthly
               </button>
+              <button
+                type="button"
+                onClick={() => setBilling('yearly')}
+                className={`px-5 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer flex items-center gap-2 ${
+                  billing === 'yearly'
+                    ? 'bg-white text-gray-800 shadow-sm'
+                    : 'text-white/70 hover:text-white'
+                }`}
+              >
+                Yearly
+                <span className="text-[11px] font-black text-[#c4973a]">Save 30%</span>
+              </button>
             </div>
           </div>
-
-          {/* ── 2-COLUMN STRUCTURE: 3 PLAN CARDS (LEFT) + INCLUDES CARD (RIGHT) ── */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-stretch">
-
-            {/* Left Column: Exactly 3 Plan Cards */}
-            <div className="lg:col-span-6 flex flex-col justify-between space-y-3">
-              <div className="space-y-3">
-                {plans.map((plan) => {
-                  const isSelected = activePlanId === plan.id;
-                  const price = billing === 'monthly' ? plan.priceMonthlyDisplay : plan.priceYearlyDisplay;
-
-                  return (
-                    <div
-                      key={plan.id}
-                      onClick={() => setActivePlanId(plan.id)}
-                      className={`relative rounded-2xl p-4 sm:p-4.5 transition-all duration-200 cursor-pointer flex items-center justify-between gap-3 select-none ${
-                        isSelected
-                          ? 'bg-[#36831e] text-white shadow-lg shadow-[#36831e]/25 border-2 border-[#36831e]'
-                          : 'bg-white text-gray-800 border border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 hover:shadow-xs'
-                      }`}
-                    >
-                      {/* Left: Checkbox + Plan Name + Badges */}
-                      <div className="flex items-center gap-3 min-w-0">
-                        {/* Selector Indicator */}
-                        <div
-                          className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 transition-colors ${
-                            isSelected
-                              ? 'bg-white text-[#36831e] shadow-xs'
-                              : 'border-2 border-gray-300 bg-white'
-                          }`}
-                        >
-                          {isSelected && <Check className="w-3.5 h-3.5 stroke-[3.5]" />}
-                        </div>
-
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className={`text-base font-extrabold tracking-tight truncate ${isSelected ? 'text-white' : 'text-gray-900'}`}>
-                              {plan.name}
-                            </span>
-                            {plan.tag && (
-                              <span
-                                className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                                  isSelected
-                                    ? 'bg-[#205c0c] text-[#ffe066] border border-[#ffe066]/30'
-                                    : plan.id === 'master'
-                                      ? 'bg-[#fef3c7] text-[#92400e] border border-[#fde68a]'
-                                      : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                                }`}
-                              >
-                                {plan.tag}
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="flex items-center gap-2 mt-1">
-                            <span
-                              className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                                isSelected
-                                  ? 'bg-white/20 text-white border border-white/30'
-                                  : 'bg-[#e8f5e9] text-[#2e7d32] border border-[#c8e6c9]'
-                              }`}
-                            >
-                              {plan.saveBadge}
-                            </span>
-                            <span className={`text-[11px] font-medium ${isSelected ? 'text-white/85' : 'text-gray-400'}`}>
-                              {plan.duration} · {plan.sessions}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right: Price */}
-                      <div className="text-right flex-shrink-0">
-                        <span className={`text-xl sm:text-2xl font-black tracking-tight ${isSelected ? 'text-white' : 'text-gray-900'}`}>
-                          {price}
-                        </span>
-                        <span className={`text-xs font-semibold ${isSelected ? 'text-white/80' : 'text-gray-400'}`}>
-                          /month
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Bottom CTA Button + Guarantee text (Exact match to reference mockup) */}
-              <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleChoosePlan}
-                  className="px-6 py-3 rounded-xl font-extrabold text-xs sm:text-[13px] uppercase tracking-wider text-white bg-[#36831e] hover:bg-[#2d6b18] active:scale-95 shadow-md shadow-[#36831e]/25 transition-all cursor-pointer flex-shrink-0"
-                >
-                  CHOOSE PLAN · {activePlan.name.toUpperCase()}
-                </button>
-                <span className="text-[11px] text-gray-400 font-medium">
-                  Instant activation · 7-day money-back guarantee
-                </span>
-              </div>
-            </div>
-
-            {/* Right Column: "Includes :" Card */}
-            <div className="lg:col-span-6 flex flex-col justify-between bg-white rounded-2xl border border-gray-200/90 p-5 sm:p-6 shadow-xs">
-              <div>
-                <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-3">
-                  <h3 className="text-sm font-extrabold text-gray-900">
-                    Includes :
-                  </h3>
-                  <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#e8f5e9] text-[#2e7d32] border border-[#c8e6c9]">
-                    {activePlan.name}
-                  </span>
-                </div>
-
-                {/* Features list with checkmarks on the right */}
-                <ul className="space-y-2.5">
-                  {activePlan.features.map((feature, idx) => (
-                    <li
-                      key={idx}
-                      className="flex items-center justify-between gap-3 text-xs sm:text-[13px] text-gray-700 py-1 border-b border-gray-50 last:border-0"
-                    >
-                      <span className="leading-snug pr-2 text-gray-600 font-medium">
-                        {feature}
-                      </span>
-                      <div className="flex-shrink-0 w-4 h-4 rounded-full bg-[#e8f5e9] text-[#2e7d32] flex items-center justify-center">
-                        <Check className="w-2.5 h-2.5 stroke-[3]" />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Bottom Row: Renewal toggle + cancel notice */}
-              <div className="pt-4 mt-3 border-t border-gray-100 flex items-center justify-between flex-wrap gap-2">
-                <div className="flex items-center gap-2.5">
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={autoRenew}
-                    onClick={() => setAutoRenew(!autoRenew)}
-                    className={`relative inline-flex h-4 w-8 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                      autoRenew ? 'bg-[#36831e]' : 'bg-gray-300'
-                    }`}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
-                        autoRenew ? 'translate-x-4' : 'translate-x-0'
-                      }`}
-                    />
-                  </button>
-                  <span className="text-xs font-medium text-gray-600">
-                    {billing === 'yearly'
-                      ? `Renewed at a price of ${activePlan.priceYearlyDisplay}/month`
-                      : `Renewed at a price of ${activePlan.priceMonthlyDisplay}/month`}
-                  </span>
-                </div>
-
-                <span className="text-[11px] font-medium text-gray-400">
-                  Cancel anytime
-                </span>
-              </div>
-            </div>
-
-          </div>
-
         </div>
       </div>
 
-      {/* ── LOWER DARK GREEN SECTION (FULL WIDTH) ─────────────────────────── */}
-      <div className="w-full bg-[#163b1e] text-white py-12 sm:py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+      {/* ── PRICING CARDS ─────────────────────────────────────────────── */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-8 -mt-6 pb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
+          {plans.map((plan) => {
+            const price = billing === 'monthly' ? plan.priceMonthlyDisplay : plan.priceYearlyDisplay;
+            return (
+              <div
+                key={plan.id}
+                className={`relative rounded-2xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 ${
+                  plan.isPopular ? 'shadow-2xl ring-2 ring-[#c4973a]/30' : 'shadow-lg'
+                }`}
+                style={
+                  plan.isPopular
+                    ? { background: 'linear-gradient(160deg, #e53935 0%, #c4973a 60%, #b5606b 100%)' }
+                    : { background: '#ffffff' }
+                }
+              >
+                <div className="p-6">
+                  {/* Top row: plan name + save badge */}
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className={`text-base font-black ${plan.isPopular ? 'text-white' : 'text-gray-800'}`}>
+                      {plan.name}
+                    </h3>
+                    <span
+                      className={`text-[10px] font-black uppercase tracking-wide px-2.5 py-1 rounded-full ${
+                        plan.isPopular
+                          ? 'bg-white/20 text-white border border-white/30'
+                          : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      {plan.saveBadge}
+                    </span>
+                  </div>
 
-            {/* Left — Inclusions */}
+                  {/* Price */}
+                  <div className="mb-3">
+                    <span className={`text-4xl font-black leading-none ${plan.isPopular ? 'text-white' : 'text-gray-900'}`}>
+                      {price}
+                    </span>
+                    <span className={`text-sm font-medium ml-1 ${plan.isPopular ? 'text-white/80' : 'text-gray-500'}`}>
+                      /month
+                    </span>
+                  </div>
+
+                  {/* Short tagline */}
+                  <p className={`text-xs leading-relaxed mb-5 ${plan.isPopular ? 'text-white/85' : 'text-gray-500'}`}>
+                    {plan.id === 'starter'
+                      ? 'Perfect for families new to chess wanting to start right.'
+                      : plan.id === 'family'
+                        ? 'The full parent-guided chess curriculum with live coaching.'
+                        : 'Unlimited access to the complete chess mastery program.'}
+                  </p>
+
+                  {/* CTA Button */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPlan(plan)}
+                    className={`w-full py-3 rounded-xl text-sm font-black uppercase tracking-wide transition-all cursor-pointer mb-5 ${
+                      plan.isPopular
+                        ? 'bg-white text-[#c4973a] hover:bg-gray-50 shadow-md'
+                        : 'bg-[#2d4a1e] text-white hover:bg-[#3d6120] shadow-sm'
+                    }`}
+                  >
+                    Get Started
+                  </button>
+
+                  {/* Features list */}
+                  <ul className="space-y-2.5">
+                    {plan.features.map((feat, i) => (
+                      <li key={i} className="flex items-start gap-2.5">
+                        <div
+                          className={`flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center mt-0.5 ${
+                            plan.isPopular ? 'bg-white/25' : 'bg-[#2d4a1e]/10'
+                          }`}
+                        >
+                          <Check className={`w-2.5 h-2.5 ${plan.isPopular ? 'text-white' : 'text-[#2d4a1e]'}`} />
+                        </div>
+                        <span className={`text-xs leading-snug ${plan.isPopular ? 'text-white/90' : 'text-gray-600'}`}>
+                          {feat}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Duration tag */}
+                  <div
+                    className={`mt-5 pt-4 border-t text-[11px] font-bold uppercase tracking-wider flex items-center justify-between ${
+                      plan.isPopular ? 'border-white/20 text-white/60' : 'border-gray-100 text-gray-400'
+                    }`}
+                  >
+                    <span>{plan.duration} · {plan.sessions}</span>
+                    {plan.tag && (
+                      <span className="text-[9px] font-black tracking-widest bg-white/20 px-2 py-0.5 rounded-full text-white border border-white/30">
+                        {plan.tag}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="text-center text-xs text-gray-400 mt-5 italic">
+          All prices shown are monthly subscription fees. Cancel anytime.
+        </p>
+      </div>
+
+      {/* ── EVERY PLAN INCLUDES + CTA ─────────────────────────────────── */}
+      <div
+        style={{ background: 'linear-gradient(135deg, #2d4a1e 0%, #1e3a14 100%)' }}
+        className="text-white py-12 sm:py-16"
+      >
+        <div className="max-w-5xl mx-auto px-4 sm:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+
+            {/* Left — inclusions */}
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#ffe066] mb-4">
-                EVERY PLAN INCLUDES
+              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#b5d46a] mb-4">
+                Every Plan Includes
               </p>
-              <ul className="space-y-3">
+              <ul className="space-y-2.5">
                 {inclusions.map((item, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-white/90 font-medium">
-                    <CheckCircle2 className="w-4 h-4 text-[#ffe066] flex-shrink-0 mt-0.5" />
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-white/85">
+                    <CheckCircle2 className="w-4 h-4 text-[#b5d46a] flex-shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Right — Book Intro CTA + Contact */}
-            <div className="flex flex-col gap-4">
+            {/* Right — CTA + contact */}
+            <div className="flex flex-col gap-6">
               <button
                 type="button"
                 onClick={() => setSelectedPlan(plans[0])}
-                className="w-full sm:w-auto px-8 py-3.5 bg-[#fed348] hover:bg-[#ffd633] text-[#163b1e] font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl transition-all shadow-lg cursor-pointer flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-8 py-4 bg-[#c4973a] hover:bg-[#b3882e] text-white font-black text-sm uppercase tracking-widest rounded-xl transition-colors shadow-lg cursor-pointer flex items-center justify-center gap-2"
               >
                 <Lock className="w-4 h-4" />
-                <span>BOOK A FREE INTRODUCTORY CLASS</span>
+                Book a Free Introductory Class
               </button>
 
-              <div className="text-xs text-white/80 space-y-1">
-                <p className="font-bold text-white text-sm">+91 74484 08684</p>
+              <div className="text-sm text-white/70 space-y-0.5">
+                <p className="font-bold text-white/90">+91 74484 08684</p>
                 <p>chesswiththekid.com</p>
                 <p>@chesswiththekid</p>
               </div>
@@ -402,29 +345,29 @@ export const PaymentPage = ({ onBackToCurriculum, onSubscriptionSuccess }) => {
 
           </div>
 
-          {/* Parent Questions (Accordion FAQs) */}
-          <div className="mt-10 border-t border-white/10 pt-8">
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#ffe066] mb-4">
-              PARENT QUESTIONS
+          {/* FAQ */}
+          <div className="mt-12 border-t border-white/10 pt-10">
+            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#b5d46a] mb-6">
+              Parent Questions
             </p>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {faqs.map((f, i) => {
                 const isOpen = openFaq === i;
                 return (
-                  <div key={i} className="bg-[#123118]/70 border border-white/10 rounded-xl overflow-hidden">
+                  <div key={i} className="border border-white/10 rounded-xl overflow-hidden">
                     <button
                       type="button"
                       onClick={() => setOpenFaq(isOpen ? null : i)}
-                      className="w-full text-left px-5 py-3.5 flex items-center justify-between text-xs sm:text-sm font-bold text-white hover:bg-white/5 transition-colors cursor-pointer"
+                      className="w-full text-left px-5 py-4 flex items-center justify-between text-sm font-bold text-white hover:bg-white/5 transition-colors cursor-pointer"
                     >
                       <span>{f.q}</span>
                       {isOpen
-                        ? <ChevronUp className="w-4 h-4 text-[#ffe066] flex-shrink-0" />
+                        ? <ChevronUp className="w-4 h-4 text-[#b5d46a] flex-shrink-0" />
                         : <ChevronDown className="w-4 h-4 text-white/40 flex-shrink-0" />
                       }
                     </button>
                     {isOpen && (
-                      <div className="px-5 pb-3.5 text-xs text-white/75 leading-relaxed border-t border-white/5 pt-2.5">
+                      <div className="px-5 pb-4 text-xs text-white/70 leading-relaxed border-t border-white/10 pt-3">
                         {f.a}
                       </div>
                     )}
@@ -434,22 +377,15 @@ export const PaymentPage = ({ onBackToCurriculum, onSubscriptionSuccess }) => {
             </div>
           </div>
 
-          {/* Tagline footer strip */}
-          <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40">
-            <span>CHESS AS THE TOOL. THINKING AS THE OUTCOME.</span>
-            <span>AGES 5 – 14</span>
+          {/* Footer tagline */}
+          <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-[10px] font-bold uppercase tracking-widest text-white/40">
+            <span>Chess as the Tool. Thinking as the Outcome.</span>
+            <span>Ages 5 – 14</span>
           </div>
         </div>
       </div>
 
-      {/* ── FOOTER AT THE VERY BOTTOM ────────────────────────────────────── */}
-      <footer className="w-full bg-[#0f2814] text-white/60 py-4 text-center text-xs border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4">
-          <p>© ChessKid.com — All Rights Reserved. Master the game one lesson at a time.</p>
-        </div>
-      </footer>
-
-      {/* ── CHECKOUT MODAL ──────────────────────────────────────────────── */}
+      {/* Checkout Modal */}
       {selectedPlan && (
         <CheckoutModal
           plan={{
@@ -458,9 +394,9 @@ export const PaymentPage = ({ onBackToCurriculum, onSubscriptionSuccess }) => {
             icon: '♟️',
             tagline: `${selectedPlan.duration} — ${selectedPlan.sessions}`,
             priceMonthly: selectedPlan.priceMonthly,
-            priceAnnual: selectedPlan.priceYearly,
+            priceAnnual: selectedPlan.priceMonthly,
           }}
-          billingCycle={billing === 'yearly' ? 'annual' : 'monthly'}
+          billingCycle="monthly"
           onClose={() => setSelectedPlan(null)}
           onSuccess={(details) => {
             setSelectedPlan(null);
