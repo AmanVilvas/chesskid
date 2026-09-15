@@ -348,18 +348,16 @@ export default function App() {
       </div>
 
       {/* Main Container */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-5 md:p-6 lg:p-8">
-        
-        {currentPage === 'payment' ? (
-          <PaymentPage
-            onBackToCurriculum={() => setCurrentPage('curriculum')}
-            onSubscriptionSuccess={(details) => {
-              setActiveSubscription(details);
-            }}
-          />
-        ) : (
-          <>
-            {/* Active Subscription Banner */}
+      {currentPage === 'payment' ? (
+        <PaymentPage
+          onBackToCurriculum={() => setCurrentPage('curriculum')}
+          onSubscriptionSuccess={(details) => {
+            setActiveSubscription(details);
+          }}
+        />
+      ) : (
+        <div className="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-5 md:p-6 lg:p-8">
+          {/* Active Subscription Banner */}
             {activeSubscription && (
               <div className="mb-4 bg-gradient-to-r from-emerald-600 via-[#489f1f] to-teal-600 text-white p-4 rounded-xl shadow-md flex items-center justify-between flex-wrap gap-3 animate-in fade-in duration-300">
                 <div className="flex items-center gap-3">
@@ -897,18 +895,18 @@ export default function App() {
           </button>
         </div>
 
-      </>
-    )}
-
-  </div>
+        </div>
+      )}
 
 
       {/* Footer */}
-      <footer className="bg-[#1c4a27] text-white/80 py-5 sm:py-6 text-center text-xs mt-auto">
-        <div className="max-w-7xl mx-auto px-4">
-          <p>© ChessKid.com — All Rights Reserved. Master the game one lesson at a time.</p>
-        </div>
-      </footer>
+      {currentPage !== 'payment' && (
+        <footer className="bg-[#1c4a27] text-white/80 py-5 sm:py-6 text-center text-xs mt-auto">
+          <div className="max-w-7xl mx-auto px-4">
+            <p>© ChessKid.com — All Rights Reserved. Master the game one lesson at a time.</p>
+          </div>
+        </footer>
+      )}
 
     </div>
   );
