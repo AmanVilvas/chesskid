@@ -1,23 +1,18 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp, HelpCircle, FileText, BarChart2, MessageSquare } from 'lucide-react';
 
-export const Header = ({ onOpenPricing }) => {
+export const Header = () => {
   const [linksOpenMobile, setLinksOpenMobile] = useState(false);
 
   const headerLinks = [
-    { label: "How to use the ChessKid Lesson Planner", href: "#how-to-use", icon: HelpCircle },
+    { label: "How to use the Chess With Rathish Lesson Planner", href: "#how-to-use", icon: HelpCircle },
     { 
-      label: "How to request the full ChessKid Written Curriculum (From ₹999/mo)", 
-      href: "#pricing", 
+      label: "How to request 1:1 Trial Classes & Full Curriculum (From ₹999/mo)", 
+      to: "/pricing", 
       icon: FileText,
-      onClick: (e) => {
-        if (onOpenPricing) {
-          e.preventDefault();
-          onOpenPricing();
-        }
-      }
     },
-    { label: "Analysis", href: "#analysis", icon: BarChart2 },
+    { label: "Analysis & Progress", href: "#analysis", icon: BarChart2 },
     { label: "Send us your feedback", href: "#feedback", icon: MessageSquare },
   ];
 
@@ -50,14 +45,23 @@ export const Header = ({ onOpenPricing }) => {
             const Icon = link.icon;
             return (
               <li key={idx}>
-                <a
-                  href={link.href}
-                  onClick={link.onClick}
-                  className="text-[12.5px] md:text-[13px] text-[#1ba3e1] hover:underline cursor-pointer flex items-center gap-1.5 font-normal py-1 sm:py-0 transition-colors group"
-                >
-                  <Icon className="w-3.5 h-3.5 text-[#1ba3e1]/80 group-hover:text-[#1ba3e1] flex-shrink-0" />
-                  <span>{link.label}</span>
-                </a>
+                {link.to ? (
+                  <Link
+                    to={link.to}
+                    className="text-[12.5px] md:text-[13px] text-[#1ba3e1] hover:underline cursor-pointer flex items-center gap-1.5 font-semibold py-1 sm:py-0 transition-colors group"
+                  >
+                    <Icon className="w-3.5 h-3.5 text-[#1ba3e1]/80 group-hover:text-[#1ba3e1] flex-shrink-0" />
+                    <span>{link.label}</span>
+                  </Link>
+                ) : (
+                  <a
+                    href={link.href}
+                    className="text-[12.5px] md:text-[13px] text-[#1ba3e1] hover:underline cursor-pointer flex items-center gap-1.5 font-normal py-1 sm:py-0 transition-colors group"
+                  >
+                    <Icon className="w-3.5 h-3.5 text-[#1ba3e1]/80 group-hover:text-[#1ba3e1] flex-shrink-0" />
+                    <span>{link.label}</span>
+                  </a>
+                )}
               </li>
             );
           })}

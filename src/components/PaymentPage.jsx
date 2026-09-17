@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowLeft, Lock, CheckCircle2, ChevronDown, ChevronUp, Check } from 'lucide-react';
 import { CheckoutModal } from './CheckoutModal';
 
@@ -135,16 +136,15 @@ export const PaymentPage = ({ onBackToCurriculum, onSubscriptionSuccess }) => {
         <div className="max-w-5xl mx-auto px-4 sm:px-8 pt-8 pb-14">
           {/* Back + Brand row */}
           <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={onBackToCurriculum}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white transition-colors cursor-pointer"
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-white/70 hover:text-white transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Lesson Planner</span>
-            </button>
+              <span>Back to Home</span>
+            </Link>
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">
-              ChessKid · Parent Plans
+              Chess With Rathish · 1:1 Trial Plans
             </span>
           </div>
 
