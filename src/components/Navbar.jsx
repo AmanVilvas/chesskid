@@ -5,7 +5,7 @@ export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  const isCurriculum = location.pathname === '/curriculum';
+  const isCurriculum = location.pathname.startsWith('/curriculum') || location.pathname.startsWith('/lesson-planner');
   const isPricing = location.pathname === '/pricing' || location.pathname === '/book-1-1';
 
   return (
@@ -47,7 +47,7 @@ export const Navbar = () => {
                 : 'hover:text-[#1a3d1a]'
             }`}
           >
-            Curriculum
+            Lesson Planner
           </Link>
           <a href="/#how-it-works" className="hover:text-[#1a3d1a] transition-colors">
             How It Works
@@ -95,14 +95,14 @@ export const Navbar = () => {
           >
             Program
           </Link>
-          <Link
-            to="/curriculum"
+          <Link 
+            to="/curriculum" 
             onClick={() => setMobileMenuOpen(false)}
             className={`block font-semibold text-sm py-1.5 ${
               isCurriculum ? 'text-[#1a3d1a] font-bold' : 'text-gray-700 hover:text-[#1a3d1a]'
             }`}
           >
-            Curriculum
+            Lesson Planner
           </Link>
           <a 
             href="/#how-it-works" 

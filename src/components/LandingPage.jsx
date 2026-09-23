@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { Navbar } from "./Navbar";
 
 const lessons = [
@@ -215,7 +215,14 @@ export function LandingPage() {
                   <h3 className="text-3xl sm:text-4xl font-black text-[#1a2e1a]">{lesson.title}</h3>
                   <p className="text-[14px] text-gray-500 mt-1">{lesson.description}</p>
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
+                  <Link
+                    to={`/curriculum?view=player&unit=${Math.min(activeLessonId, 11)}`}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#a435f0] hover:bg-[#8710d8] text-white text-[13px] font-bold shadow-xs cursor-pointer transition-colors"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-white" />
+                    <span>Open in Player</span>
+                  </Link>
                   <button
                     onClick={() => prevLesson && handleNav(prevLesson.id)}
                     disabled={!prevLesson}

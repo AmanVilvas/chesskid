@@ -45,9 +45,13 @@ export default function App() {
       {/* Home / Landing Page */}
       <Route path="/" element={<LandingPage />} />
 
-      {/* Curriculum Page at /curriculum */}
+      {/* Curriculum Page at /curriculum and /lesson-planner */}
       <Route 
         path="/curriculum" 
+        element={<CurriculumPage activeSubscription={activeSubscription} />} 
+      />
+      <Route 
+        path="/lesson-planner" 
         element={<CurriculumPage activeSubscription={activeSubscription} />} 
       />
 
