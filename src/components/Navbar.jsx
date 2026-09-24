@@ -32,10 +32,10 @@ export const Navbar = () => {
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-7 text-[13.5px] font-semibold text-gray-600">
+        <nav className="hidden md:flex items-center gap-8 text-[13px] font-semibold text-gray-700">
           <Link 
             to="/" 
-            className="hover:text-[#1a3d1a] transition-colors"
+            className="hover:text-black transition-colors"
           >
             Program
           </Link>
@@ -43,19 +43,19 @@ export const Navbar = () => {
             to="/curriculum" 
             className={`transition-colors py-1 ${
               isCurriculum 
-                ? 'text-[#1a3d1a] font-bold border-b-2 border-[#1a3d1a]' 
-                : 'hover:text-[#1a3d1a]'
+                ? 'text-black font-bold border-b-2 border-black' 
+                : 'hover:text-black'
             }`}
           >
-            Lesson Planner
+            Curriculum
           </Link>
-          <a href="/#how-it-works" className="hover:text-[#1a3d1a] transition-colors">
+          <a href="/#how-it-works" className="hover:text-black transition-colors">
             How It Works
           </a>
-          <a href="/#about" className="hover:text-[#1a3d1a] transition-colors">
+          <a href="/#about" className="hover:text-black transition-colors">
             About
           </a>
-          <a href="/#faqs" className="hover:text-[#1a3d1a] transition-colors">
+          <a href="/#faqs" className="hover:text-black transition-colors">
             FAQs
           </a>
         </nav>
@@ -64,17 +64,13 @@ export const Navbar = () => {
         <div className="flex items-center gap-3">
           <Link
             to="/pricing"
-            className={`hidden md:flex items-center gap-2 font-bold text-[13px] px-5 py-2.5 rounded-lg transition-all shadow-xs ${
-              isPricing 
-                ? 'bg-[#2d5a2d] text-white ring-2 ring-[#1a3d1a]/20' 
-                : 'bg-[#1a3d1a] hover:bg-[#2d5a2d] text-white'
-            }`}
+            className="hidden md:inline-flex items-center justify-center font-bold text-xs sm:text-[13px] px-4 py-2 rounded-md bg-[#FFBA07] hover:bg-[#FFC42B] text-[#0D0D0D] shadow-2xs transition-all duration-200 cursor-pointer"
           >
-            Book a 1:1 Trial →
+            Book a 1:1 Trial
           </Link>
 
           <button
-            className="md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer flex flex-col gap-1"
+            className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer flex flex-col gap-1"
             onClick={() => setMobileMenuOpen((v) => !v)}
             aria-label="Toggle navigation menu"
           >

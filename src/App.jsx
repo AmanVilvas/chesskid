@@ -7,32 +7,14 @@ import { PaymentPage } from './components/PaymentPage';
 
 function PricingPageWrapper({ onSubscriptionSuccess }) {
   return (
-    <div className="min-h-screen flex flex-col bg-[#f8f4ff]">
+    <div className="min-h-screen flex flex-col bg-white">
       {/* Site Navbar */}
       <Navbar />
-
-      {/* Clean Minimal Breadcrumb: Home / Book 1:1 */}
-      <div className="bg-white border-b border-gray-200 shadow-2xs">
-        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-2.5 flex items-center text-xs text-gray-500 font-medium">
-          <Link to="/" className="hover:text-[#1a3d1a] transition-colors cursor-pointer font-semibold">
-            Home
-          </Link>
-          <span className="mx-2 text-gray-400">/</span>
-          <span className="text-gray-900 font-bold">Book 1:1</span>
-        </div>
-      </div>
 
       {/* Main Pricing / Book 1:1 Page */}
       <main className="flex-1">
         <PaymentPage onSubscriptionSuccess={onSubscriptionSuccess} />
       </main>
-
-      {/* Site Footer */}
-      <footer className="bg-[#1a3d1a] text-white/80 py-6 text-center text-xs mt-auto border-t border-white/10">
-        <div className="max-w-5xl mx-auto px-4">
-          <p>© Chess With Rathish — All Rights Reserved. I don't teach chess, I teach thinking.</p>
-        </div>
-      </footer>
     </div>
   );
 }
