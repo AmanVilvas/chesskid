@@ -58,10 +58,26 @@ export const Navbar = () => {
           <a href="/#faqs" className="hover:text-black transition-colors">
             FAQs
           </a>
+          <a
+            href="https://learn.chesswithrathish.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#1a3d1a] transition-colors font-semibold"
+          >
+            Start Learning
+          </a>
         </nav>
 
         {/* CTA Button & Mobile Hamburger */}
         <div className="flex items-center gap-3">
+          <a
+            href="https://learn.chesswithrathish.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:inline-flex items-center justify-center font-bold text-xs sm:text-[13px] px-4 py-2 rounded-md bg-[#1a3d1a] hover:bg-[#2d5a2d] text-white shadow-2xs transition-all duration-200 cursor-pointer"
+          >
+            Start Learning →
+          </a>
           <Link
             to="/pricing"
             className="hidden md:inline-flex items-center justify-center font-bold text-xs sm:text-[13px] px-4 py-2 rounded-md bg-[#FFBA07] hover:bg-[#FFC42B] text-[#0D0D0D] shadow-2xs transition-all duration-200 cursor-pointer"
@@ -122,13 +138,22 @@ export const Navbar = () => {
             FAQs
           </a>
           
-          <div className="pt-2 border-t border-gray-100">
-            <Link
-              to="/pricing"
+          <div className="pt-2 border-t border-gray-100 space-y-2">
+            <a
+              href="https://learn.chesswithrathish.com/"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full flex items-center justify-center gap-2 bg-[#1a3d1a] hover:bg-[#2d5a2d] text-white font-bold text-sm py-2.5 rounded-lg transition-colors text-center"
             >
-              Book a 1:1 Trial →
+              Start Learning →
+            </a>
+            <Link
+              to="/pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full flex items-center justify-center gap-2 bg-[#FFBA07] hover:bg-[#FFC42B] text-[#0D0D0D] font-bold text-sm py-2.5 rounded-lg transition-colors text-center"
+            >
+              Book a 1:1 Trial
             </Link>
           </div>
         </div>

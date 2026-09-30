@@ -120,6 +120,24 @@ export function LandingPage() {
                   </div>
                 ))}
               </div>
+
+              {/* Hero CTAs */}
+              <div className="flex flex-wrap gap-3 mt-7">
+                <a
+                  href="https://learn.chesswithrathish.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-[#1a3d1a] hover:bg-[#2d5a2d] text-white font-bold text-[14px] px-6 py-3 rounded-lg shadow-md transition-all duration-200"
+                >
+                  Start Learning →
+                </a>
+                <Link
+                  to="/pricing"
+                  className="inline-flex items-center gap-2 bg-[#FFBA07] hover:bg-[#FFC42B] text-[#0D0D0D] font-bold text-[14px] px-6 py-3 rounded-lg shadow-md transition-all duration-200"
+                >
+                  Book a 1:1 Trial
+                </Link>
+              </div>
             </div>
 
             {/* Photo + sticky notes */}
