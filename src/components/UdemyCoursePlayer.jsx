@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Play,
   Tv,
   Share2,
   MoreVertical,
@@ -12,12 +11,14 @@ import {
   Star,
   FileText,
   Download,
-  Calendar,
   Layers,
   Gamepad2,
   ArrowLeft,
   Sparkles,
-  Clock
+  Clock,
+  ChevronLeft,
+  ChevronRight,
+  LayoutPanelTop
 } from 'lucide-react';
 import { 
   udemyCourseMeta, 
@@ -28,6 +29,7 @@ import {
 import { Link, useSearchParams } from 'react-router-dom';
 import CoursePiecePracticeView from './CoursePiecePracticeView';
 import { coursePiecePracticeLessons } from '../data/coursePiecePracticeData';
+import './CoursePlayer.css';
 
 export const UdemyCoursePlayer = ({ 
   initialUnitId = 1, 
@@ -50,11 +52,14 @@ export const UdemyCoursePlayer = ({
   const isPiecePractice = activeLecture.type === 'game' && activeUnitId <= 6;
   const coursePieceOrder = ['rook', 'bishop', 'queen', 'king', 'pawn', 'knight'];
   const activePieceId = coursePieceOrder[activeUnitId - 1] || 'rook';
+  const practiceLecture = currentSection.lectures.find((lecture) => lecture.type === 'game');
+  const videoLecture = currentSection.lectures.find((lecture) => lecture.type === 'video');
+  const isSplitMode = searchParams.get('mode') === 'split' && !isPiecePractice && activeUnitId <= 6 && !!practiceLecture;
 
   // Accordion state for sidebar sections
   const [openSections, setOpenSections] = useState({ [activeUnitId]: true });
   // Sidebar visibility (collapsible with X)
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => searchParams.get('mode') !== 'split');
 
   // Active tab under video
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'notes' | 'announcements' | 'reviews' | 'tools'
@@ -62,9 +67,9 @@ export const UdemyCoursePlayer = ({
   // Completion tracking
   const [completedItems, setCompletedItems] = useState(() => {
     try {
-      return { 'u1-l1': true, ...JSON.parse(localStorage.getItem('course-completed-items') || '{}') };
+      return JSON.parse(localStorage.getItem('course-completed-items') || '{}');
     } catch {
-      return { 'u1-l1': true };
+      return {};
     }
   });
 
@@ -72,17 +77,22 @@ export const UdemyCoursePlayer = ({
     localStorage.setItem('course-completed-items', JSON.stringify(completedItems));
   }, [completedItems]);
 
-  // Theater mode toggle
-  const [isTheaterMode, setIsTheaterMode] = useState(false);
   const [showProgressMenu, setShowProgressMenu] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showCaptions, setShowCaptions] = useState(false);
+  const [videoPanelRatio, setVideoPanelRatio] = useState(50);
 
   // Notes state
-  const [notes, setNotes] = useState([
-    { id: 1, time: '00:45', text: 'Rook moves orthogonal only along ranks and files.', date: 'Just now' },
-    { id: 2, time: '02:10', text: 'Ask your child to trace the squares between home and school with a coin.', date: '1 day ago' }
-  ]);
+  const [notesByLesson, setNotesByLesson] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('course-lesson-notes') || '{}');
+    } catch {
+      return {};
+    }
+  });
   const [newNoteText, setNewNoteText] = useState('');
+  const noteKey = `${activeUnitId}:${activeLectureId}`;
+  const notes = notesByLesson[noteKey] || [];
 
   // YouTube video ID
   const YOUTUBE_VIDEO_ID = 'hiopZjoYfMA';
@@ -105,15 +115,8 @@ export const UdemyCoursePlayer = ({
     setPracticePuzzle(Math.max(0, puzzleFromUrl - 1));
   }, [searchParams]);
 
-  // Format mm:ss helper (kept for notes timestamps)
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-  };
-
   // Select a lecture
-  const handleSelectLecture = (unitId, lectureId, puzzleIndex = 0) => {
+  const handleSelectLecture = (unitId, lectureId, puzzleIndex = 0, mode = null) => {
     setActiveUnitId(unitId);
     setActiveLectureId(lectureId);
     setPracticePuzzle(puzzleIndex);
@@ -121,8 +124,10 @@ export const UdemyCoursePlayer = ({
     nextParams.set('view', 'player');
     nextParams.set('unit', String(unitId));
     nextParams.set('lecture', lectureId);
-    if (lectureId.endsWith('-l2') && unitId <= 6) nextParams.set('puzzle', String(puzzleIndex + 1));
+    if ((lectureId.endsWith('-l2') && unitId <= 6) || (unitId <= 6 && (mode === 'split' || mode === 'video'))) nextParams.set('puzzle', String(puzzleIndex + 1));
     else nextParams.delete('puzzle');
+    if (mode === 'split') nextParams.set('mode', 'split');
+    else nextParams.delete('mode');
     setSearchParams(nextParams);
   };
 
@@ -137,6 +142,25 @@ export const UdemyCoursePlayer = ({
     const unitId = pieceIndex + 1;
     const lectureId = `u${unitId}-l2`;
     handleSelectLecture(unitId, lectureId, 0);
+  };
+
+  const handlePlayerMode = (mode) => {
+    if (mode === 'split') setSidebarOpen(false);
+    if (mode === 'practice' && practiceLecture) {
+      handleSelectLecture(activeUnitId, practiceLecture.id, practicePuzzle);
+    } else if ((mode === 'video' || mode === 'split') && videoLecture) {
+      handleSelectLecture(activeUnitId, videoLecture.id, practicePuzzle, mode);
+    }
+  };
+
+  const curriculumItems = udemySections.flatMap((section) => section.lectures.map((lecture) => ({
+    sectionId: section.id,
+    lecture,
+  })));
+  const currentCurriculumIndex = curriculumItems.findIndex((item) => item.sectionId === activeUnitId && item.lecture.id === activeLectureId);
+  const navigateCurriculum = (offset) => {
+    const nextItem = curriculumItems[currentCurriculumIndex + offset];
+    if (nextItem) handleSelectLecture(nextItem.sectionId, nextItem.lecture.id);
   };
 
   // Toggle checkbox completion
@@ -166,21 +190,20 @@ export const UdemyCoursePlayer = ({
   const handleAddNote = (e) => {
     e.preventDefault();
     if (!newNoteText.trim()) return;
-    const newNote = {
-      id: Date.now(),
-      time: '—',
-      text: newNoteText.trim(),
-      date: 'Just now'
-    };
-    setNotes([newNote, ...notes]);
+    const newNote = { id: Date.now(), text: newNoteText.trim(), date: new Date().toLocaleDateString() };
+    setNotesByLesson((previous) => {
+      const next = { ...previous, [noteKey]: [newNote, ...(previous[noteKey] || [])] };
+      localStorage.setItem('course-lesson-notes', JSON.stringify(next));
+      return next;
+    });
     setNewNoteText('');
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f7f0] text-[#1a2e1a] flex flex-col antialiased">
+    <div className={`course-player ${isSplitMode ? 'course-player-split' : ''} min-h-screen bg-[#f5f7f0] text-[#1a2e1a] flex flex-col antialiased`}>
       
       {/* 1. TOP HEADER BAR (Site Forest Green #1a3d1a - matching site theme) */}
-      <header className="bg-[#1a3d1a] text-white h-14 border-b border-black/20 flex items-center justify-between px-3 sm:px-6 select-none sticky top-0 z-50 shadow-xs">
+      <header className="course-player-header bg-[#1a3d1a] text-white min-h-14 border-b border-black/20 flex items-center justify-between gap-2 px-3 sm:px-5 select-none sticky top-0 z-50 shadow-xs">
         
         {/* Left: Brand + Course Title */}
         <div className="flex items-center gap-3 sm:gap-4 min-w-0">
@@ -217,7 +240,28 @@ export const UdemyCoursePlayer = ({
         </div>
 
         {/* Right: Progress Dropdown + Share + Menu */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+
+          {activeUnitId <= 6 && practiceLecture && videoLecture && (
+            <div className="course-mode-switch" aria-label="Lesson mode">
+              <button type="button" onClick={() => handlePlayerMode('video')} aria-pressed={!isPiecePractice && !isSplitMode} title="Watch video">
+                <Tv size={15} /><span>Video</span>
+              </button>
+              <button type="button" onClick={() => handlePlayerMode('practice')} aria-pressed={isPiecePractice} title="Practice on the board">
+                <Gamepad2 size={15} /><span>Practice</span>
+              </button>
+              <button type="button" onClick={() => handlePlayerMode('split')} aria-pressed={isSplitMode} title="Watch and practice together">
+                <LayoutPanelTop size={15} /><span>Side by side</span>
+              </button>
+            </div>
+          )}
+
+          {!sidebarOpen && <button type="button" onClick={() => setSidebarOpen(true)} className="course-show-content" aria-label="Show course content"><Layers size={15} /><span>Course</span></button>}
+
+          <div className="course-step-nav" aria-label="Lesson navigation">
+            <button type="button" onClick={() => navigateCurriculum(-1)} disabled={currentCurriculumIndex <= 0} aria-label="Previous lesson" title="Previous lesson"><ChevronLeft size={17} /></button>
+            <button type="button" onClick={() => navigateCurriculum(1)} disabled={currentCurriculumIndex < 0 || currentCurriculumIndex >= curriculumItems.length - 1} aria-label="Next lesson" title="Next lesson"><ChevronRight size={17} /></button>
+          </div>
           
           {/* Progress Circular Indicator Dropdown */}
           <div className="relative">
@@ -277,8 +321,8 @@ export const UdemyCoursePlayer = ({
 
           {/* Share Button */}
           <button
+            className="course-share-button flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-md border border-white/20 hover:border-white/40 text-white/90 hover:text-white transition-colors cursor-pointer"
             onClick={() => alert('Lesson Planner link copied to clipboard!')}
-            className="flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-md border border-white/20 hover:border-white/40 text-white/90 hover:text-white transition-colors cursor-pointer"
           >
             <span>Share</span>
             <Share2 className="w-3.5 h-3.5" />
@@ -296,12 +340,12 @@ export const UdemyCoursePlayer = ({
               <div className="absolute right-0 top-9 w-48 bg-white text-[#1a2e1a] rounded-lg shadow-xl border border-gray-200 py-1.5 z-50 text-xs font-medium">
                 <button
                   onClick={() => {
-                    setShowSubtitles((s) => !s);
+                    setShowCaptions((current) => !current);
                     setShowMoreMenu(false);
                   }}
                   className="w-full text-left px-3.5 py-2 hover:bg-[#f0f4e8]"
                 >
-                  {showSubtitles ? 'Hide Captions' : 'Show Captions'}
+                  {showCaptions ? 'Hide captions' : 'Show captions'}
                 </button>
                 <button
                   onClick={() => {
@@ -326,28 +370,47 @@ export const UdemyCoursePlayer = ({
       </header>
 
       {/* 2. MAIN PLAYER BODY + COLLAPSIBLE COURSE CONTENT SIDEBAR */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+      <div className="course-player-body flex-1 flex flex-col lg:flex-row overflow-hidden">
         
         {/* LEFT / CENTER: Video Player + Tabs Dashboard */}
-        <div className={`flex-1 flex flex-col transition-all ${isTheaterMode ? 'w-full' : ''} ${isPiecePractice ? 'course-practice-active' : ''}`}>
+        <div className={`course-player-main flex-1 flex flex-col transition-all ${isPiecePractice ? 'course-practice-active' : ''}`}>
           
           {/* VIDEO PLAYER CONTAINER — YouTube Embed */}
-          <div className={`relative w-full overflow-auto ${isPiecePractice ? 'bg-white' : 'bg-black aspect-video max-h-[580px] shadow-inner'}`}>
+          <div className={`course-player-stage relative w-full ${isPiecePractice ? 'bg-white' : 'bg-black aspect-video max-h-[min(68vh,720px)] shadow-inner'}`}>
             
             {/* YouTube iframe — fills the container, YouTube provides all controls */}
-            {isPiecePractice ? <CoursePiecePracticeView key={`${activeUnitId}-${practicePuzzle}`} pieceId={activePieceId} initialPuzzle={practicePuzzle} courseSidebarOpen={sidebarOpen} onShowCourseContent={() => setSidebarOpen(true)} onSelectPuzzle={handlePracticePuzzleChange} onSelectPiece={handlePracticePieceChange} onLessonComplete={() => setCompletedItems((previous) => ({ ...previous, [activeLectureId]: true }))} /> : <iframe
-              key={`${YOUTUBE_VIDEO_ID}-${activeUnitId}-${activeLectureId}`}
-              src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?start=${YOUTUBE_START_SEC}&rel=0&modestbranding=1&color=white`}
-              title={activeLecture.title || 'Chess Lesson'}
-              className="w-full h-full"
-              style={{ border: 'none', display: 'block' }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />}
+            <div className={`course-workspace ${isPiecePractice ? 'course-mode-practice' : isSplitMode ? 'course-mode-split' : 'course-mode-video'}`} style={isSplitMode ? { gridTemplateColumns: `${videoPanelRatio}fr ${100 - videoPanelRatio}fr` } : undefined}>
+              {isSplitMode && <label className="course-split-balance"><span>Video</span><input type="range" min="35" max="65" value={videoPanelRatio} onChange={(event) => setVideoPanelRatio(Number(event.target.value))} aria-label="Video and board panel balance" /><span>Board</span></label>}
+              <div className="course-video-pane">
+                {!isPiecePractice && <iframe
+                  key={`${YOUTUBE_VIDEO_ID}-${activeUnitId}-${activeLectureId}-${showCaptions}`}
+                  src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?start=${YOUTUBE_START_SEC}&rel=0&modestbranding=1&color=white&cc_load_policy=${showCaptions ? 1 : 0}`}
+                  title={activeLecture.title || 'Chess Lesson'}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />}
+              </div>
+              {practiceLecture && (
+                <div className="course-practice-pane">
+                  <CoursePiecePracticeView
+                    key={`${activeUnitId}-${practicePuzzle}`}
+                    pieceId={activePieceId}
+                    initialPuzzle={practicePuzzle}
+                    courseSidebarOpen={sidebarOpen || isSplitMode}
+                    onShowCourseContent={() => setSidebarOpen(true)}
+                    onSelectPuzzle={handlePracticePuzzleChange}
+                    onSelectPiece={handlePracticePieceChange}
+                    compact={isSplitMode}
+                    onLessonComplete={() => setCompletedItems((previous) => ({ ...previous, [practiceLecture.id]: true }))}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           {/* 3. TABS BAR UNDER VIDEO (Matching Screenshot 1) */}
-          <div className="bg-white border-b border-gray-200 px-3 sm:px-6 flex items-center justify-between select-none">
+          <div className="course-player-tabs bg-white border-b border-gray-200 px-3 sm:px-6 flex items-center justify-between select-none">
             <div className="flex items-center gap-4 sm:gap-8 overflow-x-auto no-scrollbar text-xs sm:text-[13px] font-bold">
               
               {/* Search button */}
@@ -432,7 +495,7 @@ export const UdemyCoursePlayer = ({
           </div>
 
           {/* 4. ACTIVE TAB PANEL CONTENT */}
-          <div className="flex-1 p-4 sm:p-6 lg:p-8 bg-white max-w-5xl overflow-y-auto">
+          <div className="course-tab-content flex-1 p-4 sm:p-6 lg:p-8 bg-white w-full max-w-5xl overflow-y-auto">
             
             {/* TAB 1: OVERVIEW (Matching Screenshot 1) */}
             {activeTab === 'overview' && (
@@ -587,16 +650,7 @@ export const UdemyCoursePlayer = ({
             {activeTab === 'notes' && (
               <div className="space-y-6 animate-in fade-in duration-150">
                 <form onSubmit={handleAddNote} className="border border-gray-200 rounded-xl p-4 space-y-3 bg-[#f7f9f4]">
-                  <div className="flex items-center justify-between text-xs font-bold text-gray-700">
-                    <span>Create a note for Unit {activeUnitId} at {formatTime(currentTimeSec)}</span>
-                    <button
-                      type="button"
-                      onClick={() => skip(-5)}
-                      className="text-[#1a3d1a] hover:underline"
-                    >
-                      Jump to time
-                    </button>
-                  </div>
+                  <div className="text-xs font-bold text-gray-700">Create a learning note for {currentSection.unitRawTitle}</div>
                   <textarea
                     rows={3}
                     placeholder="Capture an observation about your child's learning, questions they asked, or moves to practice together..."
@@ -619,12 +673,11 @@ export const UdemyCoursePlayer = ({
                   <h4 className="text-xs font-black text-gray-700 uppercase tracking-wider">
                     Parent Learning Notes ({notes.length})
                   </h4>
+                  {notes.length === 0 && <p className="text-sm text-gray-500">Your notes for this lesson will appear here.</p>}
                   {notes.map((note) => (
                     <div key={note.id} className="border border-gray-200 rounded-xl p-3.5 bg-white space-y-1.5 hover:border-[#1a3d1a]/40 transition-colors">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-mono font-bold bg-[#f0f4e8] text-[#1a3d1a] px-2 py-0.5 rounded cursor-pointer">
-                          {note.time}
-                        </span>
+                        <span className="font-bold text-[#1a3d1a]">Lesson note</span>
                         <span className="text-gray-400 text-[11px]">{note.date}</span>
                       </div>
                       <p className="text-xs sm:text-sm text-gray-800 leading-relaxed">
@@ -748,8 +801,9 @@ export const UdemyCoursePlayer = ({
         </div>
 
         {/* RIGHT: COLLAPSIBLE COURSE CONTENT SIDEBAR (Matching Screenshot 1) */}
+        {sidebarOpen && <button type="button" className="course-sidebar-backdrop" onClick={() => setSidebarOpen(false)} aria-label="Close course content" />}
         {sidebarOpen && (
-          <aside className="w-full lg:w-88 xl:w-96 bg-white border-l border-gray-200 flex flex-col h-auto lg:h-[calc(100vh-56px)] select-none flex-shrink-0 shadow-2xs">
+          <aside className="course-content-sidebar bg-white border-l border-gray-200 flex flex-col select-none flex-shrink-0 shadow-2xs">
             
             {/* Sidebar Header */}
             <div className="p-3.5 sm:px-4 border-b border-gray-200 flex items-center justify-between bg-white sticky top-0 z-20">

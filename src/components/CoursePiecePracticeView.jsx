@@ -74,6 +74,7 @@ export default function CoursePiecePracticeView({
   onShowCourseContent,
   onSelectPuzzle,
   onSelectPiece,
+  compact = false,
 }) {
   const [activeId, setActiveId] = useState(() => findLesson(pieceId).id);
   const lesson = findLesson(activeId);
@@ -448,7 +449,7 @@ export default function CoursePiecePracticeView({
   }
 
   return (
-    <div className={`learn-chess-shell ${courseSidebarOpen ? 'course-sidebar-open' : ''}`}>
+    <div className={`learn-chess-shell ${courseSidebarOpen ? 'course-sidebar-open' : ''} ${compact ? 'learn-compact' : ''}`}>
       <aside className="learn-piece-menu" aria-label="Chess piece lessons">
         <div className="learn-menu-head"><div className="learn-menu-mark">♟</div><span>Menu</span>{!courseSidebarOpen && <button className="learn-course-content-button" onClick={onShowCourseContent}>Course content</button>}</div>
         <div className="learn-menu-title">Chess pieces</div>
@@ -575,7 +576,7 @@ export default function CoursePiecePracticeView({
             <small>Moves {moveCount} · target {puzzle.nbMoves}</small>
           </div>
         )}
-        <nav className="learn-challenge-numbers" aria-label="Choose a puzzle">
+        <nav className="learn-challenge-numbers" aria-label="Choose a puzzle" style={{ gridTemplateColumns: `repeat(${lesson.puzzles.length}, minmax(0, 1fr))` }}>
           {lesson.puzzles.map((entry, index) => (
             <button
               key={entry.id}
