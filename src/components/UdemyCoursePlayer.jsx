@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Play,
   Tv,
@@ -26,6 +25,9 @@ import {
   learningToolsList, 
   courseReviews 
 } from '../data/udemyCourseData';
+import { Link, useSearchParams } from 'react-router-dom';
+import CoursePiecePracticeView from './CoursePiecePracticeView';
+import { coursePiecePracticeLessons } from '../data/coursePiecePracticeData';
 
 export const UdemyCoursePlayer = ({ 
   initialUnitId = 1, 
@@ -33,6 +35,7 @@ export const UdemyCoursePlayer = ({
   onBackToOverview,
   activeSubscription
 }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   // Navigation & selection state
   const [activeUnitId, setActiveUnitId] = useState(initialUnitId);
   const currentSection = udemySections.find((s) => s.id === activeUnitId) || udemySections[0];
@@ -40,9 +43,13 @@ export const UdemyCoursePlayer = ({
   const [activeLectureId, setActiveLectureId] = useState(
     initialLectureId || currentSection.lectures[0]?.id || 'u1-l1'
   );
+  const [practicePuzzle, setPracticePuzzle] = useState(() => Math.max(0, Number(searchParams.get('puzzle') || 1) - 1));
 
   const activeLecture = 
     currentSection.lectures.find((l) => l.id === activeLectureId) || currentSection.lectures[0];
+  const isPiecePractice = activeLecture.type === 'game' && activeUnitId <= 6;
+  const coursePieceOrder = ['rook', 'bishop', 'queen', 'king', 'pawn', 'knight'];
+  const activePieceId = coursePieceOrder[activeUnitId - 1] || 'rook';
 
   // Accordion state for sidebar sections
   const [openSections, setOpenSections] = useState({ [activeUnitId]: true });
@@ -53,9 +60,17 @@ export const UdemyCoursePlayer = ({
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'notes' | 'announcements' | 'reviews' | 'tools'
 
   // Completion tracking
-  const [completedItems, setCompletedItems] = useState({
-    'u1-l1': true,
+  const [completedItems, setCompletedItems] = useState(() => {
+    try {
+      return { 'u1-l1': true, ...JSON.parse(localStorage.getItem('course-completed-items') || '{}') };
+    } catch {
+      return { 'u1-l1': true };
+    }
   });
+
+  useEffect(() => {
+    localStorage.setItem('course-completed-items', JSON.stringify(completedItems));
+  }, [completedItems]);
 
   // Theater mode toggle
   const [isTheaterMode, setIsTheaterMode] = useState(false);
@@ -81,6 +96,15 @@ export const UdemyCoursePlayer = ({
     }));
   }, [activeUnitId]);
 
+  useEffect(() => {
+    const unitFromUrl = Number(searchParams.get('unit'));
+    const lectureFromUrl = searchParams.get('lecture');
+    const puzzleFromUrl = Number(searchParams.get('puzzle') || 1);
+    if (Number.isInteger(unitFromUrl) && unitFromUrl > 0) setActiveUnitId(unitFromUrl);
+    if (lectureFromUrl) setActiveLectureId(lectureFromUrl);
+    setPracticePuzzle(Math.max(0, puzzleFromUrl - 1));
+  }, [searchParams]);
+
   // Format mm:ss helper (kept for notes timestamps)
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -89,9 +113,30 @@ export const UdemyCoursePlayer = ({
   };
 
   // Select a lecture
-  const handleSelectLecture = (unitId, lectureId) => {
+  const handleSelectLecture = (unitId, lectureId, puzzleIndex = 0) => {
     setActiveUnitId(unitId);
     setActiveLectureId(lectureId);
+    setPracticePuzzle(puzzleIndex);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('view', 'player');
+    nextParams.set('unit', String(unitId));
+    nextParams.set('lecture', lectureId);
+    if (lectureId.endsWith('-l2') && unitId <= 6) nextParams.set('puzzle', String(puzzleIndex + 1));
+    else nextParams.delete('puzzle');
+    setSearchParams(nextParams);
+  };
+
+  const handlePracticePuzzleChange = (puzzleIndex) => {
+    setPracticePuzzle(puzzleIndex);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('puzzle', String(puzzleIndex + 1));
+    setSearchParams(nextParams, { replace: true });
+  };
+
+  const handlePracticePieceChange = (pieceIndex) => {
+    const unitId = pieceIndex + 1;
+    const lectureId = `u${unitId}-l2`;
+    handleSelectLecture(unitId, lectureId, 0);
   };
 
   // Toggle checkbox completion
@@ -284,13 +329,13 @@ export const UdemyCoursePlayer = ({
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         
         {/* LEFT / CENTER: Video Player + Tabs Dashboard */}
-        <div className={`flex-1 flex flex-col transition-all ${isTheaterMode ? 'w-full' : ''}`}>
+        <div className={`flex-1 flex flex-col transition-all ${isTheaterMode ? 'w-full' : ''} ${isPiecePractice ? 'course-practice-active' : ''}`}>
           
           {/* VIDEO PLAYER CONTAINER — YouTube Embed */}
-          <div className="relative bg-black w-full overflow-hidden aspect-video max-h-[580px] shadow-inner">
+          <div className={`relative w-full overflow-auto ${isPiecePractice ? 'bg-white' : 'bg-black aspect-video max-h-[580px] shadow-inner'}`}>
             
             {/* YouTube iframe — fills the container, YouTube provides all controls */}
-            <iframe
+            {isPiecePractice ? <CoursePiecePracticeView key={`${activeUnitId}-${practicePuzzle}`} pieceId={activePieceId} initialPuzzle={practicePuzzle} courseSidebarOpen={sidebarOpen} onShowCourseContent={() => setSidebarOpen(true)} onSelectPuzzle={handlePracticePuzzleChange} onSelectPiece={handlePracticePieceChange} onLessonComplete={() => setCompletedItems((previous) => ({ ...previous, [activeLectureId]: true }))} /> : <iframe
               key={`${YOUTUBE_VIDEO_ID}-${activeUnitId}-${activeLectureId}`}
               src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?start=${YOUTUBE_START_SEC}&rel=0&modestbranding=1&color=white`}
               title={activeLecture.title || 'Chess Lesson'}
@@ -298,7 +343,7 @@ export const UdemyCoursePlayer = ({
               style={{ border: 'none', display: 'block' }}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
-            />
+            />}
           </div>
 
           {/* 3. TABS BAR UNDER VIDEO (Matching Screenshot 1) */}
@@ -759,6 +804,7 @@ export const UdemyCoursePlayer = ({
                         {section.lectures.map((lecture) => {
                           const isCurrent = activeLectureId === lecture.id;
                           const isDone = !!completedItems[lecture.id];
+                          const practiceLesson = coursePiecePracticeLessons.find((lesson) => lesson.id === coursePieceOrder[section.id - 1]);
 
                           return (
                             <div
@@ -785,8 +831,9 @@ export const UdemyCoursePlayer = ({
 
                               {/* Title & Metadata */}
                               <div className="flex-1 min-w-0">
-                                <div className="leading-snug text-xs sm:text-[12.5px]">
-                                  {lecture.title}
+                                <div className="leading-snug text-xs sm:text-[12.5px] flex items-center justify-between gap-2">
+                                  <span>{lecture.title}</span>
+                                  {lecture.type === 'game' && practiceLesson && <span className="shrink-0 rounded-md bg-emerald-50 px-2 py-1 text-[10px] font-semibold text-emerald-800">Practice · {practiceLesson.puzzles.length}</span>}
                                 </div>
                                 <div className="flex items-center gap-1.5 text-[11px] text-gray-500 mt-1">
                                   {lecture.type === 'video' ? (
@@ -798,6 +845,7 @@ export const UdemyCoursePlayer = ({
                                   )}
                                   <span>{lecture.duration}</span>
                                 </div>
+                                {lecture.type === 'game' && practiceLesson && <div className="mt-2 grid gap-1" style={{ gridTemplateColumns: `repeat(${practiceLesson.puzzles.length}, minmax(0, 1fr))` }} aria-label="Choose practice exercise">{practiceLesson.puzzles.map((puzzle, i)=><button key={puzzle.id} onClick={(e)=>{e.stopPropagation();handleSelectLecture(section.id,lecture.id,i)}} className={`rounded px-1.5 py-1 text-[10px] border ${activeLectureId===lecture.id&&activeUnitId===section.id&&practicePuzzle===i?'bg-[#318dd5] text-white border-[#318dd5]':'bg-white text-[#318dd5] border-gray-200 hover:bg-blue-50'}`} aria-label={`Practice exercise ${i+1}: ${puzzle.goal}`}>{i+1}</button>)}</div>}
                               </div>
                             </div>
                           );

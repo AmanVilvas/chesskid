@@ -24,7 +24,7 @@ export const unitsData = [
     reviewPreviousUnit: null,
     unitLessons: [
       { id: "u1-l1", title: "The Rook", type: "video", url: "#" },
-      { id: "u1-l2", title: "Pawn 1", type: "game", url: "#" }
+      { id: "u1-l2", title: "Practice the Rook", type: "game", url: "#" }
     ],
     classroomMaterials: {
       activityTitle: "Supplemental Classroom Activity:",
@@ -68,7 +68,7 @@ export const unitsData = [
     reviewPreviousUnit: "Review how the rook moves and captures horizontally and vertically across ranks and files before introducing the diagonal movement of the bishop.",
     unitLessons: [
       { id: "u2-l1", title: "The Bishop", type: "video", url: "#" },
-      { id: "u2-l2", title: "Pawn 2", type: "game", url: "#" }
+      { id: "u2-l2", title: "Practice the Bishop", type: "game", url: "#" }
     ],
     classroomMaterials: {
       activityTitle: "Supplemental Classroom Activity:",
@@ -111,7 +111,7 @@ export const unitsData = [
     reviewPreviousUnit: "Review the orthogonal lines of the rook and the diagonals of the bishop to show how the queen effortlessly adopts both powers.",
     unitLessons: [
       { id: "u3-l1", title: "The Queen", type: "video", url: "#" },
-      { id: "u3-l2", title: "Queen vs Pawns Mini-Game", type: "game", url: "#" }
+      { id: "u3-l2", title: "Practice the Queen", type: "game", url: "#" }
     ],
     classroomMaterials: {
       activityTitle: "Supplemental Classroom Activity:",
@@ -152,7 +152,7 @@ export const unitsData = [
     reviewPreviousUnit: "Review piece values learned so far and contrast the queen's wide range with the king's single-square step.",
     unitLessons: [
       { id: "u4-l1", title: "The King", type: "video", url: "#" },
-      { id: "u4-l2", title: "King Race Game", type: "game", url: "#" }
+      { id: "u4-l2", title: "Practice the King", type: "game", url: "#" }
     ],
     classroomMaterials: {
       activityTitle: "Supplemental Classroom Activity:",
@@ -192,7 +192,7 @@ export const unitsData = [
     reviewPreviousUnit: "Recall king and piece movements to understand how pawns support and shield friendly pieces.",
     unitLessons: [
       { id: "u5-l1", title: "The Pawn & Promotion", type: "video", url: "#" },
-      { id: "u5-l2", title: "The Pawn Game (8 vs 8)", type: "game", url: "#" }
+      { id: "u5-l2", title: "Practice the Pawn", type: "game", url: "#" }
     ],
     classroomMaterials: {
       activityTitle: "Supplemental Classroom Activity:",
@@ -232,7 +232,7 @@ export const unitsData = [
     reviewPreviousUnit: "Compare how all other pieces are blocked by obstructions while knights can freely jump.",
     unitLessons: [
       { id: "u6-l1", title: "The Knight", type: "video", url: "#" },
-      { id: "u6-l2", title: "Knight Tour Mini-Game", type: "game", url: "#" }
+      { id: "u6-l2", title: "Practice the Knight", type: "game", url: "#" }
     ],
     classroomMaterials: {
       activityTitle: "Supplemental Classroom Activity:",

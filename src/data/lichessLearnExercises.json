@@ -1,0 +1,891 @@
+{
+  "source": {
+    "repository": "https://github.com/lichess-org/lila",
+    "commit": "ad760137cf9941cadd93126433695d6933209b0a",
+    "stageListPath": "ui/learn/src/stage/list.ts",
+    "stagePath": "ui/learn/src/stage/{rook,bishop,queen,king,knight,pawn}.ts",
+    "translationsPath": "translation/dest/learn/en-US.xml",
+    "license": "AGPL-3.0-or-later; see upstream COPYING.md"
+  },
+  "categories": [
+    {
+      "id": "rook",
+      "originalStageId": 1,
+      "piece": "rook",
+      "pieceCode": "r",
+      "title": "The rook",
+      "subtitle": "It moves in straight lines",
+      "intro": "The rook is a powerful piece. Are you ready to command it?",
+      "complete": "Congratulations! You have successfully mastered the rook.",
+      "exercises": [
+        {
+          "id": "rook-1",
+          "originalExerciseId": 1,
+          "goalKey": "rookGoal",
+          "goal": "Click on the rook to bring it to the star!",
+          "sourceFen": "8/8/8/8/8/8/4R3/8 w - -",
+          "fen": "8/8/8/8/8/8/4R3/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "e7"
+          ],
+          "nbMoves": 1,
+          "hintMoves": [
+            "e2e7"
+          ],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "rook-2",
+          "originalExerciseId": 2,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/2R5/8/8/8/8/8/8 w - -",
+          "fen": "8/2R5/8/8/8/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "c5",
+            "g5"
+          ],
+          "nbMoves": 2,
+          "hintMoves": [
+            "c7c5",
+            "c5g5"
+          ],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "rook-3",
+          "originalExerciseId": 3,
+          "goalKey": "theFewerMoves",
+          "goal": "The fewer moves you make, the more points you win!",
+          "sourceFen": "8/8/8/8/3R4/8/8/8 w - -",
+          "fen": "8/8/8/8/3R4/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a4",
+            "g3",
+            "g4"
+          ],
+          "nbMoves": 3,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "rook-4",
+          "originalExerciseId": 4,
+          "goalKey": "theFewerMoves",
+          "goal": "The fewer moves you make, the more points you win!",
+          "sourceFen": "7R/8/8/8/8/8/8/8 w - -",
+          "fen": "7R/8/8/8/8/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "f8",
+            "g1",
+            "g7",
+            "g8",
+            "h7"
+          ],
+          "nbMoves": 5,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "rook-5",
+          "originalExerciseId": 5,
+          "goalKey": "useTwoRooks",
+          "goal": "Use two rooks to speed things up!",
+          "sourceFen": "8/1R6/8/8/3R4/8/8/8 w - -",
+          "fen": "8/1R6/8/8/3R4/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a4",
+            "g3",
+            "g7",
+            "h4"
+          ],
+          "nbMoves": 4,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "rook-6",
+          "originalExerciseId": 6,
+          "goalKey": "useTwoRooks",
+          "goal": "Use two rooks to speed things up!",
+          "sourceFen": "8/8/8/8/8/5R2/8/R7 w - -",
+          "fen": "8/8/8/8/8/5R2/8/R7 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "b7",
+            "d1",
+            "d5",
+            "f2",
+            "f7",
+            "g4",
+            "g7"
+          ],
+          "nbMoves": 7,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        }
+      ]
+    },
+    {
+      "id": "bishop",
+      "originalStageId": 2,
+      "piece": "bishop",
+      "pieceCode": "b",
+      "title": "The bishop",
+      "subtitle": "It moves diagonally",
+      "intro": "Next we will learn how to maneuver a bishop!",
+      "complete": "Congratulations! You can command a bishop.",
+      "exercises": [
+        {
+          "id": "bishop-1",
+          "originalExerciseId": 1,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/8/5B2/8/8 w - -",
+          "fen": "8/8/8/8/8/5B2/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "d5",
+            "g8"
+          ],
+          "nbMoves": 2,
+          "hintMoves": [
+            "f3d5",
+            "d5g8"
+          ],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "bishop-2",
+          "originalExerciseId": 2,
+          "goalKey": "theFewerMoves",
+          "goal": "The fewer moves you make, the more points you win!",
+          "sourceFen": "8/8/8/8/8/1B6/8/8 w - -",
+          "fen": "8/8/8/8/8/1B6/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a2",
+            "b1",
+            "b5",
+            "d1",
+            "d3",
+            "e2"
+          ],
+          "nbMoves": 6,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "bishop-3",
+          "originalExerciseId": 3,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/3B4/8/8/8 w - -",
+          "fen": "8/8/8/8/3B4/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a1",
+            "b6",
+            "c1",
+            "e3",
+            "g7",
+            "h6"
+          ],
+          "nbMoves": 6,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "bishop-4",
+          "originalExerciseId": 4,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/2B5/8/8/8 w - -",
+          "fen": "8/8/8/8/2B5/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a4",
+            "b1",
+            "b3",
+            "c2",
+            "d3",
+            "e2"
+          ],
+          "nbMoves": 6,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "bishop-5",
+          "originalExerciseId": 5,
+          "goalKey": "youNeedBothBishops",
+          "goal": "One light-squared bishop, one dark-squared bishop. You need both!",
+          "sourceFen": "8/8/8/8/8/8/8/2B2B2 w - -",
+          "fen": "8/8/8/8/8/8/8/2B2B2 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "d3",
+            "d4",
+            "d5",
+            "e3",
+            "e4",
+            "e5"
+          ],
+          "nbMoves": 6,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "bishop-6",
+          "originalExerciseId": 6,
+          "goalKey": "youNeedBothBishops",
+          "goal": "One light-squared bishop, one dark-squared bishop. You need both!",
+          "sourceFen": "8/3B4/8/8/8/2B5/8/8 w - -",
+          "fen": "8/3B4/8/8/8/2B5/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a3",
+            "c2",
+            "e7",
+            "f5",
+            "f6",
+            "g8",
+            "h4",
+            "h7"
+          ],
+          "nbMoves": 11,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        }
+      ]
+    },
+    {
+      "id": "queen",
+      "originalStageId": 3,
+      "piece": "queen",
+      "pieceCode": "q",
+      "title": "The queen",
+      "subtitle": "Queen = rook + bishop",
+      "intro": "The most powerful chess piece enters. Her majesty the queen!",
+      "complete": "Congratulations! Queens have no secrets for you.",
+      "exercises": [
+        {
+          "id": "queen-1",
+          "originalExerciseId": 1,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/8/8/4Q3/8 w - -",
+          "fen": "8/8/8/8/8/8/4Q3/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "e5",
+            "b8"
+          ],
+          "nbMoves": 2,
+          "hintMoves": [
+            "e2e5",
+            "e5b8"
+          ],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "queen-2",
+          "originalExerciseId": 2,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/3Q4/8/8/8 w - -",
+          "fen": "8/8/8/8/3Q4/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a3",
+            "f2",
+            "f8",
+            "h3"
+          ],
+          "nbMoves": 4,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "queen-3",
+          "originalExerciseId": 3,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/2Q5/8/8/8 w - -",
+          "fen": "8/8/8/8/2Q5/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a3",
+            "d6",
+            "f1",
+            "f8",
+            "g3",
+            "h6"
+          ],
+          "nbMoves": 6,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "queen-4",
+          "originalExerciseId": 4,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/6Q1/8/8/8/8/8/8 w - -",
+          "fen": "8/6Q1/8/8/8/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a2",
+            "b5",
+            "d3",
+            "g1",
+            "g8",
+            "h2",
+            "h5"
+          ],
+          "nbMoves": 7,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "queen-5",
+          "originalExerciseId": 5,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/8/8/8/4Q3 w - -",
+          "fen": "8/8/8/8/8/8/8/4Q3 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "a6",
+            "d1",
+            "f2",
+            "f6",
+            "g6",
+            "g8",
+            "h1",
+            "h4"
+          ],
+          "nbMoves": 9,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        }
+      ]
+    },
+    {
+      "id": "king",
+      "originalStageId": 4,
+      "piece": "king",
+      "pieceCode": "k",
+      "title": "The king",
+      "subtitle": "The most important piece",
+      "intro": "You are the king. If you fall in battle, the game is lost.",
+      "complete": "You can now command the commander!",
+      "exercises": [
+        {
+          "id": "king-1",
+          "originalExerciseId": 1,
+          "goalKey": "theKingIsSlow",
+          "goal": "The king is slow.",
+          "sourceFen": "8/8/8/8/8/3K4/8/8 w - -",
+          "fen": "8/8/8/8/8/3K4/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "e6"
+          ],
+          "nbMoves": 3,
+          "hintMoves": [
+            "d3d4",
+            "d4d5",
+            "d5e6"
+          ],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "king-2",
+          "originalExerciseId": 2,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/8/8/8/4K3 w - -",
+          "fen": "8/8/8/8/8/8/8/4K3 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "c2",
+            "d3",
+            "e2",
+            "e3"
+          ],
+          "nbMoves": 4,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "king-3",
+          "originalExerciseId": 3,
+          "goalKey": "lastOne",
+          "goal": "Last one!",
+          "sourceFen": "8/8/8/4K3/8/8/8/8 w - -",
+          "fen": "8/8/8/4K3/8/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "b5",
+            "c5",
+            "d6",
+            "e3",
+            "f3",
+            "g4"
+          ],
+          "nbMoves": 8,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        }
+      ]
+    },
+    {
+      "id": "knight",
+      "originalStageId": 5,
+      "piece": "knight",
+      "pieceCode": "k",
+      "title": "The knight",
+      "subtitle": "It moves in an L shape",
+      "intro": "Here's a challenge for you. The knight is... a tricky piece.",
+      "complete": "Congratulations! You have mastered the knight.",
+      "exercises": [
+        {
+          "id": "knight-1",
+          "originalExerciseId": 1,
+          "goalKey": "knightsHaveAFancyWay",
+          "goal": "Knights have a fancy way of jumping around!",
+          "sourceFen": "8/8/8/8/4N3/8/8/8 w - -",
+          "fen": "8/8/8/8/4N3/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "c5",
+            "d7"
+          ],
+          "nbMoves": 2,
+          "hintMoves": [
+            "e4c5",
+            "c5d7"
+          ],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "knight-2",
+          "originalExerciseId": 2,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/8/8/8/1N6 w - -",
+          "fen": "8/8/8/8/8/8/8/1N6 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "c3",
+            "d4",
+            "e2",
+            "f3",
+            "f7",
+            "g5",
+            "h8"
+          ],
+          "nbMoves": 8,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "knight-3",
+          "originalExerciseId": 3,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/2N5/8/8/8/8/8/8 w - -",
+          "fen": "8/2N5/8/8/8/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "b6",
+            "d5",
+            "d7",
+            "e6",
+            "f4"
+          ],
+          "nbMoves": 5,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "knight-4",
+          "originalExerciseId": 4,
+          "goalKey": "knightsCanJumpOverObstacles",
+          "goal": "Knights can jump over obstacles! Escape and vanquish the stars!",
+          "sourceFen": "8/8/8/8/5N2/8/8/8 w - -",
+          "fen": "8/8/8/8/5N2/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "e3",
+            "e4",
+            "e5",
+            "f3",
+            "f5",
+            "g3",
+            "g4",
+            "g5"
+          ],
+          "nbMoves": 9,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "knight-5",
+          "originalExerciseId": 5,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/8/8/8/8/3N4/8/8 w - -",
+          "fen": "8/8/8/8/8/3N4/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "c3",
+            "e2",
+            "e4",
+            "f2",
+            "f4",
+            "g6"
+          ],
+          "nbMoves": 6,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "knight-6",
+          "originalExerciseId": 6,
+          "goalKey": "grabAllTheStars",
+          "goal": "Grab all the stars!",
+          "sourceFen": "8/2N5/8/8/8/8/8/8 w - -",
+          "fen": "8/2N5/8/8/8/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "b4",
+            "b5",
+            "c6",
+            "c8",
+            "d4",
+            "d5",
+            "e3",
+            "e7",
+            "f5"
+          ],
+          "nbMoves": 9,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        }
+      ]
+    },
+    {
+      "id": "pawn",
+      "originalStageId": 6,
+      "piece": "pawn",
+      "pieceCode": "p",
+      "title": "The pawn",
+      "subtitle": "It moves forward only",
+      "intro": "Pawns are weak, but they pack a lot of potential.",
+      "complete": "Congratulations! Pawns have no secrets for you.",
+      "exercises": [
+        {
+          "id": "pawn-1",
+          "originalExerciseId": 1,
+          "goalKey": "pawnsMoveOneSquareOnly",
+          "goal": "Pawns move one square only. But when they reach the other side of the board, they become a stronger piece!",
+          "sourceFen": "8/8/8/P7/8/8/8/8 w - -",
+          "fen": "8/8/8/P7/8/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "f3"
+          ],
+          "nbMoves": 4,
+          "hintMoves": [
+            "a5a6",
+            "a6a7",
+            "a7a8",
+            "a8f3"
+          ],
+          "emptyApples": false,
+          "explainPromotion": true,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "pawn-2",
+          "originalExerciseId": 2,
+          "goalKey": "mostOfTheTimePromotingToAQueenIsBest",
+          "goal": "Most of the time promoting to a queen is the best. But sometimes a knight can come in handy!",
+          "sourceFen": "8/8/8/5P2/8/8/8/8 w - -",
+          "fen": "8/8/8/5P2/8/8/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "b6",
+            "c4",
+            "d7",
+            "e5",
+            "a8"
+          ],
+          "nbMoves": 8,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "pawn-3",
+          "originalExerciseId": 3,
+          "goalKey": "pawnsMoveForward",
+          "goal": "Pawns move forward, but capture diagonally!",
+          "sourceFen": "8/8/8/8/8/4P3/8/8 w - -",
+          "fen": "8/8/8/8/8/4P3/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "c6",
+            "d5",
+            "d7"
+          ],
+          "nbMoves": 4,
+          "hintMoves": [
+            "e3e4",
+            "e4d5",
+            "d5c6",
+            "c6d7"
+          ],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": {
+            "type": "noPieceOn",
+            "squares": [
+              "e3",
+              "e4",
+              "c6",
+              "d5",
+              "d7"
+            ]
+          },
+          "cssClass": null
+        },
+        {
+          "id": "pawn-4",
+          "originalExerciseId": 4,
+          "goalKey": "captureThenPromote",
+          "goal": "Capture, then promote!",
+          "sourceFen": "8/8/8/8/8/1P6/8/8 w - -",
+          "fen": "8/8/8/8/8/1P6/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "b4",
+            "b6",
+            "c4",
+            "c6",
+            "c7",
+            "d6"
+          ],
+          "nbMoves": 8,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "pawn-5",
+          "originalExerciseId": 5,
+          "goalKey": "captureThenPromote",
+          "goal": "Capture, then promote!",
+          "sourceFen": "8/8/8/8/8/3P4/8/8 w - -",
+          "fen": "8/8/8/8/8/3P4/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "c4",
+            "b5",
+            "b6",
+            "d5",
+            "d7",
+            "e6",
+            "c8"
+          ],
+          "nbMoves": 8,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": {
+            "type": "whitePawnOnAnyOf",
+            "squares": [
+              "b5",
+              "d4",
+              "d6",
+              "c7"
+            ]
+          },
+          "cssClass": null
+        },
+        {
+          "id": "pawn-6",
+          "originalExerciseId": 6,
+          "goalKey": "useAllThePawns",
+          "goal": "Use all the pawns! No need to promote.",
+          "sourceFen": "8/8/8/8/8/P1PP3P/8/8 w - -",
+          "fen": "8/8/8/8/8/P1PP3P/8/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "b5",
+            "c5",
+            "d4",
+            "e5",
+            "g4"
+          ],
+          "nbMoves": 7,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        },
+        {
+          "id": "pawn-7",
+          "originalExerciseId": 7,
+          "goalKey": "aPawnOnTheSecondRank",
+          "goal": "A pawn on the second rank can move 2 squares at once!",
+          "sourceFen": "8/8/8/8/8/8/4P3/8 w - -",
+          "fen": "8/8/8/8/8/8/4P3/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "d6"
+          ],
+          "nbMoves": 3,
+          "hintMoves": [
+            "e2e4"
+          ],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": {
+            "type": "whitePawnOnAnyOf",
+            "squares": [
+              "e3"
+            ]
+          },
+          "cssClass": "highlight-2nd-rank"
+        },
+        {
+          "id": "pawn-8",
+          "originalExerciseId": 8,
+          "goalKey": "grabAllTheStarsNoNeedToPromote",
+          "goal": "Grab all the stars! No need to promote.",
+          "sourceFen": "8/8/8/8/8/8/2PPPP2/8 w - -",
+          "fen": "8/8/8/8/8/8/2PPPP2/8 w - - 0 1",
+          "sideToMove": "w",
+          "apples": [
+            "c5",
+            "d5",
+            "e5",
+            "f5",
+            "d3",
+            "e4"
+          ],
+          "nbMoves": 9,
+          "hintMoves": [],
+          "emptyApples": false,
+          "explainPromotion": false,
+          "failureRule": null,
+          "cssClass": null
+        }
+      ]
+    }
+  ],
+  "extractionReport": {
+    "categoriesProcessed": 6,
+    "exercisesByCategory": {
+      "rook": 6,
+      "bishop": 6,
+      "queen": 5,
+      "king": 3,
+      "knight": 6,
+      "pawn": 8
+    },
+    "totalExercises": 34
+  }
+}
