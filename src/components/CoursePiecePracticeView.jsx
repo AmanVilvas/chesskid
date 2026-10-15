@@ -111,6 +111,7 @@ export default function CoursePiecePracticeView({
   const completedCallbackLock = useRef(false);
 
   const completedChallenges = progress[activeId]?.completed || [];
+  const capturedStars = puzzle.targets.length - remainingStars.length;
 
   useEffect(() => {
     const nextId = findLesson(pieceId).id;
@@ -567,20 +568,27 @@ export default function CoursePiecePracticeView({
         {complete ? (
           <div className="learn-success">
             <strong>{lessonComplete ? 'Lesson complete!' : 'Perfect!'}</strong>
-            <div className="success-stars" aria-label="Three stars">★ ★ ★</div>
+            <div className="success-stars" aria-label={`${puzzle.targets.length} stars captured`}>
+              <Star size={25} fill="currentColor" aria-hidden="true" />
+              <span>{puzzle.targets.length}</span>
+            </div>
             <p>{lessonComplete ? lesson.complete : 'Every star collected. Great work!'}</p>
           </div>
         ) : (
           <div className="learn-card-instruction" aria-live="polite">
             <span>{status}</span>
             <small>Moves {moveCount} · target {puzzle.nbMoves}</small>
+            <div className="learn-star-count" aria-label={`${capturedStars} of ${puzzle.targets.length} stars captured`}>
+              <Star size={15} fill="currentColor" aria-hidden="true" />
+              <span>{capturedStars} / {puzzle.targets.length} captured</span>
+            </div>
           </div>
         )}
         <nav className="learn-challenge-numbers" aria-label="Choose a puzzle" style={{ gridTemplateColumns: `repeat(${lesson.puzzles.length}, minmax(0, 1fr))` }}>
           {lesson.puzzles.map((entry, index) => (
             <button
               key={entry.id}
-              aria-label={`Puzzle ${index + 1}: ${entry.title}`}
+              aria-label={`Puzzle ${index + 1}: ${entry.title}${completedChallenges.includes(index) ? ', completed' : ''}`}
               aria-current={challenge === index ? 'step' : undefined}
               className={`${challenge === index ? 'active' : ''} ${completedChallenges.includes(index) ? 'done' : ''}`}
               onClick={() => selectPuzzle(index)}

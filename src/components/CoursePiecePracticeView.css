@@ -79,16 +79,18 @@
 .learn-card-actions{margin-left:auto;align-self:flex-start;display:flex;gap:4px}
 .learn-card-action{width:30px;height:30px;display:grid;place-items:center;padding:0;border:0;border-radius:4px;background:transparent;color:#e8f5ff;cursor:pointer;transition:background-color 140ms ease}
 .learn-card-action:hover{background:#ffffff24}
-.learn-card-instruction{min-height:61px;display:grid;place-items:center;padding:10px 18px;border-bottom:1px solid #45433f;color:#d1ccc4;text-align:center;font-size:15px;line-height:1.45}
+.learn-card-instruction{min-height:82px;display:grid;place-items:center;gap:3px;padding:8px 18px;border-bottom:1px solid #45433f;color:#d1ccc4;text-align:center;font-size:15px;line-height:1.45}
+.learn-card-instruction small{font-size:12px;color:#aaa49b}
+.learn-star-count{display:flex;align-items:center;justify-content:center;gap:5px;color:#a9d46d;font-size:12px;line-height:1.2}
 .learn-challenge-numbers{height:48px;display:grid;grid-template-columns:repeat(5,1fr)}
-.learn-challenge-numbers button{border:0;border-right:1px solid #3f3d39;background:#242321;color:#298dd6;font-size:14px;cursor:pointer;transition:background-color 140ms ease,color 140ms ease}
+.learn-challenge-numbers button{display:grid;place-items:center;min-width:0;padding:0;border:0;border-right:1px solid #3f3d39;background:#242321;color:#298dd6;font-size:14px;cursor:pointer;transition:background-color 140ms ease,color 140ms ease}
 .learn-challenge-numbers button:last-child{border-right:0}
 .learn-challenge-numbers button:hover{background:#34322e}
 .learn-challenge-numbers button.active{background:#3598e8;color:white}
 .learn-challenge-numbers button.done:not(.active){color:#8dbd55}
 .learn-success{min-height:128px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#609b28;color:#fff;animation:learn-success-in 220ms ease-out both}
 .learn-success strong{font-size:30px;font-weight:400}
-.learn-success .success-stars{font-size:31px;letter-spacing:7px;color:#fff1ce;text-shadow:0 2px 4px #394a1b50;animation:learn-reward-stars 750ms ease-in-out both}
+.learn-success .success-stars{display:flex;align-items:center;justify-content:center;gap:7px;font-size:25px;color:#fff1ce;text-shadow:0 2px 4px #394a1b50;animation:learn-reward-stars 750ms ease-in-out both}
 .learn-success p{margin:0 0 10px;font-size:12px}
 
 @keyframes learn-star-idle{0%,100%{transform:rotate(-7deg) scale(1)}50%{transform:rotate(7deg) scale(1.08);filter:drop-shadow(0 5px 5px #e5a62877)}}
@@ -133,7 +135,7 @@
   .learn-challenge-card>header{min-height:82px}
   .learn-challenge-card>header h1{font-size:24px}
   .learn-card-piece{width:48px;height:48px}
-  .learn-card-instruction{min-height:48px;font-size:13px}
+  .learn-card-instruction{min-height:68px;font-size:13px}
   .learn-challenge-numbers{height:42px}
 }
 @media(prefers-reduced-motion:reduce){
@@ -163,7 +165,7 @@
 .learn-chess-shell.learn-compact .learn-card-piece{width:50px;height:50px}
 .learn-chess-shell.learn-compact .learn-challenge-card>header h1{font-size:clamp(18px,2vw,27px)}
 .learn-chess-shell.learn-compact .learn-challenge-card>header p{font-size:12px}
-.learn-chess-shell.learn-compact .learn-card-instruction{min-height:56px;padding:8px;font-size:12px}
+.learn-chess-shell.learn-compact .learn-card-instruction{min-height:68px;padding:8px;font-size:12px}
 .learn-chess-shell.learn-compact .learn-challenge-numbers{height:40px}
 
 @media(max-width:900px){
