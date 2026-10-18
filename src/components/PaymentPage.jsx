@@ -265,7 +265,7 @@ export const PaymentPage = ({ onSubscriptionSuccess }) => {
   };
 
   return (
-    <div className="w-full bg-[#FFFFFF] text-[#0D0D0D] font-sans antialiased selection:bg-[#FFBA07] selection:text-black">
+    <div className="academy-pricing w-full bg-[#FFFFFF] text-[#0D0D0D] font-sans antialiased selection:bg-[#FFBA07] selection:text-black">
       
       {/* ── TOP SUBTLE TRUST STRIP ──────────────────────────────────── */}
       <div className="bg-[#FAF9F6] border-b border-[#EAE6DF] py-1.5 px-4 text-center">
@@ -636,7 +636,7 @@ export const PaymentPage = ({ onSubscriptionSuccess }) => {
 
             <div>
               <div className="inline-flex items-center gap-1.5 bg-white/10 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-[#FFBA07] mb-6">
-                <span>The Rathish Promise</span>
+                <span>The Thinking Academy Promise</span>
               </div>
 
               <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-black leading-tight tracking-tight text-white mb-4">
@@ -1114,7 +1114,7 @@ export const PaymentPage = ({ onSubscriptionSuccess }) => {
                   ♞
                 </div>
                 <span className="font-bold text-xs tracking-wide text-gray-900 uppercase">
-                  Chess With Rathish
+                  The Thinking Academy
                 </span>
               </div>
               <p className="text-[11px] text-gray-500 leading-relaxed mb-2.5">
@@ -1169,7 +1169,7 @@ export const PaymentPage = ({ onSubscriptionSuccess }) => {
           </div>
 
           <div className="pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-400 gap-2">
-            <span>© {new Date().getFullYear()} Chess With Rathish. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} The Thinking Academy. All rights reserved.</span>
             <span>Chess as the Tool. Thinking as the Outcome.</span>
           </div>
         </div>

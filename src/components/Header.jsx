@@ -6,7 +6,7 @@ export const Header = () => {
   const [linksOpenMobile, setLinksOpenMobile] = useState(false);
 
   const headerLinks = [
-    { label: "How to use the Chess With Rathish Lesson Planner", href: "#how-to-use", icon: HelpCircle },
+    { label: "How to use The Thinking Academy lesson planner", href: "#how-to-use", icon: HelpCircle },
     { 
       label: "How to request 1:1 Trial Classes & Full Curriculum (From ₹999/mo)", 
       to: "/pricing", 

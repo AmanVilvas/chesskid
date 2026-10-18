@@ -1,163 +1,48 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { ArrowRight, Menu, X } from 'lucide-react';
 
 export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-
   const isCurriculum = location.pathname.startsWith('/curriculum') || location.pathname.startsWith('/lesson-planner');
-  const isPricing = location.pathname === '/pricing' || location.pathname === '/book-1-1';
+
+  const closeMenu = () => setMobileMenuOpen(false);
+  const links = [
+    { label: 'Home', to: '/#home' },
+    { label: 'Learn chess', to: '/#pieces' },
+    { label: 'Adventure map', to: '/#adventure-map' },
+    { label: 'Lesson planner', to: '/curriculum', active: isCurriculum },
+  ];
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-xs">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        
-        {/* Brand / Logo */}
-        <Link 
-          to="/" 
-          onClick={() => setMobileMenuOpen(false)}
-          className="flex items-center gap-2.5 hover:opacity-90 transition-opacity select-none"
-        >
-          <div className="w-9 h-9 bg-[#1a3d1a] rounded-md flex items-center justify-center text-white text-xl font-bold">
-            ♞
-          </div>
-          <div className="leading-tight">
-            <div className="text-[#1a3d1a] font-black text-[13px] tracking-wide uppercase">
-              Chess With Rathish
-            </div>
-            <div className="text-gray-400 text-[9px] tracking-wider font-medium">
-              I DON'T TEACH CHESS, I TEACH THINKING.
-            </div>
-          </div>
+    <header className="sticky top-0 z-50 border-b border-sky-100 bg-white/95 shadow-sm backdrop-blur-md">
+      <div className="mx-auto flex h-[66px] max-w-[1240px] items-center justify-between gap-4 px-4 sm:px-6">
+        <Link to="/" onClick={closeMenu} className="flex shrink-0 items-center gap-2.5 text-[#163858] no-underline">
+          <span className="grid h-10 w-10 place-items-center rounded-[14px] bg-[#e2f5ff] text-[27px] text-[#328bb9] shadow-[inset_0_-3px_#cbeafa]">♞</span>
+          <span className="leading-none"><span className="block text-[15px] font-black tracking-tight">The Thinking Academy</span><small className="mt-1 block text-[8px] font-extrabold tracking-[1.2px] text-[#8298a8]">CHESS · CURIOSITY · CONFIDENCE</small></span>
         </Link>
 
-        {/* Desktop Nav Links */}
-        <nav className="hidden md:flex items-center gap-8 text-[13px] font-semibold text-gray-700">
-          <Link 
-            to="/" 
-            className="hover:text-black transition-colors"
-          >
-            Program
-          </Link>
-          <Link 
-            to="/curriculum" 
-            className={`transition-colors py-1 ${
-              isCurriculum 
-                ? 'text-black font-bold border-b-2 border-black' 
-                : 'hover:text-black'
-            }`}
-          >
-            Curriculum
-          </Link>
-          <a href="/#how-it-works" className="hover:text-black transition-colors">
-            How It Works
-          </a>
-          <a href="/#about" className="hover:text-black transition-colors">
-            About
-          </a>
-          <a href="/#faqs" className="hover:text-black transition-colors">
-            FAQs
-          </a>
-          <a
-            href="https://learn.chesswithrathish.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-[#1a3d1a] transition-colors font-semibold"
-          >
-            Start Learning
-          </a>
+        <nav className="hidden items-center gap-5 lg:flex" aria-label="Main navigation">
+          {links.map((item) => item.to.startsWith('/#')
+            ? <a key={item.label} href={item.to} className="whitespace-nowrap text-[12px] font-extrabold text-[#536c81] no-underline transition-colors hover:text-[#2d8db5]">{item.label}</a>
+            : <Link key={item.label} to={item.to} className={`whitespace-nowrap text-[12px] font-extrabold no-underline transition-colors ${item.active ? 'text-[#2d8db5]' : 'text-[#536c81] hover:text-[#2d8db5]'}`}>{item.label}</Link>)}
         </nav>
 
-        {/* CTA Button & Mobile Hamburger */}
-        <div className="flex items-center gap-3">
-          <a
-            href="https://learn.chesswithrathish.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden md:inline-flex items-center justify-center font-bold text-xs sm:text-[13px] px-4 py-2 rounded-md bg-[#1a3d1a] hover:bg-[#2d5a2d] text-white shadow-2xs transition-all duration-200 cursor-pointer"
-          >
-            Start Learning →
-          </a>
-          <Link
-            to="/pricing"
-            className="hidden md:inline-flex items-center justify-center font-bold text-xs sm:text-[13px] px-4 py-2 rounded-md bg-[#FFBA07] hover:bg-[#FFC42B] text-[#0D0D0D] shadow-2xs transition-all duration-200 cursor-pointer"
-          >
-            Book a 1:1 Trial
-          </Link>
-
-          <button
-            className="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer flex flex-col gap-1"
-            onClick={() => setMobileMenuOpen((v) => !v)}
-            aria-label="Toggle navigation menu"
-          >
-            <span className="block w-5 h-0.5 bg-current rounded-full" />
-            <span className="block w-5 h-0.5 bg-current rounded-full" />
-            <span className="block w-5 h-0.5 bg-current rounded-full" />
-          </button>
+        <div className="flex shrink-0 items-center gap-2.5">
+          <Link to="/curriculum?view=player&unit=1&lecture=u1-l2&puzzle=1" className="hidden min-h-[40px] items-center gap-2 rounded-[13px] bg-[#55c810] px-4 text-[11px] font-black text-white no-underline shadow-[0_4px_0_#38a509] transition hover:-translate-y-0.5 hover:bg-[#49b90c] sm:inline-flex">Start learning <ArrowRight size={15}/></Link>
+          <Link to="/pricing" className="hidden min-h-[40px] items-center rounded-[13px] bg-[#ffcf4a] px-4 text-[11px] font-black text-[#4b3c0a] no-underline transition hover:bg-[#ffd96c] md:inline-flex">Book a 1:1 trial</Link>
+          <button className="grid h-10 w-10 place-items-center rounded-xl border border-sky-100 bg-white text-[#315c7a] lg:hidden" type="button" onClick={() => setMobileMenuOpen((value) => !value)} aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={mobileMenuOpen}>{mobileMenuOpen ? <X size={20}/> : <Menu size={20}/>}</button>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-2 shadow-lg animate-in slide-in-from-top-1 duration-150">
-          <Link 
-            to="/" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-gray-700 font-semibold text-sm py-1.5 hover:text-[#1a3d1a]"
-          >
-            Program
-          </Link>
-          <Link 
-            to="/curriculum" 
-            onClick={() => setMobileMenuOpen(false)}
-            className={`block font-semibold text-sm py-1.5 ${
-              isCurriculum ? 'text-[#1a3d1a] font-bold' : 'text-gray-700 hover:text-[#1a3d1a]'
-            }`}
-          >
-            Lesson Planner
-          </Link>
-          <a 
-            href="/#how-it-works" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-gray-700 font-semibold text-sm py-1.5 hover:text-[#1a3d1a]"
-          >
-            How It Works
-          </a>
-          <a 
-            href="/#about" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-gray-700 font-semibold text-sm py-1.5 hover:text-[#1a3d1a]"
-          >
-            About
-          </a>
-          <a 
-            href="/#faqs" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-gray-700 font-semibold text-sm py-1.5 hover:text-[#1a3d1a]"
-          >
-            FAQs
-          </a>
-          
-          <div className="pt-2 border-t border-gray-100 space-y-2">
-            <a
-              href="https://learn.chesswithrathish.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 bg-[#1a3d1a] hover:bg-[#2d5a2d] text-white font-bold text-sm py-2.5 rounded-lg transition-colors text-center"
-            >
-              Start Learning →
-            </a>
-            <Link
-              to="/pricing"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 bg-[#FFBA07] hover:bg-[#FFC42B] text-[#0D0D0D] font-bold text-sm py-2.5 rounded-lg transition-colors text-center"
-            >
-              Book a 1:1 Trial
-            </Link>
-          </div>
-        </div>
-      )}
+      {mobileMenuOpen && <nav className="grid gap-1 border-t border-sky-100 bg-white px-4 py-3 shadow-lg lg:hidden" aria-label="Mobile navigation">
+        {links.map((item) => item.to.startsWith('/#')
+          ? <a key={item.label} href={item.to} onClick={closeMenu} className="flex min-h-[43px] items-center rounded-lg px-3 text-[13px] font-extrabold text-[#536c81] no-underline hover:bg-sky-50">{item.label}</a>
+          : <Link key={item.label} to={item.to} onClick={closeMenu} className={`flex min-h-[43px] items-center rounded-lg px-3 text-[13px] font-extrabold no-underline ${item.active ? 'bg-sky-50 text-[#2d8db5]' : 'text-[#536c81] hover:bg-sky-50'}`}>{item.label}</Link>)}
+        <Link to="/curriculum?view=player&unit=1&lecture=u1-l2&puzzle=1" onClick={closeMenu} className="mt-1 inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#55c810] text-[12px] font-black text-white no-underline">Start learning <ArrowRight size={15}/></Link>
+        <Link to="/pricing" onClick={closeMenu} className="inline-flex min-h-[42px] items-center justify-center rounded-xl bg-[#fff3cf] text-[12px] font-black text-[#6e5817] no-underline">Book a 1:1 trial</Link>
+      </nav>}
     </header>
   );
 };

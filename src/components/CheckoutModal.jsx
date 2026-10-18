@@ -79,7 +79,7 @@ export const CheckoutModal = ({ plan, billingCycle, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
+    <div className="academy-checkout fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
       <div className="relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-gray-100 overflow-hidden my-auto max-h-[95vh] flex flex-col">
         
         {/* Modal Header Bar */}
@@ -90,7 +90,7 @@ export const CheckoutModal = ({ plan, billingCycle, onClose, onSuccess }) => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-white">ChessKid Secure Checkout</h3>
+                <h3 className="text-base font-bold text-white">The Thinking Academy · Secure Checkout</h3>
                 <span className="bg-[#489f1f]/80 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded text-white flex items-center gap-1">
                   <Lock className="w-2.5 h-2.5" /> 256-Bit SSL
                 </span>
@@ -406,7 +406,7 @@ export const CheckoutModal = ({ plan, billingCycle, onClose, onSuccess }) => {
                     {/* Simulated Credit Card Preview */}
                     <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-emerald-950 text-white p-3.5 rounded-xl shadow-md space-y-2">
                       <div className="flex justify-between items-center text-xs">
-                        <span className="font-semibold tracking-wider text-sky-300">ChessKid SafePay</span>
+                        <span className="font-semibold tracking-wider text-sky-300">Thinking Academy SafePay</span>
                         <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded font-mono">DEBIT / CREDIT</span>
                       </div>
                       <div className="font-mono text-sm tracking-widest pt-1">
@@ -532,7 +532,7 @@ export const CheckoutModal = ({ plan, billingCycle, onClose, onSuccess }) => {
                   <span>Pay ₹{total.toLocaleString('en-IN')} & Activate Now</span>
                 </button>
                 <p className="text-[10px] text-center text-gray-500">
-                  By clicking Pay, you agree to ChessKid Terms of Service. Safe & encrypted by 256-bit SSL.
+                  By clicking Pay, you agree to The Thinking Academy Terms of Service. Safe & encrypted by 256-bit SSL.
                 </p>
               </div>
 

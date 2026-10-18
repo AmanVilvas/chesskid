@@ -1,0 +1,91 @@
+/* Shared visual language for every route in The Thinking Academy. */
+body{background:#f6fbff;color:#173653}
+button,a{touch-action:manipulation}
+
+.academy-overview{background:#f6fbff!important;color:#173653!important}
+.academy-overview-hero{background:linear-gradient(118deg,#328fda 0%,#55b7e9 58%,#79d5e8 100%)!important}
+.academy-overview .academy-overview-footer{background:#123b5c!important;color:#eaf8ff!important}
+.academy-overview [class~="text-[#1a3d1a]"],
+.academy-overview [class~="text-[#2d5a2d]"]{color:#173c5c!important}
+.academy-overview [class~="bg-[#1a3d1a]"]{background-color:#328fbe!important}
+.academy-overview [class~="border-[#1a3d1a]"]{border-color:#328fbe!important}
+.academy-overview [class~="bg-[#f0f4e8]"],
+.academy-overview [class~="bg-[#f7f9f4]"],
+.academy-overview [class~="bg-[#f7fbf4]"]{background-color:#eff9fc!important}
+.academy-overview [class~="border-[#d6ecd0]"],
+.academy-overview [class~="border-[#d4e4c2]"]{border-color:#d8eaf2!important}
+.academy-overview .shadow-xs,.academy-overview .shadow-sm{box-shadow:0 8px 24px #22567912!important}
+.academy-overview footer a:hover{color:#fff!important}
+
+.course-player{background:#f5faff!important;color:#173653!important}
+.course-player .course-player-header{background:#123b5c!important;border-bottom:1px solid #ffffff20!important;box-shadow:0 3px 14px #163a5518!important}
+.course-player-header .course-mode-switch{background:#0f304c;border-color:#ffffff32}
+.course-player-header .course-mode-switch button[aria-pressed="true"]{background:#d6f5a8;color:#19421f}
+.course-player-header .course-step-nav button,.course-player-header .course-show-content{border-color:#ffffff3d;background:#ffffff12;color:#fff}
+.course-player-header .course-step-nav button:hover:not(:disabled),.course-player-header .course-show-content:hover{background:#ffffff24}
+.course-player .course-player-body{background:#f5faff}
+.course-player .course-player-main{background:#f5faff}
+.course-player .course-content-sidebar{border-left:1px solid #d8e8f0;background:#fff;box-shadow:-8px 0 24px #1d48600a}
+.course-player .course-split-balance{border-color:#d8e8f0;background:#fff;color:#536f83}
+.course-player .course-split-balance input{accent-color:#4cae1a}
+.course-player .course-workspace.course-mode-split{background:#f0f9fd}
+.course-player .course-workspace.course-mode-split .course-video-pane{background:#193b51}
+.course-player .course-workspace.course-mode-split .course-practice-pane{border-color:#d7e8f0}
+.course-player .course-tab-content{max-width:1180px;padding:24px clamp(16px,3vw,38px) 50px!important}
+.course-player .course-player-header a:focus-visible,.course-player button:focus-visible{outline-color:#ffcf4a}
+
+.learn-chess-shell{
+  background:radial-gradient(ellipse at 55% 42%,#f2fbff,#e4f4fb 78%)!important;
+  color:#244764!important;
+  font-family:'Nunito','Plus Jakarta Sans',sans-serif!important;
+}
+.learn-menu-head{color:#607f95!important}
+.learn-menu-mark{border-radius:14px;background:#dff2fc!important;color:#3787b2!important}
+.learn-menu-title{border-radius:14px 14px 0 0;background:#328fbe!important;color:#fff!important;font-weight:900}
+.learn-piece-row{background:#fff!important;border-color:#dfeaf0!important;color:#526d83!important}
+.learn-piece-row:hover,.learn-piece-row.selected{background:#edf8fd!important;color:#1e5c7b!important}
+.learn-piece-submenu{background:#f5fbfe!important;border-color:#e1edf3!important}
+.learn-piece-submenu button{color:#617b8e!important}
+.learn-piece-submenu button:hover,.learn-piece-submenu button.selected{border-radius:8px;background:#e3f3fa!important;color:#205779!important}
+.learn-menu-categories span{border-color:#d8e6ed!important;color:#6b8494!important}
+.learn-board-frame{box-shadow:0 16px 38px #1e49631c!important}
+.learn-challenge-card{border:1px solid #d8e8f0!important;border-radius:20px!important;background:#fff!important;box-shadow:0 14px 34px #18486616!important}
+.learn-challenge-card>header{background:linear-gradient(120deg,#328fda,#48aee3)!important}
+.learn-card-instruction{border-color:#e8eef2!important;color:#3e5b71!important}
+.learn-card-instruction small{color:#8093a0!important}
+.learn-star-count{color:#6f9e2c!important}
+.learn-challenge-numbers{border-top:1px solid #e6edf1}
+.learn-challenge-numbers button{border-color:#e3eaee!important;background:#fff!important;color:#3186b5!important;font-weight:900}
+.learn-challenge-numbers button:hover{background:#eef8fc!important}
+.learn-challenge-numbers button.active{background:#328fbe!important;color:#fff!important}
+.learn-challenge-numbers button.done:not(.active){color:#6b9f2a!important}
+.learn-success{background:linear-gradient(130deg,#58a92e,#71bd42)!important}
+.learn-promotion-dialog{border-color:#d8e8f0!important;border-radius:16px!important;background:#fff!important;color:#183b58!important;box-shadow:0 16px 38px #13364e30!important}
+.learn-promotion-dialog button{border-color:#dceaf0!important;background:#f4fbfe!important}
+.learn-promotion-dialog button:hover{background:#328fbe!important}
+
+.academy-pricing{background:#f6fbff!important;color:#163650!important}
+.academy-pricing>section:first-of-type{background:linear-gradient(125deg,#e5f7ff,#f5fcff 58%,#fff7dc)!important;border-color:#dcecf3!important}
+.academy-pricing [class~="bg-[#FAF9F6]"],
+.academy-pricing [class~="bg-[#FAF9F7]"],
+.academy-pricing [class~="bg-[#FAFAF8]"]{background-color:#f2faff!important}
+.academy-pricing [class~="bg-[#FFBA07]"]{background-color:#55c810!important;color:#fff!important}
+.academy-pricing [class~="hover:bg-[#FFA800]"]:hover{background-color:#48b50a!important}
+.academy-pricing [class~="text-[#0D0D0D]"],
+.academy-pricing [class~="text-gray-900"]{color:#173653!important}
+.academy-pricing [class~="border-[#EAE6DF]"],
+.academy-pricing [class~="border-[#E5E0D8]"],
+.academy-pricing [class~="border-[#D8D3C8]"]{border-color:#dbeaf1!important}
+.academy-pricing footer{background:#123b5c!important;color:#e8f7ff!important;border-color:#123b5c!important}
+.academy-pricing footer [class~="text-gray-900"],.academy-pricing footer [class~="text-gray-800"]{color:#fff!important}
+.academy-pricing footer [class~="text-gray-500"],.academy-pricing footer [class~="text-gray-600"],.academy-pricing footer [class~="text-gray-400"]{color:#c2d8e5!important}
+.academy-checkout>div:first-child>div:first-child{background:linear-gradient(115deg,#1b6698,#328fbe)!important}
+.academy-checkout>div:first-child>div:first-child [class~="bg-[#489f1f]"],
+.academy-checkout>div:first-child>div:first-child [class~="bg-[#489f1f]/80"]{background-color:#56b93b!important}
+
+@media(max-width:700px){
+  .course-player .course-tab-content{padding:18px 14px 34px!important}
+  .course-player .course-sidebar-backdrop{background:#11385277}
+  .learn-challenge-card{border-radius:17px!important}
+}
+@media(prefers-reduced-motion:reduce){.academy-overview *, .academy-pricing *, .course-player *{scroll-behavior:auto!important}}

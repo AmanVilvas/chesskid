@@ -39,18 +39,18 @@ export const UdemyCourseOverview = ({ onStartCourse, onSelectLecture }) => {
   const allExpanded = Object.keys(expandedSections).length === udemySections.length;
 
   return (
-    <div className="min-h-screen bg-[#edf3f8] text-[#333] antialiased" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+    <div className="academy-overview min-h-screen bg-[#edf3f8] text-[#333] antialiased" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
       <Navbar />
 
       {/* Hero Banner — same dark green as rest of site */}
-      <div className="bg-[#1a3d1a]">
+      <div className="academy-overview-hero bg-[#1a3d1a]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
           
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs text-white/60 font-medium mb-4 flex-wrap">
             <Link to="/" className="hover:text-white/90 transition-colors font-semibold text-white/80">Home</Link>
             <span className="text-white/30">/</span>
-            <span className="text-white/60">Chess With Rathish</span>
+            <span className="text-white/60">The Thinking Academy</span>
             <span className="text-white/30">/</span>
             <span className="text-white font-semibold">Lesson Planner — Beginner</span>
           </div>
@@ -366,9 +366,9 @@ export const UdemyCourseOverview = ({ onStartCourse, onSelectLecture }) => {
       </div>
 
       {/* Footer — same as rest of site */}
-      <footer className="bg-[#1a3d1a] text-white/80 py-5 text-center text-xs mt-auto">
+      <footer className="academy-overview-footer bg-[#1a3d1a] text-white/80 py-5 text-center text-xs mt-auto">
         <div className="max-w-7xl mx-auto px-4">
-          <p>© Chess With Rathish — All Rights Reserved. I don't teach chess, I teach thinking.</p>
+          <p>© The Thinking Academy — Chess as the tool. Thinking as the outcome.</p>
         </div>
       </footer>
     </div>

@@ -3,7 +3,7 @@ import { reviews as baseReviews } from './pricingData';
 
 export const udemyCourseMeta = {
   id: "chess-beginner-11units",
-  title: "Chess With Rathish — Beginner Curriculum & Lesson Planner",
+  title: "The Thinking Academy — Beginner Chess Curriculum",
   shortTitle: "Building Chess Thinkers from Scratch (Ages 4–6)",
   subtitle: "Master what sits under the hood of chess thinking: spatial reasoning, pattern recognition, and problem solving through structured 1:1 guided discovery.",
   headline: "A complete step-by-step 11-unit curriculum designed for young minds aged 4–6. Small moves, big thinking.",
@@ -59,7 +59,7 @@ export const udemyCourseMeta = {
     "An excited young learner and a supportive parent or coach ready to explore together."
   ],
   descriptionParagraphs: [
-    "Welcome to the Chess With Rathish Beginner Lesson Planner — a curriculum crafted specifically for the curious, sponge-like minds of 4-to-6-year-olds.",
+    "Welcome to The Thinking Academy Beginner Chess Curriculum — a learning path crafted for curious young minds and the adults who support them.",
     "Traditional chess coaching often throws complex opening theory and dry notation at children before they've even grasped spatial relationships. Here, we believe: 'I don't teach chess, I teach thinking.'",
     "Each unit introduces a single piece or tactical concept through engaging stories, tactile classroom activities, guided discovery questions, and mini-games. From tracing the orthogonal steps of the Rook to mastering the CPR defense rule and the majestic King & Queen 'Kiss of Death' checkmate, your child will build deep confidence and strategic foresight.",
     "Designed in collaboration with WFM Elizabeth Spiegel, this written curriculum provides parents and coaches with structured pedagogical guidelines, discussion prompts, and hands-on worksheets for every single milestone."

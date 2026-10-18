@@ -1,6 +1,6 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Check, RotateCcw, Star, Volume2, VolumeX } from 'lucide-react';
+import { Check, RotateCcw, Star, Volume2, VolumeX, Zap } from 'lucide-react';
 import { CourseChessPiece } from './CourseChessPiece';
 import {
   applyCoursePieceMove,
@@ -9,6 +9,7 @@ import {
   didCoursePieceMoveFail,
   getCoursePieceLegalMoves,
 } from '../data/coursePiecePracticeData';
+import { recordLearningActivity } from '../data/adventureProgress';
 import './CoursePiecePracticeView.css';
 
 const files = 'abcdefgh';
@@ -92,6 +93,7 @@ export default function CoursePiecePracticeView({
   const [showHints, setShowHints] = useState(true);
   const [pendingPromotion, setPendingPromotion] = useState(null);
   const [complete, setComplete] = useState(false);
+  const [rewardEarned, setRewardEarned] = useState(false);
   const [lessonComplete, setLessonComplete] = useState(false);
   const [status, setStatus] = useState(puzzle.prompt);
   const [progress, setProgress] = useState(readProgress);
@@ -139,6 +141,7 @@ export default function CoursePiecePracticeView({
     setShowHints(true);
     setPendingPromotion(null);
     setComplete(false);
+    setRewardEarned(false);
     setLessonComplete(false);
     setDrag(null);
     setMotion(null);
@@ -184,9 +187,12 @@ export default function CoursePiecePracticeView({
 
     const stored = readProgress();
     const pieceProgress = stored[activeId] || { completed: [], stars: 0 };
-    if (!pieceProgress.completed.includes(challenge)) {
+    const firstCompletion = !pieceProgress.completed.includes(challenge);
+    setRewardEarned(firstCompletion);
+    if (firstCompletion) {
       pieceProgress.completed = [...pieceProgress.completed, challenge].sort((a, b) => a - b);
       pieceProgress.stars = pieceProgress.completed.length;
+      recordLearningActivity();
     }
     stored[activeId] = pieceProgress;
     localStorage.setItem(progressKey, JSON.stringify(stored));
@@ -433,6 +439,7 @@ export default function CoursePiecePracticeView({
     setShowHints(true);
     setPendingPromotion(null);
     setComplete(false);
+    setRewardEarned(false);
     setLessonComplete(false);
     setDrag(null);
     setMotion(null);
@@ -572,6 +579,7 @@ export default function CoursePiecePracticeView({
               <Star size={25} fill="currentColor" aria-hidden="true" />
               <span>{puzzle.targets.length}</span>
             </div>
+            <div className={`learn-xp-reward ${rewardEarned ? 'earned' : ''}`}><Zap size={14} fill="currentColor"/><span>{rewardEarned ? '+25 XP earned' : 'Practice makes progress'}</span></div>
             <p>{lessonComplete ? lesson.complete : 'Every star collected. Great work!'}</p>
           </div>
         ) : (

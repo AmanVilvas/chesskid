@@ -29,6 +29,7 @@ import {
 import { Link, useSearchParams } from 'react-router-dom';
 import CoursePiecePracticeView from './CoursePiecePracticeView';
 import { coursePiecePracticeLessons } from '../data/coursePiecePracticeData';
+import { recordLearningActivity } from '../data/adventureProgress';
 import './CoursePlayer.css';
 
 export const UdemyCoursePlayer = ({ 
@@ -166,10 +167,8 @@ export const UdemyCoursePlayer = ({
   // Toggle checkbox completion
   const toggleComplete = (lectureId, e) => {
     e?.stopPropagation();
-    setCompletedItems((prev) => ({
-      ...prev,
-      [lectureId]: !prev[lectureId]
-    }));
+    if (!completedItems[lectureId]) recordLearningActivity();
+    setCompletedItems((prev) => ({ ...prev, [lectureId]: !prev[lectureId] }));
   };
 
   // Total course completion percentage
@@ -210,13 +209,13 @@ export const UdemyCoursePlayer = ({
           <Link
             to="/"
             className="flex items-center gap-2 hover:opacity-90 transition-opacity flex-shrink-0"
-            title="Go to Chess With Rathish Home"
+            title="Go to The Thinking Academy home"
           >
             <div className="w-8 h-8 rounded bg-white text-[#1a3d1a] flex items-center justify-center font-black text-lg shadow-sm">
               ♞
             </div>
             <span className="font-black text-sm tracking-tight hidden md:inline">
-              Chess With Rathish
+              The Thinking Academy
             </span>
           </Link>
 
