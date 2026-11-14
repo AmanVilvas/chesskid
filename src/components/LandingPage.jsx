@@ -3,15 +3,16 @@ import { ParentHome } from '../parent/ParentHome';
 import { KidsLanding } from '../landing/KidsLanding';
 import { useAuth } from './AuthContext';
 import { useExperienceMode } from './ExperienceModeContext';
-import { defaultCourse, findCourse } from '../courses/courseCatalog';
+import { findCourse } from '../courses/courseCatalog';
+import { AcademyHome } from '../home/AcademyHome';
 
-// Home: the featured course's landing page. A signed-in grown-up who switched to the
-// parent view sees the parent dashboard for Course 1.
+// Home: the academy's main landing page. A signed-in grown-up in the parent view
+// sees the parent dashboard for Course 1 instead.
 export function LandingPage() {
   const { user } = useAuth();
   const { mode } = useExperienceMode();
   if (user && mode === 'parent') return <ParentHome />;
-  return <KidsLanding course={defaultCourse()} />;
+  return <AcademyHome />;
 }
 
 // Each course has its own landing page at /courses/:slug.
