@@ -1,34 +1,44 @@
 import 'dotenv/config';
 import path from 'node:path';
 
+// On Vercel the API runs as a serverless function behind Vercel's proxy (see api/index.js).
+const onVercel = Boolean(process.env.VERCEL);
 const production = process.env.NODE_ENV === 'production';
 const port = Number(process.env.PORT || 3001);
 const sessionTtlHours = Number(process.env.SESSION_TTL_HOURS || 12);
-const configuredOrigin = process.env.APP_ORIGIN || 'http://localhost:5173';
-const appOriginUrl = new URL(configuredOrigin);
-const databaseSsl = process.env.DATABASE_SSL === 'true';
+// APP_ORIGIN may list several site addresses separated by commas; the first is the main one.
+const configuredOrigins = (process.env.APP_ORIGIN || 'http://localhost:5173').split(',').map((value) => value.trim()).filter(Boolean);
+const appOriginUrls = configuredOrigins.map((value) => new URL(value));
+// Vercel's Postgres (Neon) integration provides POSTGRES_URL; DATABASE_URL is preferred when both exist.
+const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL || '';
+const databaseSsl = process.env.DATABASE_SSL ? process.env.DATABASE_SSL === 'true' : onVercel;
 const configuredCoursePricePaise = process.env.BEGINNER_COURSE_PRICE_PAISE ?? process.env.BEGINNER_COURSE_PRICE_MINOR;
 const coursePriceMinor = Number(configuredCoursePricePaise || 0);
+const razorpayConfigured = Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET && process.env.RAZORPAY_WEBHOOK_SECRET);
 
 if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT must be a valid TCP port');
 if (!Number.isFinite(sessionTtlHours) || sessionTtlHours < 1 || sessionTtlHours > 24 * 30) throw new Error('SESSION_TTL_HOURS must be between 1 and 720');
-if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is required');
-if (production && (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET || !process.env.RAZORPAY_WEBHOOK_SECRET)) throw new Error('Razorpay credentials and webhook secret must be configured before production starts');
-if (production && appOriginUrl.protocol !== 'https:') throw new Error('APP_ORIGIN must use HTTPS in production');
+if (!databaseUrl) throw new Error('DATABASE_URL is required');
+if (production && appOriginUrls.some((url) => url.protocol !== 'https:')) throw new Error('APP_ORIGIN must use HTTPS in production');
 if (production && !databaseSsl) throw new Error('DATABASE_SSL=true is required in production');
 if (production && (!configuredCoursePricePaise || coursePriceMinor <= 0)) throw new Error('A positive course price in paise must be configured before production starts');
+// Accounts work without Razorpay; checkout and the webhook answer "not configured" until keys are set.
+if (production && !razorpayConfigured) console.warn('Razorpay is not configured: paid checkout is disabled until RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET and RAZORPAY_WEBHOOK_SECRET are set.');
 
-const appOrigin = appOriginUrl.origin;
-const assetRoot = path.resolve(process.env.PRIVATE_ASSET_ROOT || './private-assets');
+const appOrigin = appOriginUrls[0].origin;
+const allowedOrigins = new Set(appOriginUrls.map((url) => url.origin));
+// Serverless file systems are read-only except /tmp, and /tmp is not durable.
+const assetRoot = path.resolve(process.env.PRIVATE_ASSET_ROOT || (onVercel ? '/tmp/private-assets' : './private-assets'));
 
 export const config = Object.freeze({
   production,
   port,
   appOrigin,
   sessionTtlHours,
-  databaseUrl: process.env.DATABASE_URL,
+  databaseUrl,
   databaseSsl,
-  trustProxy: process.env.TRUST_PROXY === '1',
+  // Vercel sits exactly one proxy hop in front of the function, so client IPs (for rate limits) come from it.
+  trustProxy: process.env.TRUST_PROXY ? process.env.TRUST_PROXY === '1' : onVercel,
   razorpayKeyId: process.env.RAZORPAY_KEY_ID || '',
   razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET || '',
   razorpayWebhookSecret: process.env.RAZORPAY_WEBHOOK_SECRET || '',
@@ -38,7 +48,7 @@ export const config = Object.freeze({
 });
 
 export function isAllowedOrigin(origin) {
-  if (origin === config.appOrigin) return true;
+  if (allowedOrigins.has(origin)) return true;
   if (!config.production && typeof origin === 'string') {
     try {
       const url = new URL(origin);
