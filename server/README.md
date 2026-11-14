@@ -44,4 +44,16 @@ Uploads currently use the API's private local asset directory. This works for lo
 
 Set `NODE_ENV=production`, a strong database URL over TLS (`DATABASE_SSL=true`), Razorpay live credentials and webhook secret, a positive course price in paise, the exact HTTPS `APP_ORIGIN`, and `TRUST_PROXY=1` only behind one trusted proxy. Terminate TLS at the edge. Keep secrets in the deployment secret manager. Configure persistent private object storage for media, backups, monitoring, and email verification/password reset before public launch. The built-in rate limiter is process-local; use a shared Redis-backed store when running multiple API instances. Set appropriate database network restrictions and regular backups.
 
+### Deploying on Vercel
+
+The site and the API deploy together. `api/index.js` runs this Express app as a serverless function, `vercel.json` sends every `/api/*` request to it, and `npm run vercel-build` runs the migrations and course seed before building the site.
+
+1. In the Vercel project, open **Storage** and connect a Postgres database (for example Neon). It adds `DATABASE_URL` / `POSTGRES_URL`.
+2. In **Settings → Environment Variables** (Production), set:
+   - `NODE_ENV=production`
+   - `APP_ORIGIN=https://your-site.vercel.app` (comma-separate extra domains, e.g. a custom domain)
+   - `BEGINNER_COURSE_PRICE_PAISE` (a positive price, e.g. `499900` for ₹4,999)
+   - `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` when you are ready to take payments (accounts work without them; checkout says "not configured")
+3. Redeploy. On Vercel, SSL to the database and `TRUST_PROXY` default to on, and uploads go to `/tmp`, which is **not** durable: use object storage for lesson videos before relying on uploads.
+
 Current authentication does not yet include email verification, password reset, or account deletion workflows; add these before opening registration to a broad public audience.
