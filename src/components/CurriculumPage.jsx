@@ -1,9 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { UdemyCourseOverview } from './UdemyCourseOverview';
-import { UdemyCoursePlayer } from './UdemyCoursePlayer';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { LockKeyhole, ShieldCheck } from 'lucide-react';
+import { ParentOverview } from '../parent/ParentOverview';
+import { ParentPlayer } from '../parent/ParentPlayer';
+import '../parent/parent.css';
+import { useAuth } from './AuthContext';
+import { apiRequest } from '../data/apiClient';
 
-export const CurriculumPage = ({ activeSubscription }) => {
+function CourseAccessGate({ children }) {
+  const { user, loading: authLoading } = useAuth();
+  const location = useLocation();
+  const [state, setState] = useState({ userId: null, enrolled: false, error: '' });
+  useEffect(() => {
+    let mounted = true;
+    if (authLoading) return () => { mounted = false; };
+    if (!user) return () => { mounted = false; };
+    apiRequest('/api/courses/beginner-chess/access')
+      .then((result) => { if (mounted) setState({ userId: user.id, enrolled: result.enrolled, error: '' }); })
+      .catch((error) => { if (mounted) setState({ userId: user.id, enrolled: false, error: error.message }); });
+    return () => { mounted = false; };
+  }, [user, authLoading]);
+
+  if (authLoading || (user && state.userId !== user.id)) {
+    return <div className="pp-root pp-gate"><p className="pp-kicker">Checking your course access…</p></div>;
+  }
+  if (state.enrolled) return children;
+  return (
+    <div className="pp-root">
+      <main className="pp-gate">
+        <section className="pp-gate-card">
+          <span className="pp-kicker"><LockKeyhole size={13} style={{ verticalAlign: '-2px' }} /> Protected course area</span>
+          <h1 className="pp-serif">{user ? 'Enroll to continue learning' : 'Sign in to access your course'}</h1>
+          <p>Course lessons and practice unlock for your account after enrollment. This check is confirmed securely with the academy.</p>
+          {state.error && <p role="alert" className="pp-gate-error">{state.error}</p>}
+          <div className="pp-gate-actions">
+            {user
+              ? <Link to="/courses" className="pp-btn pp-btn-primary pp-btn-lg">View course enrollment</Link>
+              : <>
+                  <Link to="/login" state={{ from: `${location.pathname}${location.search}` }} className="pp-btn pp-btn-primary pp-btn-lg">Sign in</Link>
+                  <Link to="/signup" state={{ from: `${location.pathname}${location.search}` }} className="pp-btn pp-btn-ghost pp-btn-lg">Create account</Link>
+                </>}
+            <span className="pp-kicker" style={{ marginTop: 8 }}><ShieldCheck size={13} style={{ verticalAlign: '-2px' }} /> Enrollment is verified by the course server</span>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export const CurriculumPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Read URL query parameters
@@ -50,17 +95,15 @@ export const CurriculumPage = ({ activeSubscription }) => {
   return (
     <div>
       {viewMode === 'player' ? (
-        <UdemyCoursePlayer
+        <CourseAccessGate>
+        <ParentPlayer
           initialUnitId={selectedUnitId}
           initialLectureId={selectedLectureId}
           onBackToOverview={handleBackToOverview}
-          activeSubscription={activeSubscription}
         />
+        </CourseAccessGate>
       ) : (
-        <UdemyCourseOverview
-          onStartCourse={handleStartCourse}
-          onSelectLecture={(unitId, lectureId) => handleStartCourse(unitId, lectureId)}
-        />
+        <ParentOverview onStartCourse={handleStartCourse} />
       )}
     </div>
   );

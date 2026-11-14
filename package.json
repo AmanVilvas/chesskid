@@ -5,6 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "npm --prefix server run dev",
+    "api:migrate": "npm --prefix server run migrate",
+    "api:seed": "npm --prefix server run seed",
+    "api:make-admin": "npm --prefix server run make-admin",
     "build": "vite build",
     "test": "node --test",
     "extract:lichess-learn": "node scripts/extractLichessLearn.mjs",
@@ -14,6 +18,7 @@
   "dependencies": {
     "chess.js": "^1.4.0",
     "lucide-react": "^1.44.0",
+    "motion": "^14.13.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.4"

@@ -1,0 +1,47 @@
+/* Sign in / sign up — same playful language as the kids area. */
+.au-page { position: relative; display: flex; flex-direction: column; align-items: center; min-height: 100vh; min-height: 100dvh; padding: 0 20px; overflow-x: clip; background: #fff; }
+.au-center { justify-content: center; gap: 14px; padding-bottom: 0; }
+.au-loading { color: var(--muted); font-size: 18px; }
+.au-top { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1100px; padding: 22px 0 6px; }
+.au-close { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; color: #AEB3B9 !important; }
+.au-close:hover { background: var(--soft); color: var(--muted) !important; }
+.au-switch-top { min-height: 48px; padding: 0 20px; font-size: 15px; }
+
+.au-column { display: grid; justify-items: center; width: min(100%, 400px); margin-top: 6px; text-align: center; }
+.au-pip { position: relative; display: grid; justify-items: center; gap: 4px; margin-bottom: 6px; }
+.au-pip-line { position: relative; padding: 9px 14px; border-radius: 16px; background: #fff; color: var(--ink); font-size: 16px; font-weight: 600; box-shadow: 0 0 0 2px var(--line) inset; }
+.au-pip-line::after { content: ''; position: absolute; left: 50%; bottom: -8px; width: 14px; height: 14px; background: #fff; border-right: 2px solid var(--line); border-bottom: 2px solid var(--line); transform: translateX(-50%) rotate(45deg); }
+.au-column h1 { font-size: 28px; line-height: 1.2; color: #3E4247; }
+.au-sub { margin-top: 8px !important; color: var(--muted); font-size: 17px; line-height: 1.45; }
+.au-sub b { color: var(--ink); }
+
+.au-form { display: grid; gap: 14px; width: 100%; margin-top: 22px; }
+.au-fields { display: grid; border-radius: 16px; background: #F7F7F7; box-shadow: 0 0 0 2px var(--line) inset; overflow: hidden; }
+.au-field { position: relative; display: block; }
+.au-field + .au-field { border-top: 2px solid var(--line); }
+.au-field input { width: 100%; min-height: 58px; padding: 0 18px; border: 0; background: transparent; font: inherit; font-size: 18px; color: var(--ink); outline: none; }
+.au-field input::placeholder { color: #AFB4BA; }
+.au-field:focus-within { background: #fff; box-shadow: 0 0 0 2px var(--blue) inset; border-radius: 16px; z-index: 1; }
+.au-field-password input { padding-right: 58px; }
+.au-eye { position: absolute; right: 8px; top: 50%; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 12px; background: transparent; color: var(--muted) !important; cursor: pointer; transform: translateY(-50%); }
+.au-eye:hover { background: var(--line); }
+.au-hint { margin-top: -4px !important; font-size: 14px; color: var(--muted); text-align: left; padding-left: 4px; }
+.au-hint.is-warn { color: var(--gold-lip); font-weight: 600; }
+.au-error { padding: 12px 14px; border-radius: 14px; background: var(--red-soft); color: var(--red-lip); font-size: 15px; font-weight: 600; text-align: left; }
+.au-submit { width: 100%; }
+
+.au-switch { margin-top: 22px !important; font-size: 17px; color: var(--muted); }
+.au-switch a { color: var(--blue) !important; font-weight: 700; }
+.au-note { display: flex; gap: 8px; align-items: flex-start; margin-top: 18px !important; font-size: 14px; line-height: 1.45; color: #9AA0A8; text-align: left; }
+.au-note svg { flex: none; margin-top: 2px; color: var(--green); }
+
+/* The crew sits at the bottom of the screen, or after the form when the page is taller. */
+.au-crew { display: flex; justify-content: center; gap: 18px; margin-top: auto; padding-top: 36px; margin-bottom: -16px; pointer-events: none; }
+.au-crew span:nth-child(odd) { margin-bottom: 10px; }
+
+@media (max-width: 560px) {
+  .au-top { padding-top: 14px; }
+  .au-column h1 { font-size: 25px; }
+  .au-crew { gap: 4px; }
+  .au-crew .crew { width: 54px !important; height: 63px !important; }
+}

@@ -23,6 +23,10 @@ button,a{touch-action:manipulation}
 .course-player-header .course-mode-switch button[aria-pressed="true"]{background:#d6f5a8;color:#19421f}
 .course-player-header .course-step-nav button,.course-player-header .course-show-content{border-color:#ffffff3d;background:#ffffff12;color:#fff}
 .course-player-header .course-step-nav button:hover:not(:disabled),.course-player-header .course-show-content:hover{background:#ffffff24}
+.course-auth-actions{display:flex;align-items:center;gap:5px;margin:0 3px}
+.course-auth-actions a,.course-auth-actions button{display:inline-flex;min-height:30px;align-items:center;justify-content:center;padding:0 9px;border:1px solid #ffffff38;border-radius:8px;background:#ffffff10;color:#fff;text-decoration:none;font:800 10px 'Nunito','Plus Jakarta Sans',sans-serif;white-space:nowrap;cursor:pointer}
+.course-auth-actions a:last-child{border-color:#76cb4c;background:#54bd24;color:#fff}
+.course-auth-actions a:hover,.course-auth-actions button:hover{background:#ffffff26}
 .course-player .course-player-body{background:#f5faff}
 .course-player .course-player-main{background:#f5faff}
 .course-player .course-content-sidebar{border-left:1px solid #d8e8f0;background:#fff;box-shadow:-8px 0 24px #1d48600a}
@@ -88,4 +92,5 @@ button,a{touch-action:manipulation}
   .course-player .course-sidebar-backdrop{background:#11385277}
   .learn-challenge-card{border-radius:17px!important}
 }
+@media(max-width:1120px){.course-auth-actions{display:none}}
 @media(prefers-reduced-motion:reduce){.academy-overview *, .academy-pricing *, .course-player *{scroll-behavior:auto!important}}

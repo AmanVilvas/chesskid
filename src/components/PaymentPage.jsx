@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 import { CheckoutModal } from './CheckoutModal';
 
-export const PaymentPage = ({ onSubscriptionSuccess }) => {
+export const PaymentPage = () => {
   const [selectedGrade, setSelectedGrade] = useState('KG - G2');
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [openFaq, setOpenFaq] = useState(0);
@@ -1250,10 +1250,6 @@ export const PaymentPage = ({ onSubscriptionSuccess }) => {
           }}
           billingCycle="monthly"
           onClose={() => setSelectedPlan(null)}
-          onSuccess={(details) => {
-            setSelectedPlan(null);
-            if (onSubscriptionSuccess) onSubscriptionSuccess(details);
-          }}
         />
       )}
 
