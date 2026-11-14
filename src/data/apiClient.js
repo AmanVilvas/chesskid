@@ -1,6 +1,13 @@
+import { localApiRequest } from './localApi';
+
+// For now the site runs without a server: accounts and progress are kept in browser storage.
+// Set VITE_USE_API=true (for example in a .env.local file) to use the Express API in server/ instead.
+export const USE_SERVER_API = import.meta.env.VITE_USE_API === 'true';
+
 let csrfToken = null;
 
 export async function refreshCsrfToken() {
+  if (!USE_SERVER_API) return 'local';
   const response = await fetch('/api/auth/csrf', { credentials: 'include', headers: { Accept: 'application/json' } });
   const data = await response.json().catch(() => ({}));
   if (!response.ok || typeof data.csrfToken !== 'string') throw new Error(data.error?.message || 'Could not connect securely to the academy.');
@@ -9,6 +16,7 @@ export async function refreshCsrfToken() {
 }
 
 export async function apiRequest(path, options = {}) {
+  if (!USE_SERVER_API) return localApiRequest(path, options);
   const method = (options.method || 'GET').toUpperCase();
   const headers = new Headers(options.headers || {});
   headers.set('Accept', 'application/json');
