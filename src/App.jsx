@@ -18,6 +18,7 @@ const LittleWinsPage = lazy(() => import('./home/LittleWinsPage'));
 const AboutPage = lazy(() => import('./home/AboutPage'));
 const ProgramsPage = lazy(() => import('./home/ProgramsPage'));
 const BookPage = lazy(() => import('./home/BookPage'));
+const HomeCoursePage = lazy(() => import('./home/HomeCoursePage'));
 
 /** Entry point for the parent view: requires a signed-in grown-up. */
 function ParentsEntry() {
@@ -71,6 +72,9 @@ export default function App() {
       <Route path="/login" element={<AuthPage key="login" mode="login" />} />
       <Route path="/signup" element={<AuthPage key="signup" mode="signup" />} />
       <Route path="/courses" element={<CoursesPage />} />
+      {/* The Home Course (Beginner Chess) has its own landing; other courses use the course template. */}
+      <Route path="/courses/beginner-chess" element={<Suspense fallback={<PageFallback />}><HomeCoursePage /></Suspense>} />
+      <Route path="/home-course" element={<Navigate to="/courses/beginner-chess" replace />} />
       <Route path="/courses/:slug" element={<CourseLandingPage />} />
       <Route path="/admin" element={<AdminDashboard />} />
 
