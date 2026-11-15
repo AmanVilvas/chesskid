@@ -4,37 +4,37 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, Menu, MessageCircle, Play, Plus, X } from 'lucide-react';
 import { useAuth } from '../components/AuthContext';
 import './academy.css';
+import { INTRO, PHONE, wa, HELP } from './data';
 import './pages.css';
 
 /* ---------------------------------------------------------------- shared content */
-export const PHONE = '917448408684';
-export const wa = (text) => `https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`;
 export const CHAT = wa('Hi! I have a question about The Thinking Academy.');
+export { PHONE, wa, HELP };
 export const HOME_COURSE = '/courses/beginner-chess';
 export const EASE = [0.2, 0.8, 0.2, 1];
 
 export const COACHES = [
-  { id: 'rathish', name: 'Rathish', role: 'Founder & Head Coach', photo: '/academy/coach-rathish.avif', tint: '#EAD5BF',
+  { id: 'rathish', credential: "FIDE rating 1670", experience: "7+ years coaching children", approach: "Built the 4 to 6 curriculum and trains the coaches on it.", pos: "center 20%", name: 'Rathish', role: 'Founder & Head Coach', photo: '/academy/coach-rathish.avif', tint: '#EAD5BF',
     short: 'Seven years teaching kids. Trains every coach personally. FIDE 1670.',
     long: 'FIDE rating 1670 and 7+ years coaching children. He built the 4 to 6 curriculum and personally trains every coach on the team.',
     quote: 'The way Rathish teaches is amazing. Very understanding, and disciplined too. My child has been learning with him for 2 years.' },
-  { id: 'gaayathri', name: 'Gaayathri', role: 'Coach', photo: '/academy/coach-gaayathri.jpg', tint: '#DDE3D0',
+  { id: 'gaayathri', credential: "FIDE-rated coach", experience: "Over a decade in chess", approach: "Known for turning “I don’t like chess” into “when’s my next class?”", pos: "center 20%", name: 'Gaayathri', role: 'Coach', photo: '/academy/coach-gaayathri.jpg', tint: '#DDE3D0',
     short: 'A decade in chess. Turns reluctant kids into eager ones.',
     long: 'Over a decade in chess. Known for turning “I don’t like chess” into “when’s my next class?”',
     quote: 'I have seen my son go from hating chess to absolutely loving it. Even his teachers were surprised to see the shift.' },
-  { id: 'rakesh', name: 'Rakesh', role: 'Coach', photo: '/academy/coach-rakesh.jpg', tint: '#F2DFB5',
+  { id: 'rakesh', credential: "FIDE-rated coach", experience: "Chess coach and psychotherapist", approach: "A flexible, patient approach for younger kids.", pos: "center 38%", name: 'Rakesh', role: 'Coach', photo: '/academy/coach-rakesh.jpg', tint: '#F2DFB5',
     short: 'Chess coach and psychotherapist. Flexible with the youngest.',
     long: 'Chess coach and psychotherapist, with a flexible, patient approach for younger kids.',
     quote: 'He is friendly and understands the need for a flexible approach when teaching younger kids. My son loves Rakesh sir.' },
-  { id: 'lakshaya', name: 'Lakshaya', role: 'Coach', photo: '/academy/coach-lakshaya.jpg', tint: '#EAD5BF',
+  { id: 'lakshaya', credential: "FIDE-rated coach", experience: "Over a decade in chess", approach: "Calm and soft-spoken, a favourite with shy children.", pos: "center 20%", name: 'Lakshaya', role: 'Coach', photo: '/academy/coach-lakshaya.jpg', tint: '#EAD5BF',
     short: 'A decade in chess. Calm and soft-spoken — great with shy kids.',
     long: 'Over a decade in chess. Calm and soft-spoken, a favourite with shy children.',
     quote: 'My kid is 6 years old and she is shy, but she liked Lakshaya sir. He is soft, with a low voice. She enjoys her class.' },
-  { id: 'honnesha', name: 'Honnesha', role: 'Coach', photo: '/academy/coach-honnesha.jpg', tint: '#DDE3D0',
+  { id: 'honnesha', credential: "FIDE-rated coach", experience: "Over a decade in chess", approach: "Sincere, patient and focused on each child’s level.", pos: "center 20%", name: 'Honnesha', role: 'Coach', photo: '/academy/coach-honnesha.jpg', tint: '#DDE3D0',
     short: 'A decade in chess. Sincere, patient, paced to each child.',
     long: 'Over a decade in chess. Sincere, patient and focused on each child’s level.',
     quote: 'She is responsible, sincere and serious about teaching, and makes sure my daughter is learning the best at her level.' },
-  { id: 'roshan', name: 'Roshan Ramesh', role: 'Coach', photo: '/academy/coach-roshan.jpg', tint: '#F2DFB5',
+  { id: 'roshan', credential: "FIDE-rated coach", experience: "Experienced coach", approach: "Trained on our 4 to 6 method.", pos: "center 0%", name: 'Roshan Ramesh', role: 'Coach', photo: '/academy/coach-roshan.jpg', tint: '#F2DFB5',
     short: 'Experienced coach trained on our 4 to 6 method.',
     long: 'Experienced coach trained on our 4 to 6 method.',
     quote: 'Roshan is a solid choice for younger kids we pretty much enjoyed every sessions.' },
@@ -114,7 +114,7 @@ export function Faq({ items }) {
   );
 }
 
-export function CtaBand({ title = <>Your child’s first class <em className="ah-gold">is on us.</em></>, text = '30 minutes, one coach, one child. See if your child enjoys it before you pay anything.', kicker }) {
+export function CtaBand({ title = <>Your child’s first class <em className="ah-gold">is free.</em></>, text = 'A 30-minute online class with one coach and one child. No payment details needed. We will arrange a suitable time on WhatsApp.', kicker }) {
   return (
     <section className="ah-wrap ah-cta-wrap">
       <Reveal className="ah-cta pg-cta">
@@ -123,7 +123,7 @@ export function CtaBand({ title = <>Your child’s first class <em className="ah
           <h2>{title}</h2>
           <p>{text}</p>
           <div className="ah-cta-actions">
-            <Link className="ah-btn ah-btn-cream" to="/book">Book the first class free <ArrowRight size={16} /></Link>
+            <Link className="ah-btn ah-btn-cream" to="/book">{INTRO.cta} <ArrowRight size={16} /></Link>
             <a className="ah-btn ah-btn-outline-light" href={CHAT} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Chat on WhatsApp</a>
           </div>
         </div>
@@ -165,7 +165,7 @@ export function SiteHeader() {
   return (
     <>
       <Link className="ah-topbar" to="/book">
-        For ages 4–6 <i>•</i> Live classes &amp; home course <i>•</i> First class free
+        {INTRO.strip.split(' · ').map((part, i) => <span key={part}>{i > 0 && <i>·</i>}{part}</span>)}
       </Link>
       <header className="ah-nav">
         <Link to="/" className="ah-logo">the thinking academy<span>.</span></Link>
@@ -173,8 +173,8 @@ export function SiteHeader() {
           {NAV.map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => (isActive ? 'is-active' : '')}>{label}</NavLink>)}
         </nav>
         <div className="ah-nav-end">
-          <Link to={user ? '/parents' : '/login'} className="ah-signin">{user ? 'My account' : 'Parent login'}</Link>
-          <Link className="ah-btn ah-btn-clay ah-btn-sm" to="/book">Book free class</Link>
+          <Link to={user ? '/parents' : '/login'} className="ah-signin">{user ? 'My account' : 'Parent Login'}</Link>
+          <Link className="ah-btn ah-btn-clay ah-btn-sm" to="/book"><span className="pg-hide-sm">{INTRO.cta}</span><span className="pg-show-sm">{INTRO.short}</span></Link>
           <button type="button" className="pg-burger" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={open ? 'Close menu' : 'Open menu'}>{open ? <X size={22} /> : <Menu size={22} />}</button>
         </div>
       </header>
@@ -183,8 +183,8 @@ export function SiteHeader() {
           <motion.nav className="pg-drawer" aria-label="Menu" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
             <Link to="/">Home</Link>
             {NAV.map(([to, label]) => <Link key={to} to={to}>{label}</Link>)}
-            <Link to="/book">Book a free class</Link>
-            <Link to={user ? '/parents' : '/login'}>{user ? 'My account' : 'Parent login'}</Link>
+            <Link to="/book">{INTRO.cta}</Link>
+            <Link to={user ? '/parents' : '/login'}>{user ? 'My account' : 'Parent Login'}</Link>
           </motion.nav>
         )}
       </AnimatePresence>
@@ -200,7 +200,7 @@ export function SiteFooter() {
       <div className="ah-wrap ah-foot-grid">
         <div>
           <p className="ah-logo ah-logo-light">the thinking academy<span>.</span></p>
-          <p className="ah-foot-copy">1:1 online chess classes for kids, taught by Coach Rathish Ravi. 7+ years of coaching and 200+ students across India, the US and the UK.</p>
+          <p className="ah-foot-copy">Online chess learning for children aged 4–6, with personal classes, paired classes and a parent-guided Home Course from The Thinking Academy.</p>
           <div className="pg-social">
             <a href="https://www.instagram.com/chesswithrathish/" target="_blank" rel="noreferrer">Instagram</a>
             <a href="https://www.youtube.com/@ChesswithRathish" target="_blank" rel="noreferrer">YouTube</a>
@@ -210,15 +210,15 @@ export function SiteFooter() {
         <div>
           <h4>Learn</h4>
           <Link to="/programs">Live classes</Link>
-          <Link to="/programs#plans">Plans &amp; prices</Link>
+          <Link to="/programs#plans">Plans and prices</Link>
           <Link to={HOME_COURSE}>Home Course</Link>
         </div>
         <div>
           <h4>Academy</h4>
           <Link to="/about">About &amp; coaches</Link>
           <Link to="/little-wins">Little wins</Link>
-          <Link to="/book">Book a free class</Link>
-          <Link to={user ? '/parents' : '/login'}>Parent login</Link>
+          <Link to="/book">{INTRO.cta}</Link>
+          <Link to={user ? '/parents' : '/login'}>Parent Login</Link>
         </div>
         <div>
           <h4>Contact</h4>
@@ -227,7 +227,7 @@ export function SiteFooter() {
           <span>110b Bungalow Medu, Mettupalayam, Coimbatore District, Tamil Nadu 641301, India</span>
         </div>
       </div>
-      <p className="ah-wrap ah-foot-legal">© 2026 The Thinking Academy · Online chess coaching by Rathish Ravi</p>
+      <p className="ah-wrap ah-foot-legal">© 2026 The Thinking Academy</p>
     </footer>
   );
 }

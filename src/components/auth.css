@@ -45,3 +45,21 @@
   .au-crew { gap: 4px; }
   .au-crew .crew { width: 54px !important; height: 63px !important; }
 }
+
+/* The Thinking Academy look: wordmark, Outfit type, clay accent */
+.au-page { font-family: 'Outfit', 'Varela Round', sans-serif; border-top: 6px solid #B5452F; background: #FFFDF9; }
+.au-column h1 { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: -.03em; color: #2B1E18; }
+.au-top { gap: 12px; }
+.au-back { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 14px; border-radius: 14px; color: #5B4A40 !important; font-weight: 600; font-size: 15px; }
+.au-back:hover { background: #F5ECDF; color: #2B1E18 !important; }
+.au-wordmark { margin-right: auto; margin-left: 8px; font-size: 19px; font-weight: 800; letter-spacing: -.04em; color: #2B1E18 !important; }
+.au-wordmark span { color: #B5452F; }
+.au-label { display: block; padding: 10px 18px 0; color: #5B4A40; font-size: 13px; font-weight: 700; text-align: left; }
+.au-label i { color: #B5452F; font-style: normal; font-weight: 600; }
+.au-field input { min-height: 50px; padding-top: 2px; }
+.au-sub-note { font-size: 15px !important; }
+.au-sub a, .au-note a { color: #B5452F !important; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.au-help { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; color: #5B4A40 !important; font-weight: 600; font-size: 15px; text-decoration: underline; text-underline-offset: 3px; }
+.au-error::before { content: 'Problem: '; font-weight: 800; }
+.au-field-password input { padding-right: 64px; }
+@media (max-width: 420px) { .au-wordmark { font-size: 16px; } .au-back { padding: 0 8px; } }
