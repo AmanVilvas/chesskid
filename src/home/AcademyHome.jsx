@@ -1,289 +1,492 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, MessageCircle, Play, Trophy, Award, Swords } from 'lucide-react';
+import { AnimatePresence, animate, motion, useInView, useReducedMotion } from 'motion/react';
+import { ArrowLeft, ArrowRight, Check, MessageCircle, RotateCcw, Star } from 'lucide-react';
 import { useAuth } from '../components/AuthContext';
+import { CourseChessPiece } from '../components/CourseChessPiece';
+import { Character } from '../kids/Characters';
 import './academy.css';
 
 const PHONE = '917448408684';
 const wa = (text) => `https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`;
 const BOOK = wa('Hi! I would like to book a free chess class for my child.');
-const CHAT = wa('Hi! I have a question about The Thinking Academy chess classes.');
-const FREE_COURSE = '/courses/beginner-chess';
+const CHAT = wa('Hi! I have a question about The Thinking Academy.');
+const HOME_COURSE = '/courses/beginner-chess';
+const EASE = [0.2, 0.8, 0.2, 1];
 
-const STATS = [
-  ['200+', 'students taught'],
-  ['6', 'FIDE-rated coaches, Lichess-verified'],
-  ['7 years', 'teaching young kids'],
-  ['3 countries', 'India, the US & the UK'],
-];
-
-const WHY = [
-  ['Built only for ages 4–6', 'Short, playful 30-minute classes made for little attention spans. Lots of games, lots of praise.'],
-  ['No chess knowledge needed', 'Not for your child, not for you. We start from zero and add one piece at a time.'],
-  ['Thinking is the real goal', 'Focus, patience and planning — the skills that carry over to school and life.'],
-];
-
-const PHASES = [
-  { title: 'Meet the pieces', text: 'How each piece moves, learned through games.', color: '#B5452F' },
-  { title: 'Check & checkmate', text: 'Attacking the king — and winning.', color: '#E0A93B' },
-  { title: 'Special rules & first moves', text: 'Castling, and a simple way to start every game.', color: '#6F8F5C' },
-  { title: 'Tactics', text: 'Small tricks that win pieces — and looking before moving.', color: '#A8A29C' },
-  { title: 'Playing real games', text: 'Playing full games with a plan.', color: '#F7EFE3' },
-];
-
-const PLANS = [
-  { tag: 'Most personal', tagTone: 'clay', no: 'No. 1 · Personal', name: 'The Little Thinker 1:1', price: '₹4,800', unit: '/month per child', points: ['8 live classes a month', 'One coach, one child', 'All program benefits'], art: 'one', tint: '#EAD5BF' },
-  { tag: 'Best value', tagTone: 'green', no: 'No. 2 · Paired', name: 'The Thinking Pair 1:2', price: '₹3,200', unit: '/month per child', points: ['8 live classes a month', 'One coach, two children', 'All program benefits'], art: 'two', tint: '#DDE3D0' },
-];
-
-const WINS = [
-  { icon: Trophy, title: 'Sunday tournaments', text: 'Sundays at 7:30 · online. Included with every live plan.', tint: '#EAD5BF' },
-  { icon: Award, title: 'Pawn to King certificates', text: 'A certificate at every level, from Pawn all the way to King.', tint: '#DDE3D0' },
-  { icon: Swords, title: 'A full game, on their own', text: 'By the end, they play a whole game themselves — and think before they act.', tint: '#F2DFB5' },
-];
-
-const COACHES = [
-  { name: 'Rathish', role: 'Founder & head coach', text: 'Seven years teaching kids. Trains every coach personally. FIDE 1670.', tint: '#EAD5BF' },
-  { name: 'Gaayathri', role: 'Coach', text: 'A decade in chess. Turns reluctant kids into eager ones.', tint: '#DDE3D0' },
-  { name: 'Rakesh', role: 'Coach', text: 'Chess coach and psychotherapist. Flexible with the youngest.', tint: '#F2DFB5' },
-  { name: 'Lakshaya', role: 'Coach', text: 'A decade in chess. Calm and soft-spoken — great with shy kids.', tint: '#EAD5BF' },
-  { name: 'Hanneesha', role: 'Coach', text: 'A decade in chess. Sincere, patient, and paced to each child.', tint: '#DDE3D0' },
-];
-
-const QUOTES = [
-  { quote: 'My kid is 6 years old and she is shy, but she liked Lakshaya sir. He is soft, with a low voice. She enjoys her class.', who: 'Parent of a 6-year-old · Coach Lakshaya' },
-  { quote: 'I have seen my son go from hating chess to absolutely loving it. Even his teachers were surprised to see the shift.', who: 'Parent · Coach Gaayathri' },
-  { quote: 'The coach tailors the lessons to her pace, making them both fun and educational.', who: 'Parent · a few months with us' },
-];
-
-function Reveal({ children, delay = 0, className = '', as = 'div' }) {
+function Reveal({ children, delay = 0, className = '', as = 'div', ...rest }) {
   const reduce = useReducedMotion();
   const Tag = motion[as];
   return (
-    <Tag className={className} initial={reduce ? false : { opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.55, delay, ease: [0.2, 0.8, 0.2, 1] }}>
+    <Tag className={className} initial={reduce ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay, ease: EASE }} {...rest}>
       {children}
     </Tag>
   );
 }
 
-/** Flat pawn + king, as in the brand artwork. */
-function Pieces({ two = false }) {
+/** A hand-drawn underline under one word. */
+function Scribble({ children, color = 'var(--clay)' }) {
   return (
-    <svg viewBox="0 0 200 160" className="ah-pieces" aria-hidden="true">
-      <ellipse cx="100" cy="146" rx="80" ry="7" fill="rgba(43,30,24,.12)" />
-      <g fill="#B5452F">
-        <circle cx={two ? 62 : 74} cy="62" r="17" />
-        <path d={two ? 'M47 80h30l-4 9h-22z M50 89h24l8 44H42z M36 133h52v10H36z' : 'M59 80h30l-4 9H63z M62 89h24l8 44H54z M48 133h52v10H48z'} />
-      </g>
-      {two && (
-        <g fill="#E0A93B">
-          <circle cx="104" cy="70" r="14" />
-          <path d="M92 85h24l-3 7H95z M94 92h20l7 38H87z M82 130h44v9H82z" />
-        </g>
-      )}
-      <g fill="#2B1E18" transform={two ? 'translate(18 0)' : ''}>
-        <rect x="126" y="18" width="7" height="22" rx="2" />
-        <rect x="119" y="25" width="21" height="7" rx="2" />
-        <path d="M113 44h33a6 6 0 0 1 4 10l-5 6h-31l-5-6a6 6 0 0 1 4-10z" />
-        <path d="M117 62h25l9 71h-43z" />
-        <path d="M102 133h55v10h-55z" />
-      </g>
-    </svg>
+    <span className="ah-scribble">
+      {children}
+      <svg viewBox="0 0 200 18" preserveAspectRatio="none" aria-hidden="true">
+        <motion.path d="M3 12 C 40 4, 90 3, 130 8 S 185 14, 197 6" fill="none" stroke={color} strokeWidth="5" strokeLinecap="round"
+          initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 0.9, delay: 0.4, ease: EASE }} />
+      </svg>
+    </span>
   );
 }
 
+/* ---------------------------------------------------------------- hero board */
+const SIZE = 5;
+const START = { r: 2, c: 2 };
+const STARS = [{ r: 0, c: 1 }, { r: 1, c: 3 }, { r: 3, c: 4 }];
+const HOPS = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]];
+const key = (p) => `${p.r}-${p.c}`;
+const FILES = 'abcde';
+
+function KnightBoard() {
+  const [knight, setKnight] = useState(START);
+  const [left, setLeft] = useState(() => new Set(STARS.map(key)));
+  const [moves, setMoves] = useState(0);
+  const won = left.size === 0;
+  const legal = new Set(won ? [] : HOPS.map(([dr, dc]) => ({ r: knight.r + dr, c: knight.c + dc })).filter((p) => p.r >= 0 && p.r < SIZE && p.c >= 0 && p.c < SIZE).map(key));
+  const hop = (p) => {
+    if (!legal.has(key(p))) return;
+    setKnight(p);
+    setMoves((m) => m + 1);
+    setLeft((prev) => { const next = new Set(prev); next.delete(key(p)); return next; });
+  };
+  const reset = () => { setKnight(START); setLeft(new Set(STARS.map(key))); setMoves(0); };
+  const cell = 100 / SIZE;
+
+  return (
+    <div className="ah-board-card">
+      <div className="ah-board-head">
+        <span className="ah-sticker">Try it</span>
+        <p><b>Hop the knight</b> to grab all 3 stars. It jumps in an L.</p>
+      </div>
+      <div className="ah-board" role="grid" aria-label="Knight puzzle board">
+        {Array.from({ length: SIZE * SIZE }, (_, i) => {
+          const p = { r: Math.floor(i / SIZE), c: i % SIZE };
+          const k = key(p);
+          const isLegal = legal.has(k);
+          return (
+            <button key={k} type="button" role="gridcell" className={`ah-sq ${(p.r + p.c) % 2 ? 'is-dark' : ''} ${isLegal ? 'is-legal' : ''}`}
+              onClick={() => hop(p)} disabled={!isLegal} aria-label={`${FILES[p.c]}${SIZE - p.r}${left.has(k) ? ', star' : ''}${isLegal ? ', knight can jump here' : ''}`}>
+              {left.has(k) && <motion.span className="ah-star" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}><Star size={22} fill="currentColor" /></motion.span>}
+            </button>
+          );
+        })}
+        <motion.div className="ah-knight" aria-hidden="true" animate={{ left: `${knight.c * cell}%`, top: `${knight.r * cell}%` }}
+          transition={{ type: 'spring', stiffness: 260, damping: 18 }} style={{ width: `${cell}%`, height: `${cell}%` }}>
+          <motion.span key={moves} initial={{ y: 0 }} animate={{ y: [0, -18, 0] }} transition={{ duration: 0.45 }}><CourseChessPiece type="n" color="w" /></motion.span>
+        </motion.div>
+      </div>
+      <div className="ah-board-foot" aria-live="polite">
+        <span className="ah-pips">{STARS.map((s) => <Star key={key(s)} size={16} className={left.has(key(s)) ? '' : 'is-got'} fill="currentColor" />)}</span>
+        {won
+          ? <span className="ah-won">Done in {moves} hops! That’s a real Day 5 puzzle.</span>
+          : <span>{moves === 0 ? 'Tap a glowing square' : `${moves} ${moves === 1 ? 'hop' : 'hops'}`}</span>}
+        <button type="button" className="ah-reset" onClick={reset} aria-label="Reset the puzzle"><RotateCcw size={15} /></button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- stats */
+function CountUp({ to, suffix = '' }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.6 });
+  const reduce = useReducedMotion();
+  const [value, setValue] = useState(reduce ? to : 0);
+  useEffect(() => {
+    if (!inView || reduce) return undefined;
+    const controls = animate(0, to, { duration: 1.4, ease: EASE, onUpdate: (v) => setValue(Math.round(v)) });
+    return () => controls.stop();
+  }, [inView, reduce, to]);
+  return <b ref={ref}>{value}{suffix}</b>;
+}
+
+const STATS = [
+  { to: 200, suffix: '+', label: 'students taught' },
+  { to: 6, label: 'FIDE-rated coaches, Lichess-verified' },
+  { to: 7, suffix: ' years', label: 'teaching young kids' },
+  { to: 3, suffix: ' countries', label: 'India, the US & the UK' },
+];
+
+/* ---------------------------------------------------------------- two ways */
+const WAYS = {
+  coach: {
+    label: 'With a coach', kicker: 'Coach-led', title: 'A coach teaches your child',
+    points: ['1:1 or 1:2, live online', '30 minutes, twice a week', 'Home Course included'],
+    price: '₹3,200', unit: '/month onwards', cta: { label: 'See live classes', href: wa('Hi! I would like to know more about the live classes.'), external: true },
+  },
+  home: {
+    label: 'With you', kicker: 'At your pace', title: 'You teach, we guide you',
+    points: ['Videos, animations, worksheets & mini-games', 'Personalised version with your child’s name', 'One-time payment, in 3 parts'],
+    price: '₹999', unit: 'onwards', cta: { label: 'See the Home Course', href: HOME_COURSE },
+  },
+};
+
+function CoachScene() {
+  return (
+    <div className="ah-scene ah-scene-call" aria-hidden="true">
+      <div className="ah-call-top"><i /><i /><i /><span>Live class · 30 min</span></div>
+      <div className="ah-call-grid">
+        <div className="ah-call-tile ah-call-coach"><span>R</span><small>Coach</small></div>
+        <div className="ah-call-tile ah-call-kid"><Character id="pawn" mood="happy" size={74} /><small>Your child</small></div>
+      </div>
+      <div className="ah-call-board">
+        {Array.from({ length: 16 }, (_, i) => <i key={i} className={(Math.floor(i / 4) + i) % 2 ? 'd' : ''} />)}
+        <motion.span className="ah-call-rook" animate={{ x: ['0%', '300%', '300%', '0%'] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}><CourseChessPiece type="r" color="w" /></motion.span>
+      </div>
+    </div>
+  );
+}
+function HomeScene() {
+  const tiles = [['Video', 'Day 1 · The Rook', '#EAD5BF'], ['Worksheet', 'Draw the rook’s roads', '#DDE3D0'], ['Mini-game', 'Collect 3 stars', '#F2DFB5']];
+  return (
+    <div className="ah-scene ah-scene-home" aria-hidden="true">
+      {tiles.map(([kind, text, tint], i) => (
+        <motion.div key={kind} className="ah-home-tile" style={{ background: tint, zIndex: 3 - i }} initial={{ rotate: 0, y: 0 }} animate={{ rotate: [-6, 3, 8][i], y: i * 26, x: i * 30 }} transition={{ type: 'spring', stiffness: 180, damping: 18, delay: i * 0.06 }}>
+          <span>{kind}</span><b>{text}</b>
+        </motion.div>
+      ))}
+      <div className="ah-home-name"><Character id="rook" mood="wave" size={58} /><span>Made for <b>Aarav</b></span></div>
+    </div>
+  );
+}
+
+function TwoWays() {
+  const [way, setWay] = useState('coach');
+  const data = WAYS[way];
+  return (
+    <div className="ah-ways">
+      <div className="ah-switch" role="tablist" aria-label="Choose how your child learns">
+        {Object.entries(WAYS).map(([id, item]) => (
+          <button key={id} type="button" role="tab" aria-selected={way === id} className={way === id ? 'is-on' : ''} onClick={() => setWay(id)}>
+            {way === id && <motion.span layoutId="ah-switch-pill" className="ah-switch-pill" transition={{ type: 'spring', stiffness: 400, damping: 32 }} />}
+            <span>{item.label}</span>
+          </button>
+        ))}
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div key={way} className="ah-way" role="tabpanel" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.35, ease: EASE }}>
+          <div className="ah-way-copy">
+            <span className="ah-kicker">{data.kicker}</span>
+            <h3>{data.title}</h3>
+            <ul>{data.points.map((point, i) => <motion.li key={point} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 + i * 0.07 }}><Check size={16} strokeWidth={3} />{point}</motion.li>)}</ul>
+            <p className="ah-price"><b>{data.price}</b> {data.unit}</p>
+            {data.cta.external
+              ? <a className="ah-btn ah-btn-dark" href={data.cta.href} target="_blank" rel="noreferrer">{data.cta.label} <ArrowRight size={16} /></a>
+              : <Link className="ah-btn ah-btn-dark" to={data.cta.href}>{data.cta.label} <ArrowRight size={16} /></Link>}
+          </div>
+          {way === 'coach' ? <CoachScene /> : <HomeScene />}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- class steps */
+const STEPS = [
+  { title: 'Story first', text: 'Every idea starts as a short story — that’s how young children remember best.' },
+  { title: 'Then we play', text: 'Mini-games and puzzles on the board. Lots of them, and lots of praise.' },
+  { title: 'Then they show us', text: 'When your child can do it on their own, we move to the next unit. Never rushed.' },
+];
+const STEP_MS = 4200;
+
+function StepScene({ step }) {
+  if (step === 0) {
+    return (
+      <div className="ah-stage-story">
+        <Character id="rook" mood="happy" size={120} />
+        <motion.p className="ah-bubble" initial={{ opacity: 0, scale: 0.9, y: 8 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          “Rocco the rook only likes straight roads. Up, down, left, right — never wobbly!”
+        </motion.p>
+      </div>
+    );
+  }
+  if (step === 1) {
+    return (
+      <div className="ah-stage-play">
+        <div className="ah-mini">
+          {Array.from({ length: 16 }, (_, i) => <i key={i} className={(Math.floor(i / 4) + i) % 2 ? 'd' : ''} />)}
+          <motion.span className="ah-mini-star" animate={{ scale: [1, 1, 0] }} transition={{ duration: 1.6, times: [0, 0.6, 0.75] }}><Star size={20} fill="currentColor" /></motion.span>
+          <motion.span className="ah-mini-rook" initial={{ x: '0%' }} animate={{ x: '300%' }} transition={{ duration: 1, delay: 0.5, ease: EASE }}><CourseChessPiece type="r" color="w" /></motion.span>
+        </div>
+        <motion.span className="ah-praise" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.3 }}>Brilliant!</motion.span>
+      </div>
+    );
+  }
+  return (
+    <div className="ah-stage-show">
+      <Character id="pawn" mood="cheer" size={110} />
+      <motion.div className="ah-unlock" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.25, type: 'spring', stiffness: 260, damping: 16 }}>
+        <Check size={18} strokeWidth={3} /> Did it alone · next unit
+      </motion.div>
+    </div>
+  );
+}
+
+function ClassSteps() {
+  const [step, setStep] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const ref = useRef(null);
+  const inView = useInView(ref, { amount: 0.4 });
+  const reduce = useReducedMotion();
+  const running = inView && !paused && !reduce;
+  useEffect(() => {
+    if (!running) return undefined;
+    const id = setTimeout(() => setStep((s) => (s + 1) % STEPS.length), STEP_MS);
+    return () => clearTimeout(id);
+  }, [running, step]);
+
+  return (
+    <div className="ah-steps" ref={ref} onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+      <div className="ah-step-list" role="tablist" aria-label="What a class looks like">
+        {STEPS.map((item, i) => (
+          <button key={item.title} type="button" role="tab" aria-selected={step === i} className={`ah-step ${step === i ? 'is-on' : ''}`} onClick={() => { setStep(i); setPaused(true); }}>
+            <span className="ah-step-no">{i + 1}</span>
+            <span className="ah-step-text"><b>{item.title}</b><span>{item.text}</span></span>
+            <span className="ah-step-bar">{step === i && <motion.i key={`${step}-${running}`} initial={{ scaleX: running ? 0 : 1 }} animate={{ scaleX: 1 }} transition={{ duration: running ? STEP_MS / 1000 : 0, ease: 'linear' }} />}</span>
+          </button>
+        ))}
+      </div>
+      <div className="ah-stage" role="tabpanel" aria-live="polite">
+        <AnimatePresence mode="wait">
+          <motion.div key={step} className="ah-stage-inner" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.3 }}>
+            <StepScene step={step} />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- pawn to king */
+const LADDER = [
+  { type: 'p', name: 'Pawn', when: 'Where every child starts', phase: null },
+  { type: 'n', name: 'Knight', when: 'Meet the pieces', phase: 1 },
+  { type: 'b', name: 'Bishop', when: 'Check & checkmate', phase: 2 },
+  { type: 'r', name: 'Rook', when: 'Special rules & first moves', phase: 3 },
+  { type: 'q', name: 'Queen', when: 'Tactics', phase: 4 },
+  { type: 'k', name: 'King', when: 'Plays a full game alone', phase: 5 },
+];
+
+function PieceLadder() {
+  const [active, setActive] = useState(0);
+  const item = LADDER[active];
+  const onKey = (event) => {
+    if (event.key === 'ArrowRight' || event.key === 'ArrowUp') { event.preventDefault(); setActive((a) => Math.min(LADDER.length - 1, a + 1)); }
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') { event.preventDefault(); setActive((a) => Math.max(0, a - 1)); }
+  };
+  return (
+    <div className="ah-ladder-wrap">
+      <div className="ah-ladder" role="listbox" aria-label="Certificates from Pawn to King" tabIndex={0} onKeyDown={onKey}>
+        <div className="ah-ladder-track"><motion.i animate={{ width: `${(active / (LADDER.length - 1)) * 100}%` }} transition={{ type: 'spring', stiffness: 200, damping: 26 }} /></div>
+        {LADDER.map((piece, i) => (
+          <button key={piece.name} type="button" role="option" aria-selected={active === i} className={`ah-rung ${i <= active ? 'is-reached' : ''} ${active === i ? 'is-on' : ''}`}
+            style={{ '--step': i }} onClick={() => setActive(i)} onMouseEnter={() => setActive(i)}>
+            <motion.span className="ah-rung-piece" animate={{ y: active === i ? -14 : 0, scale: active === i ? 1.15 : 1 }} transition={{ type: 'spring', stiffness: 300, damping: 18 }}>
+              <CourseChessPiece type={piece.type} color="w" />
+            </motion.span>
+            <span className="ah-rung-name">{piece.name}</span>
+          </button>
+        ))}
+      </div>
+      <AnimatePresence mode="wait">
+        <motion.div key={item.name} className="ah-cert" initial={{ opacity: 0, y: 14, rotate: -1.5 }} animate={{ opacity: 1, y: 0, rotate: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3, ease: EASE }}>
+          <span className="ah-cert-seal"><CourseChessPiece type={item.type} color="w" /></span>
+          <div>
+            <span className="ah-cert-kicker">{item.phase ? `Certificate · after phase ${item.phase}` : 'The starting line'}</span>
+            <h3>{item.name}</h3>
+            <p>{item.when}</p>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- quotes */
+const QUOTES = [
+  { quote: 'My kid is 6 years old and she is shy, but she liked Lakshaya sir. He is soft, with a low voice. She enjoys her class.', who: 'Parent of a 6-year-old', coach: 'Coach Lakshaya' },
+  { quote: 'I have seen my son go from hating chess to absolutely loving it. Even his teachers were surprised to see the shift.', who: 'Parent', coach: 'Coach Gaayathri' },
+  { quote: 'The coach tailors the lessons to her pace, making them both fun and educational.', who: 'Parent', coach: 'A few months with us' },
+];
+
+function QuoteDeck() {
+  const [index, setIndex] = useState(0);
+  const [dir, setDir] = useState(1);
+  const go = (delta) => { setDir(delta); setIndex((i) => (i + delta + QUOTES.length) % QUOTES.length); };
+  const item = QUOTES[index];
+  return (
+    <div className="ah-quotes">
+      <div className="ah-quote-stage">
+        <span className="ah-quote-mark" aria-hidden="true">“</span>
+        <AnimatePresence mode="wait" custom={dir}>
+          <motion.figure key={index} className="ah-quote" custom={dir}
+            initial={{ opacity: 0, x: dir * 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: dir * -40 }} transition={{ duration: 0.35, ease: EASE }}
+            drag="x" dragConstraints={{ left: 0, right: 0 }} dragElastic={0.25} onDragEnd={(_, info) => { if (info.offset.x < -60) go(1); if (info.offset.x > 60) go(-1); }}>
+            <blockquote>{item.quote}</blockquote>
+            <figcaption><b>{item.who}</b><span>{item.coach}</span></figcaption>
+          </motion.figure>
+        </AnimatePresence>
+      </div>
+      <div className="ah-quote-nav">
+        <button type="button" onClick={() => go(-1)} aria-label="Previous parent quote"><ArrowLeft size={18} /></button>
+        <div className="ah-dots">{QUOTES.map((q, i) => <button key={q.coach} type="button" className={i === index ? 'is-on' : ''} aria-label={`Quote ${i + 1}`} aria-current={i === index} onClick={() => { setDir(i > index ? 1 : -1); setIndex(i); }} />)}</div>
+        <button type="button" onClick={() => go(1)} aria-label="Next parent quote"><ArrowRight size={18} /></button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- coaches */
+const COACHES = [
+  { name: 'Rathish', role: 'Founder & Head Coach', text: 'Seven years teaching kids. Trains every coach personally. FIDE 1670.', tint: '#EAD5BF' },
+  { name: 'Gaayathri', role: 'Coach', text: 'A decade in chess. Turns reluctant kids into eager ones.', tint: '#DDE3D0' },
+  { name: 'Rakesh', role: 'Coach', text: 'Chess coach and psychotherapist. Flexible with the youngest.', tint: '#F2DFB5' },
+  { name: 'Lakshaya', role: 'Coach', text: 'A decade in chess. Calm and soft-spoken — great with shy kids.', tint: '#EAD5BF' },
+  { name: 'Honnesha', role: 'Coach', text: 'A decade in chess. Sincere, patient, paced to each child.', tint: '#DDE3D0' },
+];
+
+function Coaches() {
+  const [open, setOpen] = useState(null);
+  return (
+    <div className="ah-coaches">
+      {COACHES.map((coach, i) => (
+        <Reveal key={coach.name} delay={i * 0.06} as="button" type="button" className={`ah-coach ${open === i ? 'is-open' : ''}`}
+          onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i}>
+          <span className="ah-coach-arch" style={{ background: coach.tint }}>
+            <span className="ah-coach-initial" aria-hidden="true">{coach.name[0]}</span>
+            <span className="ah-coach-blurb">{coach.text}</span>
+          </span>
+          <span className="ah-coach-role">{coach.role}</span>
+          <span className="ah-coach-name">{coach.name}</span>
+        </Reveal>
+      ))}
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- page */
 export function AcademyHome() {
   const { user } = useAuth();
-  useEffect(() => { document.title = 'The Thinking Academy | 1:1 online chess for kids aged 4 to 6'; }, []);
+  useEffect(() => { document.title = 'The Thinking Academy | Chess for kids aged 4 to 6'; }, []);
 
   return (
     <div className="ah-root">
       <a className="ah-topbar" href={BOOK} target="_blank" rel="noreferrer">
-        Online 1:1 for ages 4–6 <i>·</i> First class free <i>·</i> No payment needed to try
+        For ages 4–6 <i>•</i> Live classes &amp; home course <i>•</i> First class free
       </a>
 
       <header className="ah-nav">
         <Link to="/" className="ah-logo">the thinking academy<span>.</span></Link>
         <nav aria-label="Main">
-          <a href="#programs">Programs</a>
-          <a href="#pricing">Pricing</a>
-          <Link to={FREE_COURSE}>Free Course</Link>
+          <a href="#ways">Live Classes</a>
+          <Link to={HOME_COURSE}>Home Course</Link>
+          <a href="#class">How it works</a>
           <a href="#little-wins">Little Wins</a>
-          <a href="#coaches">About</a>
-          <a href="#contact">Contact</a>
+          <a href="#about">About</a>
         </nav>
         <div className="ah-nav-end">
-          {user ? <Link to="/parents" className="ah-signin">My account</Link> : <Link to="/login" className="ah-signin">Sign in</Link>}
+          <Link to={user ? '/parents' : '/login'} className="ah-signin">{user ? 'My account' : 'Parent login'}</Link>
           <a className="ah-btn ah-btn-clay ah-btn-sm" href={BOOK} target="_blank" rel="noreferrer">Book free class</a>
         </div>
       </header>
 
       <main>
         <section className="ah-hero ah-wrap">
-          <div>
+          <div className="ah-hero-copy">
             <Reveal><span className="ah-kicker">Made for little minds</span></Reveal>
-            <Reveal delay={0.05}><h1>1:1 online chess for kids aged <em>4 to 6.</em></h1></Reveal>
-            <Reveal delay={0.1}><p className="ah-lead">One coach. One child. 30 minutes. Your child doesn’t need to know chess — and neither do you.</p></Reveal>
+            <Reveal delay={0.05}><h1>Chess for kids aged <em>4 to 6.</em></h1></Reveal>
+            <Reveal delay={0.1}><p className="ah-lead">Learn live with a coach, or at home with you. Your child doesn’t need to know chess — <Scribble>and neither do you.</Scribble></p></Reveal>
             <Reveal delay={0.15} className="ah-actions">
               <a className="ah-btn ah-btn-dark" href={BOOK} target="_blank" rel="noreferrer">Book free class <ArrowRight size={16} /></a>
-              <a className="ah-btn ah-btn-line" href="#pricing">See pricing</a>
+              <a className="ah-btn ah-btn-line" href="#ways">See both ways</a>
             </Reveal>
-            <Reveal delay={0.2}><p className="ah-proof">200+ students taught · Families in India, the US &amp; the UK</p></Reveal>
+            <Reveal delay={0.2} className="ah-chips">
+              <span><Check size={14} strokeWidth={3} /> No chess knowledge needed</span>
+              <span><Check size={14} strokeWidth={3} /> Built only for ages 4–6</span>
+            </Reveal>
           </div>
-          <Reveal delay={0.1} className="ah-hero-art">
+          <Reveal delay={0.1} className="ah-hero-play">
             <span className="ah-badge">Ages 4–6 only</span>
-            <div className="ah-arch" style={{ backgroundImage: 'url(/chess_kid_hero.jpg)' }} role="img" aria-label="A young child playing chess at home" />
+            <KnightBoard />
           </Reveal>
         </section>
 
         <section className="ah-stats" aria-label="The academy in numbers">
           <div className="ah-wrap ah-stats-row">
-            {STATS.map(([value, label]) => <div key={value}><b>{value}</b><span>{label}</span></div>)}
+            {STATS.map((stat) => <div key={stat.label}><CountUp to={stat.to} suffix={stat.suffix} /><span>{stat.label}</span></div>)}
           </div>
         </section>
 
-        <section className="ah-section ah-wrap">
-          <Reveal><span className="ah-kicker">Why a 4–6 specialist</span></Reveal>
-          <Reveal delay={0.05}><h2>Chess is the tool.<br /><em>Thinking</em> is the outcome.</h2></Reveal>
-          <div className="ah-grid-3">
-            {WHY.map(([title, text], i) => (
-              <Reveal key={title} delay={i * 0.06} className="ah-card">
-                <span className="ah-num">0{i + 1}</span>
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </Reveal>
-            ))}
+        <section className="ah-section ah-wrap" id="ways">
+          <div className="ah-head-split">
+            <div>
+              <Reveal><span className="ah-kicker">Two ways to learn</span></Reveal>
+              <Reveal delay={0.05}><h2>With a coach, or <em>with you.</em></h2></Reveal>
+            </div>
+            <Reveal delay={0.1}><p className="ah-sub">Same 30-unit syllabus. Pick what suits your family — or use both.</p></Reveal>
           </div>
+          <Reveal delay={0.1}><TwoWays /></Reveal>
         </section>
 
-        <section className="ah-dark" id="curriculum">
+        <section className="ah-section ah-wrap" id="class">
+          <Reveal><span className="ah-kicker">What a class looks like</span></Reveal>
+          <Reveal delay={0.05}><h2>Story. Play. <em>Show us.</em></h2></Reveal>
+          <Reveal delay={0.1}><ClassSteps /></Reveal>
+          <p className="ah-footnote">30 units · 5 phases · about a year</p>
+        </section>
+
+        <section className="ah-dark" id="little-wins">
           <div className="ah-wrap ah-section">
-            <div className="ah-head-row">
-              <div>
-                <Reveal><span className="ah-kicker ah-kicker-light">The journey · 30 units · about a year</span></Reveal>
-                <Reveal delay={0.05}><h2>From first <em className="ah-gold">pawn</em><br />to full games.</h2></Reveal>
-              </div>
-              <a className="ah-link-light" href="#programs">See the plans <ArrowRight size={14} /></a>
-            </div>
-            <div className="ah-phases">
-              {PHASES.map((phase, i) => (
-                <Reveal key={phase.title} delay={i * 0.05} className="ah-phase">
-                  <span className="ah-dot" style={{ background: phase.color }} />
-                  <span className="ah-phase-no">Phase {i + 1}</span>
-                  <h3>{phase.title}</h3>
-                  <p>{phase.text}</p>
-                </Reveal>
-              ))}
-            </div>
+            <Reveal><span className="ah-kicker ah-kicker-light">Little wins</span></Reveal>
+            <Reveal delay={0.05}><h2>Your child starts as a <em className="ah-gold">Pawn.</em></h2></Reveal>
+            <Reveal delay={0.08}><p className="ah-sub ah-sub-light">Finish a phase, earn the certificate for the next piece. Tap a piece to see what it takes.</p></Reveal>
+            <Reveal delay={0.12}><PieceLadder /></Reveal>
           </div>
         </section>
 
-        <section className="ah-section ah-wrap" id="programs">
-          <span id="pricing" className="ah-anchor" />
-          <Reveal><span className="ah-kicker">The collection · India</span></Reveal>
-          <Reveal delay={0.05}><h2>Two ways to <em>begin.</em></h2></Reveal>
-          <Reveal delay={0.08}><p className="ah-sub">Both plans: 2 classes a week, 30 minutes each, first class free.</p></Reveal>
-          <div className="ah-plans">
-            {PLANS.map((plan, i) => (
-              <Reveal key={plan.name} delay={i * 0.08} className="ah-plan">
-                <div className="ah-plan-art" style={{ background: plan.tint }}>
-                  <span className={`ah-tag ah-tag-${plan.tagTone}`}>{plan.tag}</span>
-                  <Pieces two={plan.art === 'two'} />
-                </div>
-                <div className="ah-plan-body">
-                  <span className="ah-plan-no">{plan.no}</span>
-                  <h3>{plan.name}</h3>
-                  <ul>{plan.points.map((point) => <li key={point}>{point}</li>)}</ul>
-                  <div className="ah-plan-foot">
-                    <p className="ah-price"><b>{plan.price}</b> {plan.unit}</p>
-                    <a className="ah-btn ah-btn-dark ah-btn-sm" href={wa(`Hi! I would like to book a free class for ${plan.name}.`)} target="_blank" rel="noreferrer">Book free class</a>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
+        <section className="ah-section ah-wrap ah-parents">
+          <div>
+            <Reveal><span className="ah-kicker">From our parents</span></Reveal>
+            <Reveal delay={0.05}><h2>What changes <em>at home.</em></h2></Reveal>
           </div>
-          <div className="ah-abroad">
-            <span>Outside India?</span>
-            {['US', 'UK', 'Malaysia'].map((country) => (
-              <a key={country} href={wa(`Hi! What are your class prices for families in ${country === 'Malaysia' ? 'Malaysia' : `the ${country}`}?`)} target="_blank" rel="noreferrer">{country} prices</a>
-            ))}
-          </div>
+          <Reveal delay={0.1}><QuoteDeck /></Reveal>
         </section>
 
-        <section className="ah-free">
-          <div className="ah-wrap ah-free-row">
+        <section className="ah-section ah-wrap" id="about">
+          <div className="ah-head-split">
             <div>
-              <Reveal><span className="ah-kicker">Free for parents</span></Reveal>
-              <Reveal delay={0.05}><h2>Teach your child<br /><em>one piece at a time.</em></h2></Reveal>
-              <Reveal delay={0.08}><p>Short videos that show you exactly what to teach. No chess knowledge needed.</p></Reveal>
-              <Reveal delay={0.12}><Link className="ah-btn ah-btn-clay" to={FREE_COURSE}>Start the free course <ArrowRight size={16} /></Link></Reveal>
+              <Reveal><span className="ah-kicker">Meet the coaches</span></Reveal>
+              <Reveal delay={0.05}><h2>Patient people. <em>Rated players.</em></h2></Reveal>
             </div>
-            <Reveal delay={0.1}>
-              <Link to={FREE_COURSE} className="ah-video" style={{ backgroundImage: 'url(/hero-kid.jpg)' }} aria-label="Open the free parent course">
-                <span className="ah-play"><Play size={22} fill="currentColor" /></span>
-                <span className="ah-video-cap">Day 1: The Rook · 6 short days</span>
-              </Link>
-            </Reveal>
+            <Reveal delay={0.1}><p className="ah-sub">Tap a coach to meet them.</p></Reveal>
           </div>
-        </section>
-
-        <section className="ah-section ah-wrap" id="little-wins">
-          <div className="ah-head-row">
-            <div>
-              <Reveal><span className="ah-kicker">Little wins</span></Reveal>
-              <Reveal delay={0.05}><h2>Small hands.<br /><em>Big trophies.</em></h2></Reveal>
-            </div>
-          </div>
-          <div className="ah-grid-3">
-            {WINS.map(({ icon: Icon, title, text, tint }, i) => (
-              <Reveal key={title} delay={i * 0.06} className="ah-win" >
-                <div className="ah-win-art" style={{ background: tint }}><Icon size={44} strokeWidth={1.6} /></div>
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        <section className="ah-section ah-wrap" id="coaches">
-          <Reveal><span className="ah-kicker">Meet the coaches</span></Reveal>
-          <Reveal delay={0.05}><h2>Patient people.<br /><em>Rated players.</em></h2></Reveal>
-          <div className="ah-coaches">
-            {COACHES.map((coach, i) => (
-              <Reveal key={coach.name} delay={i * 0.05} className="ah-coach">
-                <div className="ah-coach-arch" style={{ background: coach.tint }} aria-hidden="true">{coach.name[0]}</div>
-                <span className="ah-coach-role">{coach.role}</span>
-                <h3>{coach.name}</h3>
-                <p>{coach.text}</p>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-
-        <section className="ah-section ah-wrap">
-          <Reveal><span className="ah-kicker">From our parents</span></Reveal>
-          <Reveal delay={0.05}><h2>What changes <em>at home.</em></h2></Reveal>
-          <div className="ah-grid-3">
-            {QUOTES.map((item, i) => (
-              <Reveal key={item.who} delay={i * 0.06} as="figure" className="ah-quote">
-                <blockquote>“{item.quote}”</blockquote>
-                <figcaption>{item.who}</figcaption>
-              </Reveal>
-            ))}
-          </div>
+          <Coaches />
         </section>
 
         <section className="ah-wrap ah-cta-wrap">
           <Reveal className="ah-cta">
-            <div>
-              <span className="ah-kicker ah-kicker-light">No payment needed to try</span>
+            <div className="ah-cta-copy">
               <h2>Your child’s first class <em className="ah-gold">is on us.</em></h2>
               <p>30 minutes, one coach, one child. See if your child enjoys it before you pay anything.</p>
+              <div className="ah-cta-actions">
+                <a className="ah-btn ah-btn-cream" href={BOOK} target="_blank" rel="noreferrer">Book free class <ArrowRight size={16} /></a>
+                <a className="ah-btn ah-btn-outline-light" href={CHAT} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Chat on WhatsApp</a>
+              </div>
             </div>
-            <div className="ah-cta-actions">
-              <a className="ah-btn ah-btn-cream" href={BOOK} target="_blank" rel="noreferrer">Book free class <ArrowRight size={16} /></a>
-              <a className="ah-btn ah-btn-outline-light" href={CHAT} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Chat on WhatsApp</a>
+            <div className="ah-cta-crew" aria-hidden="true">
+              {['rook', 'bishop', 'pawn', 'knight', 'queen'].map((id, i) => (
+                <motion.span key={id} animate={{ y: [0, -10, 0] }} transition={{ duration: 2.4, repeat: Infinity, delay: i * 0.25, ease: 'easeInOut' }}>
+                  <Character id={id} mood={i === 2 ? 'cheer' : 'happy'} size={i === 2 ? 96 : 70} />
+                </motion.span>
+              ))}
             </div>
           </Reveal>
         </section>
@@ -294,21 +497,25 @@ export function AcademyHome() {
         <div className="ah-wrap ah-foot-grid">
           <div>
             <p className="ah-logo ah-logo-light">the thinking academy<span>.</span></p>
-            <p className="ah-foot-copy">1:1 online chess for kids aged 4–6. Chess as the tool. Thinking as the outcome.</p>
+            <p className="ah-foot-copy">Chess for kids aged 4 to 6. Chess as the tool. Thinking as the outcome.</p>
           </div>
           <div>
-            <h4>Explore</h4>
-            <a href="#programs">Programs</a>
-            <a href="#pricing">Pricing</a>
-            <Link to={FREE_COURSE}>Free course</Link>
+            <h4>Learn</h4>
+            <a href="#ways">Live classes</a>
+            <Link to={HOME_COURSE}>Home Course</Link>
+            <a href="#class">How a class works</a>
+          </div>
+          <div>
+            <h4>Academy</h4>
+            <a href="#about">About &amp; coaches</a>
             <a href="#little-wins">Little wins</a>
-            <a href="#coaches">About</a>
+            <Link to={user ? '/parents' : '/login'}>Parent login</Link>
           </div>
           <div>
             <h4>Contact</h4>
             <a href={`tel:+${PHONE}`}>+91-7448408684 (call or WhatsApp)</a>
             <a href="mailto:rathishravi98@gmail.com">rathishravi98@gmail.com</a>
-            <span>Mettupalayam, Coimbatore District, Tamil Nadu</span>
+            <span>Mettupalayam, Tamil Nadu</span>
           </div>
         </div>
         <p className="ah-wrap ah-foot-legal">© 2026 The Thinking Academy</p>
