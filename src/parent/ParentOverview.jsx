@@ -153,7 +153,7 @@ export function ParentOverview({ onStartCourse }) {
               <h3 className="pp-serif">Want to keep going? Live one-to-one classes.</h3>
               <p>If your child enjoys the course, we’ll arrange a coach for live one-to-one classes.</p>
             </div>
-            <Link to="/pricing" className="pp-btn pp-btn-accent pp-btn-lg">Request a 1:1 coach</Link>
+            <Link to="/book" className="pp-btn pp-btn-accent pp-btn-lg">Request a 1:1 coach</Link>
           </div>
         </Rise>
       </section>

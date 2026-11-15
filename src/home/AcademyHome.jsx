@@ -2,40 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, animate, motion, useInView, useReducedMotion } from 'motion/react';
 import { ArrowLeft, ArrowRight, Check, MessageCircle, RotateCcw, Star } from 'lucide-react';
-import { useAuth } from '../components/AuthContext';
 import { CourseChessPiece } from '../components/CourseChessPiece';
 import { Character } from '../kids/Characters';
-import './academy.css';
-
-const PHONE = '917448408684';
-const wa = (text) => `https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`;
-const BOOK = wa('Hi! I would like to book a free chess class for my child.');
-const CHAT = wa('Hi! I have a question about The Thinking Academy.');
-const HOME_COURSE = '/courses/beginner-chess';
-const EASE = [0.2, 0.8, 0.2, 1];
-
-function Reveal({ children, delay = 0, className = '', as = 'div', ...rest }) {
-  const reduce = useReducedMotion();
-  const Tag = motion[as];
-  return (
-    <Tag className={className} initial={reduce ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay, ease: EASE }} {...rest}>
-      {children}
-    </Tag>
-  );
-}
-
-/** A hand-drawn underline under one word. */
-function Scribble({ children, color = 'var(--clay)' }) {
-  return (
-    <span className="ah-scribble">
-      {children}
-      <svg viewBox="0 0 200 18" preserveAspectRatio="none" aria-hidden="true">
-        <motion.path d="M3 12 C 40 4, 90 3, 130 8 S 185 14, 197 6" fill="none" stroke={color} strokeWidth="5" strokeLinecap="round"
-          initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }} transition={{ duration: 0.9, delay: 0.4, ease: EASE }} />
-      </svg>
-    </span>
-  );
-}
+import { CHAT, COACHES, EASE, HOME_COURSE, Reveal, Scribble, SiteFooter, SiteHeader } from './site';
 
 /* ---------------------------------------------------------------- hero board */
 const SIZE = 5;
@@ -120,7 +89,7 @@ const WAYS = {
   coach: {
     label: 'With a coach', kicker: 'Coach-led', title: 'A coach teaches your child',
     points: ['1:1 or 1:2, live online', '30 minutes, twice a week', 'Home Course included'],
-    price: '₹3,200', unit: '/month onwards', cta: { label: 'See live classes', href: wa('Hi! I would like to know more about the live classes.'), external: true },
+    price: '₹3,200', unit: '/month onwards', cta: { label: 'See live classes', href: '/programs' },
   },
   home: {
     label: 'With you', kicker: 'At your pace', title: 'You teach, we guide you',
@@ -345,24 +314,16 @@ function QuoteDeck() {
 }
 
 /* ---------------------------------------------------------------- coaches */
-const COACHES = [
-  { name: 'Rathish', role: 'Founder & Head Coach', text: 'Seven years teaching kids. Trains every coach personally. FIDE 1670.', tint: '#EAD5BF' },
-  { name: 'Gaayathri', role: 'Coach', text: 'A decade in chess. Turns reluctant kids into eager ones.', tint: '#DDE3D0' },
-  { name: 'Rakesh', role: 'Coach', text: 'Chess coach and psychotherapist. Flexible with the youngest.', tint: '#F2DFB5' },
-  { name: 'Lakshaya', role: 'Coach', text: 'A decade in chess. Calm and soft-spoken — great with shy kids.', tint: '#EAD5BF' },
-  { name: 'Honnesha', role: 'Coach', text: 'A decade in chess. Sincere, patient, paced to each child.', tint: '#DDE3D0' },
-];
-
 function Coaches() {
   const [open, setOpen] = useState(null);
   return (
     <div className="ah-coaches">
       {COACHES.map((coach, i) => (
-        <Reveal key={coach.name} delay={i * 0.06} as="button" type="button" className={`ah-coach ${open === i ? 'is-open' : ''}`}
+        <Reveal key={coach.id} delay={i * 0.06} as="button" type="button" className={`ah-coach ${open === i ? 'is-open' : ''}`}
           onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i}>
           <span className="ah-coach-arch" style={{ background: coach.tint }}>
-            <span className="ah-coach-initial" aria-hidden="true">{coach.name[0]}</span>
-            <span className="ah-coach-blurb">{coach.text}</span>
+            <img className="ah-coach-photo" src={coach.photo} alt="" loading="lazy" />
+            <span className="ah-coach-blurb">{coach.short}</span>
           </span>
           <span className="ah-coach-role">{coach.role}</span>
           <span className="ah-coach-name">{coach.name}</span>
@@ -374,29 +335,11 @@ function Coaches() {
 
 /* ---------------------------------------------------------------- page */
 export function AcademyHome() {
-  const { user } = useAuth();
   useEffect(() => { document.title = 'The Thinking Academy | Chess for kids aged 4 to 6'; }, []);
 
   return (
     <div className="ah-root">
-      <a className="ah-topbar" href={BOOK} target="_blank" rel="noreferrer">
-        For ages 4–6 <i>•</i> Live classes &amp; home course <i>•</i> First class free
-      </a>
-
-      <header className="ah-nav">
-        <Link to="/" className="ah-logo">the thinking academy<span>.</span></Link>
-        <nav aria-label="Main">
-          <a href="#ways">Live Classes</a>
-          <Link to={HOME_COURSE}>Home Course</Link>
-          <a href="#class">How it works</a>
-          <a href="#little-wins">Little Wins</a>
-          <a href="#about">About</a>
-        </nav>
-        <div className="ah-nav-end">
-          <Link to={user ? '/parents' : '/login'} className="ah-signin">{user ? 'My account' : 'Parent login'}</Link>
-          <a className="ah-btn ah-btn-clay ah-btn-sm" href={BOOK} target="_blank" rel="noreferrer">Book free class</a>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main>
         <section className="ah-hero ah-wrap">
@@ -405,7 +348,7 @@ export function AcademyHome() {
             <Reveal delay={0.05}><h1>Chess for kids aged <em>4 to 6.</em></h1></Reveal>
             <Reveal delay={0.1}><p className="ah-lead">Learn live with a coach, or at home with you. Your child doesn’t need to know chess — <Scribble>and neither do you.</Scribble></p></Reveal>
             <Reveal delay={0.15} className="ah-actions">
-              <a className="ah-btn ah-btn-dark" href={BOOK} target="_blank" rel="noreferrer">Book free class <ArrowRight size={16} /></a>
+              <Link className="ah-btn ah-btn-dark" to="/book">Book free class <ArrowRight size={16} /></Link>
               <a className="ah-btn ah-btn-line" href="#ways">See both ways</a>
             </Reveal>
             <Reveal delay={0.2} className="ah-chips">
@@ -449,6 +392,7 @@ export function AcademyHome() {
             <Reveal delay={0.05}><h2>Your child starts as a <em className="ah-gold">Pawn.</em></h2></Reveal>
             <Reveal delay={0.08}><p className="ah-sub ah-sub-light">Finish a phase, earn the certificate for the next piece. Tap a piece to see what it takes.</p></Reveal>
             <Reveal delay={0.12}><PieceLadder /></Reveal>
+            <Reveal delay={0.1} className="ah-more"><Link className="ah-link-light" to="/little-wins">See our students’ little wins <ArrowRight size={14} /></Link></Reveal>
           </div>
         </section>
 
@@ -466,7 +410,7 @@ export function AcademyHome() {
               <Reveal><span className="ah-kicker">Meet the coaches</span></Reveal>
               <Reveal delay={0.05}><h2>Patient people. <em>Rated players.</em></h2></Reveal>
             </div>
-            <Reveal delay={0.1}><p className="ah-sub">Tap a coach to meet them.</p></Reveal>
+            <Reveal delay={0.1} className="ah-head-aside"><p className="ah-sub">Tap a coach to meet them.</p><Link className="ah-link" to="/about">About us <ArrowRight size={14} /></Link></Reveal>
           </div>
           <Coaches />
         </section>
@@ -477,7 +421,7 @@ export function AcademyHome() {
               <h2>Your child’s first class <em className="ah-gold">is on us.</em></h2>
               <p>30 minutes, one coach, one child. See if your child enjoys it before you pay anything.</p>
               <div className="ah-cta-actions">
-                <a className="ah-btn ah-btn-cream" href={BOOK} target="_blank" rel="noreferrer">Book free class <ArrowRight size={16} /></a>
+                <Link className="ah-btn ah-btn-cream" to="/book">Book free class <ArrowRight size={16} /></Link>
                 <a className="ah-btn ah-btn-outline-light" href={CHAT} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Chat on WhatsApp</a>
               </div>
             </div>
@@ -492,34 +436,7 @@ export function AcademyHome() {
         </section>
       </main>
 
-      <footer className="ah-foot" id="contact">
-        <div className="ah-zigzag" aria-hidden="true" />
-        <div className="ah-wrap ah-foot-grid">
-          <div>
-            <p className="ah-logo ah-logo-light">the thinking academy<span>.</span></p>
-            <p className="ah-foot-copy">Chess for kids aged 4 to 6. Chess as the tool. Thinking as the outcome.</p>
-          </div>
-          <div>
-            <h4>Learn</h4>
-            <a href="#ways">Live classes</a>
-            <Link to={HOME_COURSE}>Home Course</Link>
-            <a href="#class">How a class works</a>
-          </div>
-          <div>
-            <h4>Academy</h4>
-            <a href="#about">About &amp; coaches</a>
-            <a href="#little-wins">Little wins</a>
-            <Link to={user ? '/parents' : '/login'}>Parent login</Link>
-          </div>
-          <div>
-            <h4>Contact</h4>
-            <a href={`tel:+${PHONE}`}>+91-7448408684 (call or WhatsApp)</a>
-            <a href="mailto:rathishravi98@gmail.com">rathishravi98@gmail.com</a>
-            <span>Mettupalayam, Tamil Nadu</span>
-          </div>
-        </div>
-        <p className="ah-wrap ah-foot-legal">© 2026 The Thinking Academy</p>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

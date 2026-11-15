@@ -1,9 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Navbar } from './components/Navbar';
 import { LandingPage, CourseLandingPage } from './components/LandingPage';
 import { CurriculumPage } from './components/CurriculumPage';
-import { PaymentPage } from './components/PaymentPage';
 import { AuthPage } from './components/AuthPage';
 import { AuthProvider, useAuth } from './components/AuthContext';
 import { CoursesPage } from './components/CoursesPage';
@@ -15,20 +13,11 @@ const KidsLayout = lazy(() => import('./kids/KidsLayout'));
 const KidsWorldPage = lazy(() => import('./kids/KidsWorldPage'));
 const KidsLevelPage = lazy(() => import('./kids/KidsLevelPage'));
 const KidsCrewPage = lazy(() => import('./kids/KidsCrewPage'));
-
-function PricingPageWrapper() {
-  return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* Site Navbar */}
-      <Navbar />
-
-      {/* Main Pricing / Book 1:1 Page */}
-      <main className="flex-1">
-        <PaymentPage />
-      </main>
-    </div>
-  );
-}
+// Academy pages, also loaded on demand.
+const LittleWinsPage = lazy(() => import('./home/LittleWinsPage'));
+const AboutPage = lazy(() => import('./home/AboutPage'));
+const ProgramsPage = lazy(() => import('./home/ProgramsPage'));
+const BookPage = lazy(() => import('./home/BookPage'));
 
 /** Entry point for the parent view: requires a signed-in grown-up. */
 function ParentsEntry() {
@@ -38,6 +27,10 @@ function ParentsEntry() {
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace state={{ from: '/parents' }} />;
   return mode === 'parent' ? <Navigate to="/" replace /> : null;
+}
+
+function PageFallback() {
+  return <div style={{ minHeight: '100vh', background: '#F5ECDF' }} aria-busy="true" />;
 }
 
 function KidsFallback() {
@@ -62,14 +55,18 @@ export default function App() {
         element={<CurriculumPage />}
       />
 
-      {/* Pricing / Book 1:1 Page at /pricing */}
-      <Route
-        path="/pricing"
-        element={<PricingPageWrapper />}
-      />
-
-      {/* Book 1:1 alias route */}
-      <Route path="/book-1-1" element={<Navigate to="/pricing" replace />} />
+      {/* Academy pages */}
+      <Route path="/programs" element={<Suspense fallback={<PageFallback />}><ProgramsPage /></Suspense>} />
+      <Route path="/little-wins" element={<Suspense fallback={<PageFallback />}><LittleWinsPage /></Suspense>} />
+      <Route path="/about" element={<Suspense fallback={<PageFallback />}><AboutPage /></Suspense>} />
+      <Route path="/book" element={<Suspense fallback={<PageFallback />}><BookPage /></Suspense>} />
+      {/* Older addresses */}
+      <Route path="/pricing" element={<Navigate to="/programs#plans" replace />} />
+      <Route path="/book-1-1" element={<Navigate to="/book" replace />} />
+      <Route path="/achievements" element={<Navigate to="/little-wins" replace />} />
+      <Route path="/about-us" element={<Navigate to="/about" replace />} />
+      <Route path="/contact-us" element={<Navigate to="/book" replace />} />
+      <Route path="/free-course" element={<Navigate to="/courses/beginner-chess" replace />} />
 
       <Route path="/login" element={<AuthPage key="login" mode="login" />} />
       <Route path="/signup" element={<AuthPage key="signup" mode="signup" />} />

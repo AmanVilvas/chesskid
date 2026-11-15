@@ -175,7 +175,7 @@ export function ParentHome() {
                 <h2 className="pp-serif">Ready for one-to-one classes?</h2>
                 <p>If your child is enjoying chess, we’ll arrange a coach for live one-to-one classes.</p>
               </div>
-              <Link to="/pricing" className="pp-btn pp-btn-accent pp-btn-lg">Request a 1:1 coach <ArrowRight size={17} /></Link>
+              <Link to="/book" className="pp-btn pp-btn-accent pp-btn-lg">Request a 1:1 coach <ArrowRight size={17} /></Link>
             </div>
           ) : (
             <Link to={current.next.href} className="ph-next" aria-label={`Continue Day ${current.section.day}: ${current.next.label}`}>

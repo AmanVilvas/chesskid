@@ -319,7 +319,7 @@ export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBac
                   <h3 className="pp-serif">Your child finished the Beginner course.</h3>
                   <p>If they’d like to keep going, we can arrange a coach for live 1:1 classes.</p>
                 </div>
-                <Link to="/pricing" className="pp-btn pp-btn-accent pp-btn-lg">Request a 1:1 coach</Link>
+                <Link to="/book" className="pp-btn pp-btn-accent pp-btn-lg">Request a 1:1 coach</Link>
               </div>
             )}
             <div className="pp-tabs" role="tablist" aria-label="Lesson details">
@@ -439,7 +439,7 @@ export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBac
               <h2 id="pp-complete-title" className="pp-serif">All six days, done.</h2>
               <p>Your child has met every chess piece. If they’re enjoying it, we’ll arrange a coach for live 1:1 classes.</p>
               <div className="pp-modal-actions">
-                <Link to="/pricing" className="pp-btn pp-btn-accent pp-btn-lg">Request a 1:1 coach</Link>
+                <Link to="/book" className="pp-btn pp-btn-accent pp-btn-lg">Request a 1:1 coach</Link>
                 <button type="button" className="pp-btn pp-btn-ghost pp-btn-lg" onClick={() => setShowComplete(false)}>Maybe later</button>
               </div>
             </motion.section>
