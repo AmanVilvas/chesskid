@@ -162,7 +162,7 @@ export default function LittleWinsPage() {
         <Reveal delay={0.1}><QuoteWall /></Reveal>
       </section>
 
-      <CtaBand title={<>See how your child <em className="ah-gold">responds to a coach.</em></>} text="Book a free 30-minute first class, with one coach and one child." />
+      <CtaBand title={<>See how your child <em className="ah-gold">responds to a coach.</em></>} text="Book a 30-minute introductory session, with one coach and one child." />
 
       <AnimatePresence>{open !== null && <Lightbox index={open} onClose={close} onMove={move} />}</AnimatePresence>
     </SitePage>

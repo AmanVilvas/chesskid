@@ -114,7 +114,7 @@ export function Faq({ items }) {
   );
 }
 
-export function CtaBand({ title = <>Your child’s first class <em className="ah-gold">is free.</em></>, text = 'A 30-minute online class with one coach and one child. No payment details needed. We will arrange a suitable time on WhatsApp.', kicker }) {
+export function CtaBand({ title = <>Meet your child’s coach in an <em className="ah-gold">introductory session.</em></>, text = 'A 30-minute online session with one coach and one child. No payment details needed. We will arrange a suitable time on WhatsApp.', kicker }) {
   return (
     <section className="ah-wrap ah-cta-wrap">
       <Reveal className="ah-cta pg-cta">

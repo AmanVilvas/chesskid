@@ -35,7 +35,7 @@ const WAYS = {
     label: 'Live classes', kicker: 'Coach-led · monthly payment', title: 'A coach teaches your child, online',
     points: ['Personal (one child) or paired (two children)', 'Eight 30-minute classes per month', 'Your coach adapts to your child’s pace'],
     prices: [[PLANS.paired.price, 'per child / month', 'Paired classes'], [PLANS.personal.price, '/ month', 'Personal classes']],
-    note: 'The free first class is always one coach and one child.',
+    note: 'The introductory session is always one coach and one child.',
     cta: { label: 'See live classes and prices', href: '/programs' },
   },
   home: {
@@ -373,8 +373,8 @@ export function AcademyHome() {
         <section className="ah-wrap ah-cta-wrap">
           <Reveal className="ah-cta">
             <div className="ah-cta-copy">
-              <h2>Your child’s first class <em className="ah-gold">is free.</em></h2>
-              <p>A 30-minute online class with one coach and one child. No payment details needed. We will arrange a suitable time on WhatsApp.</p>
+              <h2>Meet your child’s coach in an <em className="ah-gold">introductory session.</em></h2>
+              <p>A 30-minute online session with one coach and one child. No payment details needed. We will arrange a suitable time on WhatsApp.</p>
               <div className="ah-cta-actions">
                 <Link className="ah-btn ah-btn-cream" to="/book">{INTRO.cta} <ArrowRight size={16} /></Link>
                 <a className="ah-btn ah-btn-outline-light" href={CHAT} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Chat on WhatsApp</a>

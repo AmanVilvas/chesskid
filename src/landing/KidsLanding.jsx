@@ -330,7 +330,7 @@ export function KidsLanding({ course }) {
               <p>{copy.grownups.text}</p>
               <div className="kl-grownup-links">
                 <Link to="/curriculum" className="kid-btn kid-btn-blue"><GraduationCap size={20} /> Lesson planner</Link>
-                <Link to="/pricing" className="kid-btn kid-btn-ghost">Book a 1:1 trial</Link>
+                <Link to="/book" className="kid-btn kid-btn-ghost">Book an Introductory Session</Link>
               </div>
             </Reveal>
             <Reveal delay={0.1} className="kl-grownup-list">
@@ -369,7 +369,7 @@ export function KidsLanding({ course }) {
             <h3>Grown-ups</h3>
             <Link to="/curriculum">Lesson planner</Link>
             <Link to="/courses">Courses</Link>
-            <Link to="/pricing">Book a 1:1 trial</Link>
+            <Link to="/book">Book an Introductory Session</Link>
           </div>
           <div>
             <h3>Account</h3>

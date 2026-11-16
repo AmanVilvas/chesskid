@@ -69,7 +69,7 @@ export default function AboutPage() {
           <h2>A small team, <em>built for ages 4 to 6.</em></h2>
           <p>We are a small team of chess coaches focused on children aged 4–6. We use stories, mini-games and practice to help beginners learn at a manageable pace.</p>
           <p>Rathish leads the team and trains coaches on our shared curriculum. Each coach adapts the lesson to the child, while following the same core learning goals.</p>
-          <p>Parents can begin with a free class to meet a coach and see how their child responds.</p>
+          <p>Parents can begin with an introductory session to meet a coach and see how their child responds.</p>
           <details className="pg-more-note">
             <summary>More about our background</summary>
             <p>We are not a large corporate academy, and we don’t try to be one. Each member of our team comes from a strong academic and professional background alongside competitive chess. Some of us balance chess with careers in engineering, physiotherapy and higher education, while others have chosen to pursue chess full-time. What unites us is not branding or scale, but a genuine respect for learning, discipline, and the role chess plays in developing clear thinking.</p>
@@ -96,7 +96,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <CtaBand title={<>Meet a coach in a <em className="ah-gold">free first class.</em></>} text="We will arrange a suitable time on WhatsApp. No payment details needed." />
+      <CtaBand title={<>Meet a coach in an <em className="ah-gold">introductory session.</em></>} text="We will arrange a suitable time on WhatsApp. No payment details needed." />
     </SitePage>
   );
 }

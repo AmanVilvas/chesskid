@@ -15,15 +15,15 @@ const PLAN_OPTIONS = [['', 'Not sure yet'], ['personal', PLANS.personal.label], 
 const STEPS = [
   ['Send the enquiry on WhatsApp', 'Press the button above, review the prepared message and press Send.'],
   ['Agree a suitable time', 'Our team replies on WhatsApp and offers a few times that suit your time zone, such as mornings, evenings or weekends.'],
-  ['Join the free class', 'You will join the 30-minute class using the joining details we send.'],
+  ['Join the introductory session', 'You will join the 30-minute session using the joining details we send.'],
   ['Discuss a paid plan if you wish', 'If your child enjoyed it, we can talk about what comes next. No pressure either way.'],
 ];
 
 const FAQS = [
-  ['Is the first class really free?', 'Yes. No payment details are needed to book. You only choose a plan if your child enjoys it.'],
+  ['Do I need to pay to book?', 'No. No payment details are needed to book an introductory session. You only choose a plan if your child enjoys it and you wish to continue.'],
   ['Can I sit in on the class?', 'Yes, and we encourage it for the first few classes. Young children settle faster when a parent is nearby.'],
   ['We live outside India. Will the timings work?', 'Yes. Classes run mornings, evenings and weekends for families in the UAE, the US, the UK, Canada, Australia, Singapore and beyond.'],
-  ['Why is the free class one coach and one child if we are interested in paired classes?', 'The free first class is always one coach and one child, so your coach can get to know your child. You can tell us your preferred plan and change your mind at any time.'],
+  ['Why is the introductory session one coach and one child if we are interested in paired classes?', 'The introductory session is always one coach and one child, so your coach can get to know your child. You can tell us your preferred plan and change your mind at any time.'],
 ];
 
 const REQUIRED = {
@@ -53,7 +53,7 @@ function Chips({ label, options, value, onChange, required, name, error, id }) {
 
 function buildMessage(f) {
   const lines = [
-    'Hi! I’d like to book a free first chess class (30 minutes, one coach, one child).',
+    'Hi! I’d like to book an introductory session (30 minutes, one coach, one child).',
     '',
     `Parent: ${f.parent.trim() || '…'}`,
     `Child’s age: ${f.age || '…'}`,
@@ -101,12 +101,12 @@ export default function BookPage() {
   };
 
   return (
-    <SitePage title="Book a Free Class">
+    <SitePage title="Book an Introductory Session">
       <section className="ah-wrap pg-hero pg-book">
         <div className="pg-book-intro">
-          <Reveal><span className="ah-kicker">First class free</span></Reveal>
-          <Reveal delay={0.05}><h1>Book your child’s <em>free first class.</em></h1></Reveal>
-          <Reveal delay={0.1}><p className="ah-lead">A 30-minute online class with one coach and one child. No chess experience or payment details needed. Tell us your child’s age and country, then contact us on WhatsApp to arrange a time.</p></Reveal>
+          <Reveal><span className="ah-kicker">Introductory session</span></Reveal>
+          <Reveal delay={0.05}><h1>Book your child’s <em>introductory session.</em></h1></Reveal>
+          <Reveal delay={0.1}><p className="ah-lead">A 30-minute online session with one coach and one child. No chess experience or payment details needed. Tell us your child’s age and country, then contact us on WhatsApp to arrange a time.</p></Reveal>
           <Reveal delay={0.14} as="ul" className="pg-ticks">
             <li><Check size={16} strokeWidth={3} /> 30 minutes, online, with a FIDE-rated coach</li>
             <li><Check size={16} strokeWidth={3} /> No payment details needed</li>
@@ -143,15 +143,15 @@ export default function BookPage() {
           <motion.button type="submit" className="ah-btn ah-btn-clay pg-submit" whileTap={{ scale: 0.97 }}>
             <Send size={17} /> Continue on WhatsApp
           </motion.button>
-          <p className="pg-form-note">Opens a prepared message. Review it and press Send. Your class time is confirmed after we reply and agree a slot.</p>
-          {form.plan && <p className="pg-plan-line">Preferred plan: <b>{PLANS[form.plan].label}</b>. The free first class is always one coach and one child. <button type="button" onClick={() => { if (moreRef.current) { moreRef.current.open = true; moreRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' }); } }}>Change</button></p>}
+          <p className="pg-form-note">Opens a prepared message. Review it and press Send. Your session time is confirmed after we reply and agree a slot.</p>
+          {form.plan && <p className="pg-plan-line">Preferred plan: <b>{PLANS[form.plan].label}</b>. The introductory session is always one coach and one child. <button type="button" onClick={() => { if (moreRef.current) { moreRef.current.open = true; moreRef.current.scrollIntoView({ block: 'center', behavior: 'smooth' }); } }}>Change</button></p>}
 
           <div className="pg-fallback">
             <button type="button" className="pg-copy" onClick={copyMessage}><Copy size={16} /> {copied ? 'Copied' : 'Copy message'}</button>
             <span>WhatsApp not opening? Copy the message and send it to +91 74484 08684.</span>
           </div>
           <AnimatePresence>
-            {opened && <motion.p className="pg-sent" role="status" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ ease: EASE }}>We tried to open WhatsApp. Press Send there to contact us. If nothing opened, copy your message above, or call or email us below. Your class is not booked until we reply and agree a time.</motion.p>}
+            {opened && <motion.p className="pg-sent" role="status" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ ease: EASE }}>We tried to open WhatsApp. Press Send there to contact us. If nothing opened, copy your message above, or call or email us below. Your session is not booked until we reply and agree a time.</motion.p>}
           </AnimatePresence>
 
           <details className="pg-optional" ref={moreRef}>

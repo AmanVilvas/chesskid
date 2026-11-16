@@ -18,7 +18,7 @@ const COLOURS = [['#E2584A', 'Red'], ['#F2A93B', 'Orange'], ['#4F9D69', 'Green']
 const fullPrice = (key) => PARTS.reduce((sum, part) => sum + part[key], 0);
 
 const FAQS = [
-  ['Is the Home Course free?', 'No. The Home Course is a paid course, bought in parts. The sample unit on this page is free to try, and your first live class is free, but neither makes the full course free.'],
+  ['Is the Home Course a paid course?', 'Yes. The Home Course is a paid course, bought in parts. The sample unit on this page is a preview only, and an introductory live session does not include the full course.'],
   ['I don’t know chess. Can I teach this?', 'Each unit includes a parent guide that shows what to teach and how to say it. You learn together.'],
   ['Which part should we start with?', 'New to chess? Start with Part 1, covering units 1–10. Already familiar with the basics? Message us and we can help you choose where to begin.'],
   ['How long does each unit take?', 'As long as your child needs. You can split an activity across shorter sittings and repeat it before moving on.'],
@@ -290,7 +290,7 @@ function SampleUnit({ name }) {
   const tabs = [['guide', '1 · For you', 'Parent guide'], ['cartoon', '2 · For your child', 'Animated lesson'], ['play', '3 · Together', 'Activity'], ['sheet', '4 · Away from the screen', 'Worksheet']];
   return (
     <div className="hc-sample">
-      <div className="hc-sample-tag"><Gift size={15} /> Free sample unit. This does not make the full course free.</div>
+      <div className="hc-sample-tag"><Gift size={15} /> Sample unit: a preview of one unit. The full course is a paid product.</div>
       <div className="hc-sample-tabs" role="tablist" aria-label="Sample unit">
         {tabs.map(([id, kicker, label]) => (
           <button key={id} type="button" role="tab" aria-selected={tab === id} className={tab === id ? 'is-on' : ''} onClick={() => setTab(id)}><small>{kicker}</small><b>{label}</b></button>

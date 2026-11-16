@@ -1,10 +1,10 @@
 // One maintained source for the academy's offers, prices and curriculum, so every page agrees.
 
 export const INTRO = {
-  name: 'free first class',
-  cta: 'Book a Free Class',
-  short: 'Book free class',
-  strip: 'Chess for ages 4–6 · Live classes and a paid Home Course · First live class free',
+  name: 'introductory session',
+  cta: 'Book an Introductory Session',
+  short: 'Book a session',
+  strip: 'Chess for ages 4–6 · Live classes and a paid Home Course · Meet your coach in an introductory session',
 };
 
 export const PLANS = {

@@ -23,14 +23,14 @@ const INCLUDES = [
   ['Built for ages 4 to 6', 'A curriculum paced for young learners.'],
   ['Recording on request', 'Missed something? Ask and we’ll share the class.'],
   ['Regular parent updates', 'You always know what your child learned and what’s next.'],
-  ['First live class free', 'One coach, one child, no payment to try.'],
+  ['An introductory session', 'Meet your coach first: one coach, one child, no payment details needed.'],
 ];
 
 const FAQS = [
   ['Is 30 minutes the right length for my child?', 'Many young children concentrate best in short sessions, so classes are 30 minutes. Your coach adapts the activities to how your child responds on the day.'],
   ['Does my child need to know anything about chess?', 'Not at all. We start from the very beginning, what the board looks like and which piece is which, and make it feel like a story, not a lesson.'],
   ['Will my child stay engaged on a screen?', 'Classes are live with a real coach, not a recorded video or an app. Stories and mini-games help keep things playful. Tell us about your child when you book so your coach knows what to expect.'],
-  ['What is the difference between personal and paired classes?', 'Personal classes are one coach with your child. Paired classes are one coach with two children, so your child learns alongside a partner at a lower monthly price per child. Both include eight 30-minute classes a month. The free first class is always one coach and one child.'],
+  ['What is the difference between personal and paired classes?', 'Personal classes are one coach with your child. Paired classes are one coach with two children, so your child learns alongside a partner at a lower monthly price per child. Both include eight 30-minute classes a month. The introductory session is always one coach and one child.'],
   ['Are paired classes right for my child?', 'Paired classes can suit children who enjoy learning alongside someone else. If your child is shy or you are not sure, ask us on WhatsApp and we will talk it through.'],
   ['Which coach will teach my child?', 'Tell us about your child when you book. We will talk through coaches and timings with you on WhatsApp.'],
   ['How does my child move through the units?', 'There are 30 units across five phases. Some units take one class and others need more practice, so your coach moves forward when your child is ready. ' + CERT_NOTE],
@@ -135,7 +135,7 @@ function Plans() {
           </Reveal>
         ))}
       </div>
-      <p className="pg-elsewhere">The free first class is always one coach and one child, even if you are exploring paired classes. Living somewhere else? <a href={wa('Hi! Could you share the class prices for my country?')} target="_blank" rel="noreferrer"><MessageCircle size={15} /> Message us on WhatsApp</a> and we’ll share your price.</p>
+      <p className="pg-elsewhere">The introductory session is always one coach and one child, even if you are exploring paired classes. Living somewhere else? <a href={wa('Hi! Could you share the class prices for my country?')} target="_blank" rel="noreferrer"><MessageCircle size={15} /> Message us on WhatsApp</a> and we’ll share your price.</p>
     </>
   );
 }
@@ -282,7 +282,7 @@ export default function ProgramsPage() {
         <Reveal delay={0.1}><Faq items={FAQS} /></Reveal>
       </section>
 
-      <CtaBand kicker="One move to start" title={<>Your child’s first class <em className="ah-gold">is free.</em></>} text="A free 30-minute class with one coach and one child. No payment details needed. We will arrange a suitable time on WhatsApp." />
+      <CtaBand kicker="One move to start" title={<>Meet your coach in an <em className="ah-gold">introductory session.</em></>} text="A 30-minute online session with one coach and one child. No payment details needed. We will arrange a suitable time on WhatsApp." />
     </SitePage>
   );
 }
