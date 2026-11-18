@@ -3,10 +3,12 @@
 // only exists on the device where it was created. Passwords are stored as salted PBKDF2 hashes,
 // but this is a demo mode: switch back to the real API (VITE_USE_API=true) for real accounts.
 import { course1Sections } from '../parent/course1Sections';
+import { PARTS, PREVIEW_UNITS, priceFor } from '../home/data';
 
 const ACCOUNTS_KEY = 'ta-local-accounts';
 const SESSION_KEY = 'ta-local-session';
 const PROGRESS_KEY = 'ta-local-progress';
+const PURCHASES_KEY = 'ta-local-purchases';
 const COURSE = { id: 'local-beginner-chess', slug: 'beginner-chess', title: 'Beginner Chess', description: 'Chess Course 1: meet the pieces, one a day.', price_minor: 0, currency: 'INR', has_subscription: false };
 const LESSON_IDS = [...new Set(course1Sections.flatMap((section) => section.lectures.map((lecture) => lecture.id)))];
 
@@ -61,13 +63,44 @@ async function login({ email, password } = {}) {
   return { user: publicUser(account) };
 }
 
+const purchasesOf = (userId) => read(PURCHASES_KEY, {})[userId] || [];
+const hasCourse = () => purchasesOf(requireAccount().id).length > 0;
+const NEEDS_PURCHASE = 'Choose a course part to unlock your lessons.';
+
+/** Demo payment: records a purchase for this account. No money moves. */
+function demoPay({ parts, personalised } = {}) {
+  const account = requireAccount();
+  const ids = [...new Set((Array.isArray(parts) ? parts : []).map(Number))].filter((n) => n >= 1 && n <= PARTS.length).sort();
+  if (!ids.length) fail('Choose at least one course part.');
+  const owned = new Set(purchasesOf(account.id).flatMap((p) => p.parts));
+  if (ids.some((id) => owned.has(id))) fail('You already have one of those parts.');
+  const purchase = { id: `DEMO-${Date.now().toString(36).toUpperCase()}`, parts: ids, personalised: Boolean(personalised), amount: priceFor(ids, Boolean(personalised)), at: new Date().toISOString(), child: null };
+  const all = read(PURCHASES_KEY, {});
+  write(PURCHASES_KEY, { ...all, [account.id]: [...purchasesOf(account.id), purchase] });
+  return { purchase };
+}
+
+function savePersonalisation({ id, name, fav, colour } = {}) {
+  const account = requireAccount();
+  const all = read(PURCHASES_KEY, {});
+  const mine = purchasesOf(account.id).map((p) => (p.id === id ? { ...p, child: { name: String(name || '').slice(0, 20), fav: String(fav || '').slice(0, 8), colour: String(colour || '').slice(0, 9) } } : p));
+  write(PURCHASES_KEY, { ...all, [account.id]: mine });
+  return { ok: true };
+}
+
+// The two preview units are open to every signed-in parent; everything else needs a purchase.
+const isPreviewLesson = (id) => { const m = String(id).match(/^u(\d+)-/); return Boolean(m) && PREVIEW_UNITS.includes(Number(m[1])); };
+
 function lessons() {
-  const done = read(PROGRESS_KEY, {})[requireAccount().id] || {};
-  return { lessons: LESSON_IDS.map((id) => ({ id, media_available: false, completed: Boolean(done[id]) })) };
+  const account = requireAccount();
+  const owned = hasCourse();
+  const done = read(PROGRESS_KEY, {})[account.id] || {};
+  return { lessons: LESSON_IDS.map((id) => ({ id, media_available: false, completed: Boolean(done[id]), locked: !owned && !isPreviewLesson(id) })) };
 }
 
 function completeLesson(lessonId, completed) {
   const account = requireAccount();
+  if (!hasCourse() && !isPreviewLesson(lessonId)) fail(NEEDS_PURCHASE);
   if (!LESSON_IDS.includes(lessonId)) fail('Lesson not found.');
   const progress = read(PROGRESS_KEY, {});
   const mine = { ...(progress[account.id] || {}) };
@@ -90,11 +123,15 @@ export async function localApiRequest(path, { method = 'GET', body } = {}) {
   if (route === '/api/auth/login' && verb === 'POST') return login(body);
   if (route === '/api/auth/logout' && verb === 'POST') { localStorage.removeItem(SESSION_KEY); return null; }
   if (route === '/api/courses/beginner-chess') return { course: COURSE };
-  // Everything is open for now: every signed-in account has Course 1.
-  if (route === '/api/courses/beginner-chess/access') { requireAccount(); return { enrolled: true }; }
+  // The course opens once this account has bought at least one part (demo checkout).
+  if (route === '/api/courses/beginner-chess/access') return { enrolled: hasCourse() };
+  if (route === '/api/payments/purchases') return { purchases: purchasesOf(requireAccount().id) };
+  if (route === '/api/payments/demo-pay' && verb === 'POST') return demoPay(body);
+  if (route === '/api/payments/personalisation' && verb === 'POST') return savePersonalisation(body);
+  if (route === '/api/payments/demo-reset' && verb === 'POST') { const all = read(PURCHASES_KEY, {}); delete all[requireAccount().id]; write(PURCHASES_KEY, all); return { ok: true }; }
   if (route === '/api/courses/beginner-chess/lessons') return lessons();
   if (lessonMatch && verb === 'POST') return completeLesson(decodeURIComponent(lessonMatch[1]), body?.completed);
-  if (route === '/api/payments/free-enrollment') { requireAccount(); return { enrolled: true }; }
+  if (route === '/api/payments/free-enrollment') fail('This course is paid. Choose a part to unlock it.');
   if (route.startsWith('/api/payments/')) fail('Payments are not available yet. The course is free for now.');
   if (route.startsWith('/api/admin')) fail('The admin dashboard needs the course server, which is switched off for now.');
   return fail('This feature is not available yet.');

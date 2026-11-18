@@ -124,7 +124,7 @@ export function recordPuzzleSolved(pieceId, puzzleIndex, puzzleId, crowns) {
  * A world unlocks when the previous world's lesson was watched and, if it has puzzles,
  * at least UNLOCK_PUZZLES_NEEDED of them (or all, when fewer) were solved.
  */
-export function summarizeWorlds(worlds, { watched = {}, crowns = {}, worksheets = {}, chests = {} } = {}, puzzleProgress = {}, { openAll = false } = {}) {
+export function summarizeWorlds(worlds, { watched = {}, crowns = {}, worksheets = {}, chests = {} } = {}, puzzleProgress = {}, { openAll = false, lockedIds = null } = {}) {
   const summaries = [];
   let previousOpensNext = true;
   for (const world of worlds) {
@@ -139,12 +139,14 @@ export function summarizeWorlds(worlds, { watched = {}, crowns = {}, worksheets 
     const needed = Math.min(UNLOCK_PUZZLES_NEEDED, puzzles.length);
     const opensNext = isWatched && solved >= needed;
     const mastered = isWatched && solved === puzzles.length;
-    const unlocked = openAll || previousOpensNext;
+    const paywalled = Boolean(lockedIds?.has(world.id));
+    const unlocked = (openAll || previousOpensNext) && !paywalled;
     // Medals: 1 for the lesson, 2 when the unlock goal is met, 3 when every puzzle is solved.
     const medals = !isWatched ? 0 : mastered ? 3 : opensNext ? 2 : 1;
     summaries.push({
       id: world.id,
       unlocked,
+      paywalled,
       watched: isWatched,
       solved,
       total: puzzles.length,

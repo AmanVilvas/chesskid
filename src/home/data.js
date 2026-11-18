@@ -76,3 +76,26 @@ export const ASSESS_SHORT = 'Completed the course? Message us to arrange an asse
 export const PHONE = '917448408684';
 export const wa = (text) => `https://wa.me/${PHONE}?text=${encodeURIComponent(text)}`;
 export const HELP = wa('Hi! I need help with my parent login for The Thinking Academy.');
+
+/** Price in rupees for a set of part ids (1-3). Owning all three parts uses the bundle price. */
+export const priceFor = (partIds, personalised) => {
+  const key = personalised ? 'per' : 'std';
+  if (partIds.length === 3) return BUNDLE[key];
+  return partIds.reduce((sum, id) => sum + PARTS[id - 1][key], 0);
+};
+export const listPrice = (partIds, personalised) => partIds.reduce((sum, id) => sum + PARTS[id - 1][personalised ? 'per' : 'std'], 0);
+
+export const FAVS = [['🦖', 'Dinosaurs'], ['🏏', 'Cricket'], ['🚀', 'Space'], ['🐱', 'Cats'], ['⚽', 'Football'], ['🦋', 'Butterflies']];
+export const COLOURS = [['#E2584A', 'Red'], ['#F2A93B', 'Orange'], ['#4F9D69', 'Green'], ['#3E8EDE', 'Blue'], ['#9B7BF7', 'Purple'], ['#F07AB0', 'Pink']];
+
+/** 'demo' sends buy buttons to the demo checkout; 'whatsapp' sends them to a prepared WhatsApp message. */
+export const CHECKOUT_MODE = 'demo';
+export const checkoutPath = (part, personalised) => `/checkout?part=${part}&version=${personalised ? 'personalised' : 'standard'}`;
+
+/** The two units shown in the course preview, and the parent videos that go with them. */
+export const PREVIEW_UNITS = [1, 2];
+// Rathish's own rules video stands in until the unit-specific parent guides are uploaded.
+export const PARENT_VIDEOS = {
+  1: { id: 'hiopZjoYfMA', start: 5, caption: 'Rathish · Unit 1: The Rook' },
+  2: { id: 'hiopZjoYfMA', start: 150, caption: 'Rathish · Unit 2: The Bishops' },
+};

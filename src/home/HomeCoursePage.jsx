@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft, ArrowRight, Check, Gift, Lock, MessageCircle, Pause, Play, Printer, ShieldCheck, Sparkles, Star, UserRound } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, CreditCard, Gift, Lock, MessageCircle, Pause, Play, Printer, ShieldCheck, Sparkles, Star, UserRound } from 'lucide-react';
 import { useAuth } from '../components/AuthContext';
 import { CourseChessPiece } from '../components/CourseChessPiece';
 import { Character } from '../kids/Characters';
 import { KidsBoard } from '../kids/KidsBoard';
 import { kidsFilms } from '../kids/kidsFilms';
-import { ASSESS_SHORT, BUNDLE, INTRO, PARTS, PHASES, UNITS, inr, phaseOf, unitsOfPart } from './data';
+import { ASSESS_SHORT, BUNDLE, CHECKOUT_MODE, COLOURS, FAVS, INTRO, PARTS, PHASES, UNITS, checkoutPath, inr, phaseOf, unitsOfPart } from './data';
 import { KnightBoard } from './KnightBoard';
 import { EASE, Faq, Reveal, Scribble, SitePage, wa } from './site';
 import './homecourse.css';
 
 const CREW = { 1: ['rook', 'Rocco'], 2: ['bishop', 'Bea'], 3: ['queen', 'Queenie'], 4: ['king', 'King Kip'], 5: ['pawn', 'Pip'], 6: ['knight', 'Kit'] };
-const FAVS = [['🦖', 'Dinosaurs'], ['🏏', 'Cricket'], ['🚀', 'Space'], ['🐱', 'Cats'], ['⚽', 'Football'], ['🦋', 'Butterflies']];
-const COLOURS = [['#E2584A', 'Red'], ['#F2A93B', 'Orange'], ['#4F9D69', 'Green'], ['#3E8EDE', 'Blue'], ['#9B7BF7', 'Purple'], ['#F07AB0', 'Pink']];
 const fullPrice = (key) => PARTS.reduce((sum, part) => sum + part[key], 0);
 
 const FAQS = [
@@ -27,6 +25,12 @@ const FAQS = [
   ['How does my child earn a certificate?', ASSESS_SHORT + ' Finishing a unit or buying a part does not award a certificate by itself.'],
   ['We’re in live classes. Do we pay for this?', 'Message us on WhatsApp and we will tell you what applies to your plan.'],
 ];
+
+/** Buy button: the demo checkout while CHECKOUT_MODE is 'demo', otherwise a prepared WhatsApp message. */
+function BuyLink({ part, what, personalised, price, label, className }) {
+  if (CHECKOUT_MODE === 'demo') return <Link className={className} to={checkoutPath(part, personalised)}><CreditCard size={15} /> {label}</Link>;
+  return <a className={className} href={buyMessage(what, personalised, price)} target="_blank" rel="noreferrer"><MessageCircle size={15} /> Message us to buy {what}</a>;
+}
 
 function buyMessage(what, personalised, price) {
   return wa(`Hi! I’d like to buy the Home Course: ${what}, ${personalised ? 'Personalised' : 'Standard'} version, ${inr(price)}. Please send me the payment link.`);
@@ -182,7 +186,7 @@ function Units({ personalised, signedIn }) {
               <small>one-time{personalised ? ' · personalised' : ' · standard'}</small>
               {signedIn
                 ? <Link className="ah-btn ah-btn-dark ah-btn-sm" to="/parents">Open your course</Link>
-                : <a className="ah-btn ah-btn-dark ah-btn-sm" href={buyMessage(`Part ${item.id} (units ${item.units[0]}–${item.units[1]})`, personalised, price)} target="_blank" rel="noreferrer"><MessageCircle size={15} /> Message us to buy Part {item.id}</a>}
+                : <BuyLink className="ah-btn ah-btn-dark ah-btn-sm" part={item.id} what={`Part ${item.id} (units ${item.units[0]}–${item.units[1]})`} personalised={personalised} price={price} label={`Buy Part ${item.id}`} />}
             </div>
           </div>
           <ol className="hc-sess-list">
@@ -213,7 +217,7 @@ function Units({ personalised, signedIn }) {
         </div>
         {signedIn
           ? <Link className="ah-btn ah-btn-cream" to="/parents">Open your course <ArrowRight size={16} /></Link>
-          : <a className="ah-btn ah-btn-cream" href={buyMessage('all 30 units (Parts 1–3)', personalised, personalised ? BUNDLE.per : BUNDLE.std)} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Message us to buy all 30 units</a>}
+          : <BuyLink className="ah-btn ah-btn-cream" part="all" what="all 30 units (Parts 1–3)" personalised={personalised} price={personalised ? BUNDLE.per : BUNDLE.std} label="Buy all 30 units" />}
       </Reveal>
     </div>
   );
@@ -409,8 +413,8 @@ export default function HomeCoursePage() {
               </>
             ) : (
               <>
-                <a className="ah-btn ah-btn-dark" href="#units">Explore the 30 Units <ArrowRight size={16} /></a>
-                <a className="ah-btn ah-btn-line" href="#prices">See Prices</a>
+                <Link className="ah-btn ah-btn-clay" to="/courses/beginner-chess/preview"><Play size={16} fill="currentColor" /> Try 2 units now</Link>
+                <a className="ah-btn ah-btn-line" href="#units">Explore the 30 Units</a>
               </>
             )}
           </Reveal>
@@ -419,6 +423,7 @@ export default function HomeCoursePage() {
               From <AnimatePresence mode="popLayout"><motion.b key={fromPrice} initial={{ y: 14, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -14, opacity: 0 }}>{inr(fromPrice)}</motion.b></AnimatePresence>
               <span>· one-time payment per part · {personalised ? 'Personalised' : 'Standard'} version</span>
             </p>
+            <p className="hc-login-line">Try two full units first. No account needed. <a href="#prices">See prices</a></p>
             {!user && <p className="hc-login-line">Already purchased? <Link to="/login" state={{ from: '/parents' }}><UserRound size={14} /> Parent Login</Link></p>}
           </Reveal>
         </div>
@@ -480,6 +485,7 @@ export default function HomeCoursePage() {
           <Reveal delay={0.05}><h2>Unit 6: <em className="ah-gold">the Knight.</em></h2></Reveal>
           <Reveal delay={0.08}><p className="ah-sub ah-sub-light">Here is what one unit looks like at home. Lessons take as long as your child needs. You can split an activity across shorter sittings and repeat it before moving on.</p></Reveal>
           <Reveal delay={0.1}><SampleUnit name={name} /></Reveal>
+          <Reveal delay={0.12} className="ah-more"><Link className="ah-link-light" to="/courses/beginner-chess/preview">Open the full course preview: two complete units <ArrowRight size={14} /></Link></Reveal>
         </div>
       </section>
 
@@ -492,12 +498,12 @@ export default function HomeCoursePage() {
           <Reveal><CompareTable personalised={personalised} /></Reveal>
           <div className="hc-how">
             <Reveal className="hc-buy-card">
-              <h3>Message us to buy {personalised ? 'your' : 'Part 1'}</h3>
-              <p>Choose your course part and version, then send us a message on WhatsApp. Our team will share the payment link and explain how to access your course.</p>
+              <h3>{CHECKOUT_MODE === 'demo' ? 'Buy Part 1' : 'Message us to buy Part 1'}</h3>
+              <p>{CHECKOUT_MODE === 'demo' ? 'Choose your course part and version, then pay at checkout. Your course opens on your parent account.' : 'Choose your course part and version, then send us a message on WhatsApp. Our team will share the payment link and explain how to access your course.'}</p>
               {user
                 ? <Link className="ah-btn ah-btn-dark" to="/parents">Open your course <ArrowRight size={16} /></Link>
-                : <a className="ah-btn ah-btn-clay" href={buyMessage(`Part 1 (units 1–10)`, personalised, part1)} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Message us to buy Part 1</a>}
-              <small>This opens WhatsApp with a prepared message. Review it and press Send to contact us.</small>
+                : <BuyLink className="ah-btn ah-btn-clay" part={1} what="Part 1 (units 1–10)" personalised={personalised} price={part1} label="Buy Part 1" />}
+              <small>{CHECKOUT_MODE === 'demo' ? 'Checkout is in test mode for now, so no real payment is taken.' : 'This opens WhatsApp with a prepared message. Review it and press Send to contact us.'}</small>
             </Reveal>
             {[['Choose a part and version', 'Pick Part 1, 2, 3 or all 30 units, Standard or Personalised.'], ['Send the prepared message', 'It includes your part, version and price.'], ['We share the payment link', 'We send the payment link and explain how to access your course.']].map(([t, d], i) => (
               <Reveal key={t} delay={i * 0.08} className="hc-how-step"><span>{i + 1}</span><div><b>{t}</b><p>{d}</p></div></Reveal>
@@ -553,7 +559,7 @@ export default function HomeCoursePage() {
             <div className="ah-cta-actions">
               {user
                 ? <Link className="ah-btn ah-btn-cream" to="/parents">Open your course <ArrowRight size={16} /></Link>
-                : <a className="ah-btn ah-btn-cream" href={buyMessage('Part 1 (units 1–10)', personalised, part1)} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Message us to buy Part 1</a>}
+                : <BuyLink className="ah-btn ah-btn-cream" part={1} what="Part 1 (units 1–10)" personalised={personalised} price={part1} label="Buy Part 1" />}
               <Link className="ah-btn ah-btn-outline-light" to="/book">{INTRO.cta}</Link>
             </div>
           </div>

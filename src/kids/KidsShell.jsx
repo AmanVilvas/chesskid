@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { LockKeyhole, Mic, MicOff, ShieldCheck, Volume2, VolumeX, X } from 'lucide-react';
 import { useAuth } from '../components/AuthContext';
 import { useExperienceMode } from '../components/ExperienceModeContext';
-import { apiRequest } from '../data/apiClient';
+import { USE_SERVER_API, apiRequest } from '../data/apiClient';
 import { getLearningStreak, readActivityDays, recordLearningActivity } from '../data/adventureProgress';
 import { kidsWorlds } from './kidsWorlds';
 import { readKidsState, readPuzzleProgress, summarizeWorlds, KIDS_STATE_KEY } from './kidsProgress';
@@ -28,12 +28,11 @@ function FullScreenMessage({ children }) {
 export function KidsWorldProvider({ children, motionTier = 'full' }) {
   const { user, loading } = useAuth();
   const location = useLocation();
-  const [access, setAccess] = useState({ status: 'idle', userId: null, error: '', free: false });
+  const [access, setAccess] = useState({ status: 'idle', userId: null, error: '', free: false, owned: false });
   const [lessonsById, setLessonsById] = useState({});
   const [version, setVersion] = useState(0);
   const [sound, setSoundState] = useState(() => readToggle(SOUND_KEY));
   const [voice, setVoiceState] = useState(() => voiceSupported() && readToggle(VOICE_KEY));
-  const [busy, setBusy] = useState(false);
 
   const loadAccess = useCallback(async () => {
     if (!user) return;
@@ -43,8 +42,10 @@ export function KidsWorldProvider({ children, motionTier = 'full' }) {
         apiRequest(`/api/courses/${COURSE}/access`),
         apiRequest(`/api/courses/${COURSE}`),
       ]);
-      setAccess({ status: enrolled ? 'enrolled' : 'not-enrolled', userId: user.id, error: '', free: Number(course?.price_minor) === 0 && !course?.has_subscription });
-      if (enrolled) {
+      // Without the course server, anyone signed in can enter: the preview units are open and the rest are locked.
+      const open = enrolled || !USE_SERVER_API;
+      setAccess({ status: open ? 'enrolled' : 'not-enrolled', userId: user.id, error: '', free: Number(course?.price_minor) === 0 && !course?.has_subscription, owned: Boolean(enrolled) });
+      if (open) {
         const { lessons } = await apiRequest(`/api/courses/${COURSE}/lessons`);
         setLessonsById(Object.fromEntries(lessons.map((lesson) => [lesson.id, lesson])));
         // Lessons finished elsewhere (for example in the course player) count here too.
@@ -62,16 +63,19 @@ export function KidsWorldProvider({ children, motionTier = 'full' }) {
         }
       }
     } catch (error) {
-      setAccess({ status: 'error', userId: user.id, error: error.message, free: false });
+      setAccess({ status: 'error', userId: user.id, error: error.message, free: false, owned: false });
     }
   }, [user]);
 
   useEffect(() => { if (!loading && user) loadAccess(); }, [loading, user, loadAccess]);
 
   const value = useMemo(() => {
-    const summary = summarizeWorlds(kidsWorlds, readKidsState(), readPuzzleProgress(), { openAll: true });
+    const lockedIds = new Set(kidsWorlds.filter((world) => lessonsById[world.videoLessonId]?.locked).map((world) => world.id));
+    const summary = summarizeWorlds(kidsWorlds, readKidsState(), readPuzzleProgress(), { openAll: true, lockedIds });
     return {
       user,
+      owned: access.owned,
+      lockedCount: lockedIds.size,
       motionTier,
       summary,
       lessonsById,
@@ -86,7 +90,7 @@ export function KidsWorldProvider({ children, motionTier = 'full' }) {
         .then(() => setLessonsById((current) => ({ ...current, [lessonId]: { ...current[lessonId], completed: true } })))
         .catch(() => { /* progress is still saved on this device */ }),
     };
-  }, [user, lessonsById, sound, voice, version, motionTier]);
+  }, [user, lessonsById, sound, voice, version, motionTier, access.owned]);
 
   if (loading || (user && (access.userId !== user.id || access.status === 'checking' || access.status === 'idle'))) {
     return <FullScreenMessage><Pip mood="idle" size={96} /><p className="kids-loading">Getting the mountain ready…</p></FullScreenMessage>;
@@ -119,26 +123,15 @@ export function KidsWorldProvider({ children, motionTier = 'full' }) {
   }
 
   if (access.status === 'not-enrolled') {
-    const enrollFree = async () => {
-      setBusy(true);
-      try {
-        await apiRequest('/api/payments/free-enrollment', { method: 'POST', body: { courseSlug: COURSE } });
-        await loadAccess();
-      } catch (error) {
-        setAccess((current) => ({ ...current, error: error.message }));
-      } finally { setBusy(false); }
-    };
     return (
       <FullScreenMessage>
         <Pip mood="think" size={96} />
         <p className="kids-kicker"><LockKeyhole size={16} /> For grown-ups</p>
         <h1>Unlock Crown Mountain</h1>
-        <p>Crown Mountain is part of the Beginner Chess course. Enroll your account to start the adventure.</p>
+        <p>Crown Mountain is part of the Home Course. A grown-up can unlock it from the course page to start the adventure.</p>
         {access.error && <p role="alert" className="kids-error">{access.error}</p>}
         <div className="kids-card-actions">
-          {access.free
-            ? <button type="button" className="kid-btn kid-btn-go kid-btn-xl" onClick={enrollFree} disabled={busy}>{busy ? 'Unlocking…' : 'Enroll for free'}</button>
-            : <Link className="kid-btn kid-btn-go kid-btn-xl" to="/courses">See course enrollment</Link>}
+          <Link className="kid-btn kid-btn-go kid-btn-xl" to="/checkout">Unlock the course</Link>
         </div>
       </FullScreenMessage>
     );
@@ -148,7 +141,7 @@ export function KidsWorldProvider({ children, motionTier = 'full' }) {
 }
 
 /** A simple grown-up check before leaving the kids area for the parent view. */
-function ParentGate({ onClose }) {
+function ParentGate({ onClose, to = '/', setParent = true, prompt = 'Answer to open the parent view.' }) {
   const { setMode } = useExperienceMode();
   const navigate = useNavigate();
   const [question, setQuestion] = useState(() => makeQuestion());
@@ -170,8 +163,8 @@ function ParentGate({ onClose }) {
   function pick(option) {
     if (option === question.answer) {
       stopSpeaking();
-      setMode('parent');
-      navigate('/');
+      if (setParent) setMode('parent');
+      navigate(to);
       return;
     }
     setWrong(true);
@@ -184,7 +177,7 @@ function ParentGate({ onClose }) {
         <button type="button" className="kids-modal-close" onClick={onClose} aria-label="Close"><X size={22} /></button>
         <p className="kids-kicker"><ShieldCheck size={16} /> Grown-ups only</p>
         <h2 id="parent-gate-title">What is {question.a} + {question.b}?</h2>
-        <p>Answer to open the parent view.</p>
+        <p>{prompt}</p>
         <motion.div className="kids-gate-options" animate={wrong ? { x: [0, -8, 8, -4, 4, 0] } : {}} key={`${question.a}-${question.b}`}>
           {question.options.map((option) => <button type="button" key={option} onClick={() => pick(option)}>{option}</button>)}
         </motion.div>
@@ -214,14 +207,14 @@ export function ViewToggle() {
 }
 
 /** Any button that leads to the parent view; opens the grown-up check first. */
-export function GrownUpsButton({ className = '', children }) {
+export function GrownUpsButton({ className = '', children, to = '/', setParent = true, prompt }) {
   const [gate, setGate] = useState(false);
   return (
     <>
       <button type="button" className={className} onClick={() => setGate(true)}>{children}</button>
       {createPortal(
         <div className="kids-portal">
-          <AnimatePresence>{gate && <ParentGate onClose={() => setGate(false)} />}</AnimatePresence>
+          <AnimatePresence>{gate && <ParentGate onClose={() => setGate(false)} to={to} setParent={setParent} prompt={prompt} />}</AnimatePresence>
         </div>,
         document.body,
       )}

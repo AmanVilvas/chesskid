@@ -19,6 +19,8 @@ const AboutPage = lazy(() => import('./home/AboutPage'));
 const ProgramsPage = lazy(() => import('./home/ProgramsPage'));
 const BookPage = lazy(() => import('./home/BookPage'));
 const HomeCoursePage = lazy(() => import('./home/HomeCoursePage'));
+const PreviewPage = lazy(() => import('./home/PreviewPage'));
+const CheckoutPage = lazy(() => import('./home/CheckoutPage'));
 
 /** Entry point for the parent view: requires a signed-in grown-up. */
 function ParentsEntry() {
@@ -74,6 +76,8 @@ export default function App() {
       <Route path="/courses" element={<CoursesPage />} />
       {/* The Home Course (Beginner Chess) has its own landing; other courses use the course template. */}
       <Route path="/courses/beginner-chess" element={<Suspense fallback={<PageFallback />}><HomeCoursePage /></Suspense>} />
+      <Route path="/courses/beginner-chess/preview" element={<Suspense fallback={<PageFallback />}><PreviewPage /></Suspense>} />
+      <Route path="/checkout" element={<Suspense fallback={<PageFallback />}><CheckoutPage /></Suspense>} />
       <Route path="/home-course" element={<Navigate to="/courses/beginner-chess" replace />} />
       <Route path="/courses/:slug" element={<CourseLandingPage />} />
       <Route path="/admin" element={<AdminDashboard />} />

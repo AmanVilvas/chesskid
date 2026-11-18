@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowRight, BookOpen, CheckCircle2, CircleHelp, LockKeyhole, ShieldCheck, Sparkles } from 'lucide-react';
 import { Navbar } from './Navbar';
 import { useAuth } from './AuthContext';
-import { apiRequest } from '../data/apiClient';
+import { USE_SERVER_API, apiRequest } from '../data/apiClient';
 import './CoursesPage.css';
 import './CoursesPageExtras.css';
 
@@ -38,6 +38,7 @@ function loadRazorpayCheckout() {
 export function CoursesPage() {
   const { user, loading: authLoading } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [course, setCourse] = useState(null);
   const [enrolled, setEnrolled] = useState(false);
@@ -72,6 +73,8 @@ export function CoursesPage() {
 
   async function enroll() {
     if (!user) return;
+    // Without the course server, buying runs through the demo checkout.
+    if (!USE_SERVER_API) { navigate('/checkout'); return; }
     setBusy(true);
     setError('');
     try {

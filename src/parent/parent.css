@@ -389,3 +389,28 @@ a.ph-next:hover { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .26); transfor
   .ph-next-crew { flex-wrap: wrap; }
   .ph-next > .pp-btn { width: 100%; }
 }
+
+/* ---- preview mode: locked days and the unlock banner ---- */
+.ph-unlock { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 18px; padding: 18px 22px; border-radius: 18px; background: linear-gradient(120deg, #231E12, #2A2314); box-shadow: inset 0 0 0 1px rgba(245, 198, 93, .35); }
+.ph-unlock-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: rgba(245, 198, 93, .14); color: var(--gold); }
+.ph-unlock b { font-size: 16px; }
+.ph-unlock p { margin-top: 3px !important; color: var(--text-2); font-size: 14px; line-height: 1.5; }
+.ph-day.is-locked { opacity: .78; background: repeating-linear-gradient(135deg, var(--surface) 0 14px, #1A1C20 14px 28px); }
+.ph-day.is-locked:hover { opacity: 1; }
+.ph-chip.is-locked { display: inline-flex; align-items: center; gap: 5px; color: var(--gold); box-shadow: inset 0 0 0 1px rgba(245, 198, 93, .35); }
+.ph-day.is-locked .ph-day-steps, .ph-day.is-locked .ph-bar { opacity: .5; }
+.ph-day.is-locked .ph-day-mid > :first-child { filter: grayscale(.6); }
+@media (max-width: 700px) { .ph-unlock { grid-template-columns: auto 1fr; } .ph-unlock .pp-btn { grid-column: 1 / -1; } }
+
+.pp-row-tags .pp-tag-lock { color: var(--gold); box-shadow: inset 0 0 0 1px rgba(245, 198, 93, .4); }
+.pp-row-tags .pp-tag-open { color: var(--accent); box-shadow: inset 0 0 0 1px rgba(62, 196, 109, .4); }
+
+/* ---- player: locked lesson card ---- */
+.pp-paywall { display: grid; justify-items: start; gap: 12px; min-height: 340px; align-content: center; padding: 40px; border-radius: 20px; background: radial-gradient(circle at 80% 10%, rgba(245, 198, 93, .1), transparent 55%), var(--surface); box-shadow: inset 0 0 0 1px var(--hair-2); }
+.pp-paywall-icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 18px; background: rgba(245, 198, 93, .14); color: var(--gold); }
+.pp-paywall h2 { font-size: clamp(30px, 3.4vw, 44px); line-height: 1.05; }
+.pp-paywall p { max-width: 520px; color: var(--text-2); line-height: 1.6; }
+.pp-paywall-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.pp-video-wait { aspect-ratio: 16 / 9; background: var(--surface); border-radius: 16px; }
+.pp-item .pp-check:disabled { opacity: .3; cursor: not-allowed; }
+@media (max-width: 700px) { .pp-paywall { padding: 26px 20px; } }

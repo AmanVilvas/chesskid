@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, animate, motion, useInView, useReducedMotion } from 'motion/react';
-import { ArrowLeft, ArrowRight, Check, MessageCircle, Star } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, MessageCircle, Play, Star } from 'lucide-react';
 import { CourseChessPiece } from '../components/CourseChessPiece';
 import { Character } from '../kids/Characters';
 import { CHAT, COACHES, EASE, HOME_COURSE, Reveal, Scribble, SiteFooter, SiteHeader, TESTIMONIALS } from './site';
@@ -300,6 +300,13 @@ export function AcademyHome() {
             <Reveal delay={0.15} className="ah-actions">
               <Link className="ah-btn ah-btn-dark" to="/book">{INTRO.cta} <ArrowRight size={16} /></Link>
               <a className="ah-btn ah-btn-line" href="#ways">Compare Learning Options</a>
+            </Reveal>
+            <Reveal delay={0.18}>
+              <Link to={`${HOME_COURSE}/preview`} className="ah-try">
+                <span className="ah-try-badge"><Play size={14} fill="currentColor" /> Try it now</span>
+                <span className="ah-try-copy"><b>Preview the Home Course, right here.</b><small>Two full units: a video from Rathish, an animated lesson, a puzzle sheet and a worksheet. No account needed.</small></span>
+                <ArrowRight size={18} />
+              </Link>
             </Reveal>
             <Reveal delay={0.2} className="ah-chips">
               <span><Check size={14} strokeWidth={3} /> No chess knowledge needed</span>

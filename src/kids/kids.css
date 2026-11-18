@@ -613,3 +613,11 @@ html[data-vt="back"]::view-transition-new(root) { animation: vt-fade-in 220ms ea
 .kp-logo small { font-family: 'Fredoka', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); }
 
 .km-day { font-size: 12px !important; font-weight: 700 !important; letter-spacing: .8px; text-transform: uppercase; color: var(--c) !important; }
+
+/* ---------- full-course lock (preview mode) ---------- */
+.km-preview-note { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; width: min(92%, 760px); margin: 0 auto 14px; padding: 10px 14px; border-radius: 18px; background: #FFF6D9; box-shadow: 0 0 0 2px #F5D77A inset; color: #6B5210; font-size: 15px; font-weight: 600; position: relative; z-index: 5; }
+.km-preview-note span { display: inline-flex; align-items: center; gap: 8px; }
+.km-preview-btn { min-height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: #fff; box-shadow: 0 0 0 2px #F5D77A inset; color: #6B5210 !important; font-weight: 700; font-size: 15px; cursor: pointer; }
+.km-stop.is-locked .km-label small { color: #B7791F; font-weight: 700; }
+.km-paywall { display: grid; justify-items: center; gap: 10px; text-align: center; }
+.km-paywall-actions { display: grid; gap: 10px; width: 100%; margin-top: 8px; }

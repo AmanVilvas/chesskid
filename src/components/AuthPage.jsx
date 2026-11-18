@@ -12,6 +12,7 @@ import './auth.css';
 // Where the visitor is headed after signing in, in kid-friendly words.
 function destinationLabel(from) {
   if (!from) return null;
+  if (from.startsWith('/checkout')) return 'checkout';
   if (from.startsWith('/play')) return 'the Kids view';
   if (from.startsWith('/parents')) return 'your parent dashboard';
   if (from.startsWith('/curriculum')) return 'your course';

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, Check, Gamepad2, PlayCircle, Star } from 'lucide-react';
+import { ArrowRight, Check, Gamepad2, Lock, PlayCircle, Star } from 'lucide-react';
 import { useAuth } from '../components/AuthContext';
 import { apiRequest } from '../data/apiClient';
 import { coursePiecePracticeLessons } from '../data/coursePiecePracticeData';
@@ -13,6 +13,7 @@ import { Character } from '../kids/Characters';
 import { course1Days, findCourse1Section } from './course1Sections';
 import './parent.css';
 
+const CHECKOUT = '/checkout?part=1&version=standard';
 const PIECE_ID = { 1: 'rook', 2: 'bishop', 3: 'queen', 4: 'king', 5: 'pawn', 6: 'knight' };
 
 export function playerHref(unitId, lectureId, puzzle) {
@@ -27,23 +28,23 @@ function readLocalCompleted() {
 
 // Same sources the lesson player uses: completed lessons from the server, puzzles from this browser.
 function useCourseProgress(userId) {
-  const [state, setState] = useState({ loading: true, enrolled: null, done: {} });
+  const [state, setState] = useState({ loading: true, enrolled: null, done: {}, lockedIds: new Set(), allLocked: false });
   useEffect(() => {
     let live = true;
     apiRequest('/api/courses/beginner-chess/access')
-      .then(({ enrolled }) => {
-        if (!enrolled) { if (live) setState({ loading: false, enrolled: false, done: {} }); return; }
-        return apiRequest('/api/courses/beginner-chess/lessons').then(({ lessons }) => {
-          if (live) setState({ loading: false, enrolled: true, done: Object.fromEntries(lessons.filter((l) => l.completed).map((l) => [l.id, true])) });
-        });
-      })
-      .catch(() => { if (live) setState({ loading: false, enrolled: null, done: readLocalCompleted() }); });
+      .then(({ enrolled }) => apiRequest('/api/courses/beginner-chess/lessons')
+        .then(({ lessons }) => {
+          if (live) setState({ loading: false, enrolled, done: Object.fromEntries(lessons.filter((l) => l.completed).map((l) => [l.id, true])), lockedIds: new Set(lessons.filter((l) => l.locked).map((l) => l.id)), allLocked: false });
+        })
+        // A course server that has no preview lists nothing until the course is bought.
+        .catch(() => { if (live) setState({ loading: false, enrolled, done: {}, lockedIds: new Set(), allLocked: !enrolled }); }))
+      .catch(() => { if (live) setState({ loading: false, enrolled: null, done: readLocalCompleted(), lockedIds: new Set(), allLocked: false }); });
     return () => { live = false; };
   }, [userId]);
   return state;
 }
 
-function summarizeDays(done, puzzleProgress) {
+function summarizeDays(done, puzzleProgress, lockedIds = new Set(), allLocked = false) {
   return course1Days.map((section) => {
     const video = section.lectures.find((l) => l.type === 'video');
     const game = section.lectures.find((l) => l.type === 'game');
@@ -54,12 +55,13 @@ function summarizeDays(done, puzzleProgress) {
     const solved = solvedSet.size;
     const watched = Boolean(done[video?.id]);
     const practiced = Boolean(done[game?.id]) || (total > 0 && solved >= total);
-    const status = watched && practiced ? 'done' : watched || solved > 0 ? 'progress' : 'new';
+    const locked = allLocked || lockedIds.has(video?.id);
+    const status = locked ? 'locked' : watched && practiced ? 'done' : watched || solved > 0 ? 'progress' : 'new';
     const firstOpen = Array.from({ length: total }, (_, i) => i).find((i) => !solvedSet.has(i));
     const next = !watched
       ? { kind: 'video', label: `Watch: ${video?.title}`, meta: video?.duration, href: playerHref(section.id, video?.id) }
       : { kind: 'game', label: `Practise: puzzle ${(firstOpen ?? 0) + 1} of ${total}`, meta: `${solved} of ${total} solved`, href: playerHref(section.id, game?.id, (firstOpen ?? 0) + 1) };
-    return { section, pieceId, video, game, total, solved, watched, practiced, status, next, steps: Number(watched) + Number(practiced) };
+    return { section, pieceId, video, game, total, solved, watched, practiced, status, locked, next: locked ? { kind: 'lock', label: 'Part of the full course', meta: '', href: CHECKOUT } : next, steps: Number(watched) + Number(practiced) };
   });
 }
 
@@ -89,22 +91,25 @@ function greeting(now = new Date()) {
   return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
 }
 
-const STATUS = { done: 'Done', progress: 'In progress', new: 'Not started' };
+const STATUS = { done: 'Done', progress: 'In progress', new: 'Not started', locked: 'Full course' };
 
 export function ParentHome() {
   const { user, signOut } = useAuth();
   const progress = useCourseProgress(user?.id);
   const puzzleProgress = useMemo(() => readPuzzleProgress(), []);
-  const days = useMemo(() => summarizeDays(progress.done, puzzleProgress), [progress.done, puzzleProgress]);
+  const days = useMemo(() => summarizeDays(progress.done, puzzleProgress, progress.lockedIds, progress.allLocked), [progress.done, progress.lockedIds, progress.allLocked, puzzleProgress]);
+  const openDays = days.filter((d) => d.status !== 'locked');
+  const hasLocked = openDays.length < days.length;
   const kids = useMemo(() => summarizeWorlds(kidsWorlds, readKidsState(), puzzleProgress, { openAll: true }), [puzzleProgress]);
   const activity = useMemo(() => readActivityDays(), []);
   const streak = getLearningStreak(activity);
   const basics = findCourse1Section(BASICS_UNIT_ID);
 
   const stepsDone = days.reduce((sum, d) => sum + d.steps, 0);
-  const stepsTotal = days.length * 2;
-  const complete = stepsDone === stepsTotal;
-  const current = days.find((d) => d.status !== 'done');
+  const stepsTotal = Math.max(1, openDays.length * 2);
+  const complete = !hasLocked && stepsDone === stepsTotal;
+  const current = days.find((d) => d.status !== 'done' && d.status !== 'locked');
+  const previewDone = hasLocked && !current;
   const puzzlesSolved = days.reduce((sum, d) => sum + d.solved, 0);
   const firstName = (user?.name || '').trim().split(/\s+/)[0];
 
@@ -136,7 +141,8 @@ export function ParentHome() {
           <Rise delay={0.04}><h1 className="pp-serif">{greeting()}{firstName ? `, ${firstName}` : ''}.</h1></Rise>
           <Rise delay={0.08}>
             <p className="ph-sub">
-              {progress.enrolled === false ? 'Your account doesn’t have Chess Course 1 yet.'
+              {previewDone ? 'You have finished the preview days. Unlock the rest of the course to keep going.'
+                : hasLocked && stepsDone === 0 ? 'Day 1 and Day 2 are open to try. The rest of the course unlocks when you buy a part.'
                 : complete ? 'Your child has finished all six days of Course 1.'
                 : stepsDone === 0 ? 'Six days, one chess piece a day. Day 1 starts with the rook.'
                 : `Day ${current.section.day} is next: the ${current.section.piece.toLowerCase()}.`}
@@ -146,26 +152,42 @@ export function ParentHome() {
         <Rise delay={0.1} className="ph-ring-card">
           <div className="ph-ring-wrap">
             <Ring value={stepsDone / stepsTotal} />
-            <span><b>{Math.round((stepsDone / stepsTotal) * 100)}%</b><small>complete</small></span>
+            <span><b>{Math.round((stepsDone / stepsTotal) * 100)}%</b><small>{hasLocked ? 'of the preview' : 'complete'}</small></span>
           </div>
           <dl className="ph-ring-facts">
             <div><dt>Days done</dt><dd>{days.filter((d) => d.status === 'done').length} / {days.length}</dd></div>
             <div><dt>Videos watched</dt><dd>{days.filter((d) => d.watched).length} / {days.length}</dd></div>
             <div><dt>Puzzles solved</dt><dd>{puzzlesSolved} / {days.reduce((s, d) => s + d.total, 0)}</dd></div>
+            {hasLocked && <div><dt>Open to try</dt><dd>{openDays.length} days</dd></div>}
           </dl>
         </Rise>
       </section>
 
+      {hasLocked && !progress.loading && (
+        <section className="ph-wrap">
+          <Rise>
+            <div className="ph-unlock" role="note">
+              <span className="ph-unlock-icon"><Lock size={20} /></span>
+              <div>
+                <b>You are previewing the course.</b>
+                <p>Day 1 (the Rook) and Day 2 (the Bishop) are open. Days 3 to 6 and the Chess Basics videos unlock when you buy a part.</p>
+              </div>
+              <Link to="/checkout" className="pp-btn pp-btn-primary">Unlock the course <ArrowRight size={16} /></Link>
+            </div>
+          </Rise>
+        </section>
+      )}
+
       <section className="ph-wrap">
         <Rise>
-          {progress.enrolled === false ? (
+          {previewDone ? (
             <div className="ph-next">
               <div className="ph-next-copy">
-                <span className="pp-kicker">Get started</span>
-                <h2 className="pp-serif">Enroll in Chess Course 1</h2>
-                <p>Once your account is enrolled, the six days and their practice puzzles open here.</p>
+                <span className="pp-kicker">Preview complete</span>
+                <h2 className="pp-serif">Keep going with Day 3</h2>
+                <p>Your child has finished the two preview days. Buy Part 1 to unlock the Queen, the King, the Knight and the Pawn.</p>
               </div>
-              <Link to="/courses" className="pp-btn pp-btn-primary pp-btn-lg">View enrollment <ArrowRight size={17} /></Link>
+              <Link to="/checkout" className="pp-btn pp-btn-primary pp-btn-lg">Unlock the course <ArrowRight size={17} /></Link>
             </div>
           ) : complete ? (
             <div className="ph-next ph-next-done">
@@ -199,10 +221,10 @@ export function ParentHome() {
         <div className="ph-days">
           {days.map((d, i) => (
             <Rise key={d.section.id} delay={Math.min(i, 5) * 0.04}>
-              <Link to={d.status === 'done' ? playerHref(d.section.id, d.video?.id) : d.next.href} className={`ph-day is-${d.status}`}>
+              <Link to={d.status === 'locked' ? CHECKOUT : d.status === 'done' ? playerHref(d.section.id, d.video?.id) : d.next.href} className={`ph-day is-${d.status}`}>
                 <div className="ph-day-top">
                   <span className="ph-day-num">Day {d.section.day}</span>
-                  <span className={`ph-chip is-${d.status}`}>{d.status === 'done' && <Check size={12} strokeWidth={3} />}{STATUS[d.status]}</span>
+                  <span className={`ph-chip is-${d.status}`}>{d.status === 'done' && <Check size={12} strokeWidth={3} />}{d.status === 'locked' && <Lock size={12} />}{STATUS[d.status]}</span>
                 </div>
                 <div className="ph-day-mid">
                   <Character id={d.pieceId} mood={d.status === 'done' ? 'cheer' : 'idle'} size={58} />
@@ -226,9 +248,9 @@ export function ParentHome() {
           <ul className="ph-basics">
             {basics.lectures.map((lesson) => (
               <li key={lesson.id}>
-                <Link to={playerHref(BASICS_UNIT_ID, lesson.id)}>
-                  <span className={`ph-tick ${progress.done[lesson.id] ? 'is-done' : ''}`}>{progress.done[lesson.id] ? <Check size={13} strokeWidth={3} /> : <PlayCircle size={14} />}</span>
-                  <span><b>{lesson.title}</b><small>{lesson.duration}</small></span>
+                <Link to={progress.lockedIds.has(lesson.id) || progress.allLocked ? CHECKOUT : playerHref(BASICS_UNIT_ID, lesson.id)}>
+                  <span className={`ph-tick ${progress.done[lesson.id] ? 'is-done' : ''}`}>{progress.done[lesson.id] ? <Check size={13} strokeWidth={3} /> : progress.lockedIds.has(lesson.id) || progress.allLocked ? <Lock size={13} /> : <PlayCircle size={14} />}</span>
+                  <span><b>{lesson.title}</b><small>{progress.lockedIds.has(lesson.id) || progress.allLocked ? 'Full course' : lesson.duration}</small></span>
                   <ArrowRight size={15} className="pp-row-arrow" />
                 </Link>
               </li>

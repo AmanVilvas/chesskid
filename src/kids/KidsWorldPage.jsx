@@ -2,7 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react';
 import { Check, Clapperboard, FileText, Flag, Gamepad2, Gift, LockKeyhole, Sparkles, Users, X } from 'lucide-react';
-import { useKids } from './KidsShell';
+import { GrownUpsButton, useKids } from './KidsShell';
 import { KidsNav } from './KidsNav';
 import { ChestReveal } from './ChestReveal';
 import { kidsWorlds } from './kidsWorlds';
@@ -148,7 +148,7 @@ function WorldCard({ world, entry, onClose, onPick }) {
 
 // ---------- page ----------
 export default function KidsWorldPage() {
-  const { summary, motionTier: tier, sound, voice, refresh } = useKids();
+  const { summary, motionTier: tier, sound, voice, refresh, owned, lockedCount } = useKids();
   const navigate = useNavigate();
   const location = useLocation();
   const columnRef = useRef(null);
@@ -167,6 +167,7 @@ export default function KidsWorldPage() {
   const [bubble, setBubble] = useState(() => ({ text: summary.worlds[0].watched ? "Let's keep climbing!" : 'Tap Rook Castle to start!', mood: 'wave' }));
   const [trick, setTrick] = useState(0);
   const [shakeId, setShakeId] = useState(null);
+  const [paywall, setPaywall] = useState(null);
   const [toast, setToast] = useState(null);
   const still = tier !== 'full';
   const instant = tier === 'reduced';
@@ -288,6 +289,13 @@ export default function KidsWorldPage() {
     const world = kidsWorlds[i];
     const entry = summary.worlds[i];
     if (walk) return;
+    if (entry.paywalled) {
+      setShakeId(world.id);
+      playEffect('oops', sound);
+      setPaywall(world.id);
+      window.setTimeout(() => setShakeId(null), 500);
+      return;
+    }
     if (!entry.unlocked) {
       setShakeId(world.id);
       playEffect('oops', sound);
@@ -332,6 +340,13 @@ export default function KidsWorldPage() {
           <span className="km-chip km-chip-quest" title="Daily quest: solve 3 puzzles"><Sparkles size={20} strokeWidth={2.6} /> <b>{today}/{DAILY_GOAL}</b></span>
         </div>
 
+        {!owned && lockedCount > 0 && (
+          <div className="km-preview-note" role="note">
+            <span><LockKeyhole size={18} strokeWidth={2.8} /> Day 1 and Day 2 are open to play. The rest of the mountain is in the full course.</span>
+            <GrownUpsButton to="/checkout" setParent={false} prompt="Answer to open the course checkout." className="km-preview-btn">Grown-ups: unlock all</GrownUpsButton>
+          </div>
+        )}
+
         <section className="km-map" style={{ height }} aria-label="Crown Mountain">
           <Scenery height={height} still={still} />
           <div className="km-column" ref={columnRef}>
@@ -367,7 +382,7 @@ export default function KidsWorldPage() {
                     whileHover={entry.unlocked && !instant ? { scale: 1.06, y: -4 } : undefined}
                     whileTap={{ scale: 0.92 }}
                     transition={{ duration: 0.4 }}
-                    aria-label={`${world.title}. ${entry.unlocked ? 'Open' : 'Locked'}`}
+                    aria-label={`${world.title}. ${entry.unlocked ? 'Open' : entry.paywalled ? 'Part of the full course' : 'Locked'}`}
                   >
                     {state === 'current' && !still && <span className="km-pulse" />}
                     <WorldDisc world={world} size="lg" />
@@ -379,7 +394,7 @@ export default function KidsWorldPage() {
                     <b>{world.title}</b>
                     {entry.unlocked
                       ? <span className="km-steps" aria-label={`${steps.filter(Boolean).length} of 4 done`}>{steps.map((ok, k) => <i key={k} className={ok ? 'on' : ''} />)}</span>
-                      : <small>Locked</small>}
+                      : <small>{entry.paywalled ? 'Full course' : 'Locked'}</small>}
                   </div>
                 </div>
               );
@@ -425,6 +440,26 @@ export default function KidsWorldPage() {
             <WorldCard key={`card-${cardWorld.id}`} world={cardWorld} entry={summary.byId(cardWorld.id)} onClose={() => setCard(null)} onPick={(act, el) => pick(cardWorld, act, el)} />
           </>
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {paywall && (() => {
+          const world = kidsWorlds.find((w) => w.id === paywall);
+          return (
+            <motion.div key="paywall" className="kids-modal-shade" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onMouseDown={(event) => { if (event.target === event.currentTarget) setPaywall(null); }}>
+              <motion.section className="kids-modal km-paywall" role="dialog" aria-modal="true" aria-labelledby="km-paywall-title" initial={{ y: 30, scale: 0.96 }} animate={{ y: 0, scale: 1 }} exit={{ y: 20, opacity: 0 }}>
+                <button type="button" className="kids-modal-close" onClick={() => setPaywall(null)} aria-label="Close"><X size={22} /></button>
+                <Character id={world.crew} mood="think" size={96} />
+                <h2 id="km-paywall-title">{world.title} is in the full course</h2>
+                <p>Day 1 and Day 2 are open to play. A grown-up can unlock the rest of the mountain.</p>
+                <div className="km-paywall-actions">
+                  <GrownUpsButton to="/checkout" setParent={false} prompt="Answer to open the course checkout." className="kid-btn kid-btn-go kid-btn-xl">Grown-ups: unlock</GrownUpsButton>
+                  <button type="button" className="kid-btn kid-btn-ghost" onClick={() => setPaywall(null)}>Keep playing</button>
+                </div>
+              </motion.section>
+            </motion.div>
+          );
+        })()}
       </AnimatePresence>
 
       <AnimatePresence>

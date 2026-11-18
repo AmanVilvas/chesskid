@@ -5,7 +5,7 @@ import { ParentOverview } from '../parent/ParentOverview';
 import { ParentPlayer } from '../parent/ParentPlayer';
 import '../parent/parent.css';
 import { useAuth } from './AuthContext';
-import { apiRequest } from '../data/apiClient';
+import { USE_SERVER_API, apiRequest } from '../data/apiClient';
 
 function CourseAccessGate({ children }) {
   const { user, loading: authLoading } = useAuth();
@@ -24,23 +24,24 @@ function CourseAccessGate({ children }) {
   if (authLoading || (user && state.userId !== user.id)) {
     return <div className="pp-root pp-gate"><p className="pp-kicker">Checking your course access…</p></div>;
   }
-  if (state.enrolled) return children;
+  // Without the course server the preview units are open to every signed-in parent; paid units lock inside the player.
+  if (state.enrolled || (user && !USE_SERVER_API)) return children;
   return (
     <div className="pp-root">
       <main className="pp-gate">
         <section className="pp-gate-card">
           <span className="pp-kicker"><LockKeyhole size={13} style={{ verticalAlign: '-2px' }} /> Protected course area</span>
-          <h1 className="pp-serif">{user ? 'Enroll to continue learning' : 'Sign in to access your course'}</h1>
-          <p>Course lessons and practice unlock for your account after enrollment. This check is confirmed securely with the academy.</p>
+          <h1 className="pp-serif">{user ? 'Unlock your course to continue' : 'Sign in to access your course'}</h1>
+          <p>Course lessons and practice open on your account once you have bought a course part.</p>
           {state.error && <p role="alert" className="pp-gate-error">{state.error}</p>}
           <div className="pp-gate-actions">
             {user
-              ? <Link to="/courses" className="pp-btn pp-btn-primary pp-btn-lg">View course enrollment</Link>
+              ? <Link to="/checkout" className="pp-btn pp-btn-primary pp-btn-lg">Unlock the course</Link>
               : <>
                   <Link to="/login" state={{ from: `${location.pathname}${location.search}` }} className="pp-btn pp-btn-primary pp-btn-lg">Sign in</Link>
                   <Link to="/signup" state={{ from: `${location.pathname}${location.search}` }} className="pp-btn pp-btn-ghost pp-btn-lg">Create account</Link>
                 </>}
-            <span className="pp-kicker" style={{ marginTop: 8 }}><ShieldCheck size={13} style={{ verticalAlign: '-2px' }} /> Enrollment is verified by the course server</span>
+            <span className="pp-kicker" style={{ marginTop: 8 }}><ShieldCheck size={13} style={{ verticalAlign: '-2px' }} /> Your purchase is checked when you sign in</span>
           </div>
         </section>
       </main>

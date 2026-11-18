@@ -355,3 +355,14 @@
 .ah-assess { max-width: 640px; margin-top: 26px !important; padding: 18px 22px; border-radius: 18px; background: rgba(224, 169, 59, .12); color: rgba(255, 253, 249, .82); box-shadow: inset 0 0 0 1px rgba(224, 169, 59, .3); line-height: 1.55; }
 .ah-assess b { color: var(--gold); }
 @media (max-width: 560px) { .ah-proof-card { padding: 18px; } .ah-proof-card .ah-link { margin-left: 0; } }
+
+/* home hero: the preview offer */
+.ah-try { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; max-width: 540px; margin-top: 22px; padding: 14px 18px 14px 14px; border-radius: 20px; background: var(--paper); box-shadow: inset 0 0 0 2px var(--clay), 0 18px 30px -22px rgba(181, 69, 47, .6); transition: transform .2s, box-shadow .2s; }
+.ah-try:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 2px var(--clay), 0 24px 34px -22px rgba(181, 69, 47, .7); }
+.ah-try-badge { display: inline-flex; align-items: center; gap: 7px; padding: 9px 14px; border-radius: 14px; background: var(--clay); color: var(--paper); font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+.ah-try-copy { display: grid; gap: 2px; }
+.ah-try-copy b { font-size: 16px; letter-spacing: -.01em; }
+.ah-try-copy small { color: var(--ink-2); font-size: 13px; line-height: 1.4; }
+.ah-try > svg { color: var(--clay); transition: transform .2s; }
+.ah-try:hover > svg { transform: translateX(4px); }
+@media (max-width: 560px) { .ah-try { grid-template-columns: 1fr auto; } .ah-try-badge { grid-column: 1 / -1; justify-self: start; } .ah-try > svg { grid-column: 2; grid-row: 2; } }

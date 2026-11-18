@@ -5,7 +5,7 @@ const FILES = 'abcdefgh';
 const pieceFile = (p) => `/pieces/chessnut/${p[0]}${p[1].toUpperCase()}.svg`;
 
 /** A printable chess diagram (SVG, prints crisply on paper). */
-function Diagram({ pieces = [], stars = [], size = 230, blank = false }) {
+export function Diagram({ pieces = [], stars = [], size = 230, blank = false }) {
   const sq = 25;
   return (
     <svg className="ws-diagram" viewBox="-14 -2 216 216" width={size} height={size} role="img" aria-label="Chess diagram">
@@ -36,7 +36,7 @@ function Diagram({ pieces = [], stars = [], size = 230, blank = false }) {
   );
 }
 
-function puzzlePieces(fen) {
+export function puzzlePieces(fen) {
   const out = [];
   fen.split(' ')[0].split('/').forEach((row, r) => {
     let f = 0;

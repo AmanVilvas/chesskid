@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, Gamepad2, PlayCircle } from 'lucide-react';
+import { ArrowRight, Gamepad2, Lock, PlayCircle } from 'lucide-react';
+import { apiRequest } from '../data/apiClient';
 import { udemyCourseMeta } from '../data/udemyCourseData';
 import { coursePiecePracticeLessons } from '../data/coursePiecePracticeData';
 import { useAuth } from '../components/AuthContext';
@@ -30,6 +31,16 @@ export function ParentOverview({ onStartCourse }) {
   const practice = (unitId) => coursePiecePracticeLessons.find((l) => l.id === PIECE_ID[unitId]);
   const puzzles = course1Days.reduce((sum, s) => sum + (practice(s.id)?.puzzles.length || 0), 0);
   useEffect(() => { document.title = `Chess Course 1 · ${course.name} | The Thinking Academy`; }, [course.name]);
+  // Which lessons are part of the paid course for this account (nothing is locked until we know).
+  const [lockedIds, setLockedIds] = useState(() => new Set());
+  useEffect(() => {
+    if (!user) return undefined;
+    let live = true;
+    apiRequest('/api/courses/beginner-chess/lessons')
+      .then(({ lessons }) => { if (live) setLockedIds(new Set(lessons.filter((l) => l.locked).map((l) => l.id))); })
+      .catch(() => {});
+    return () => { live = false; };
+  }, [user]);
 
   return (
     <div className="pp-root pp-overview">
@@ -86,6 +97,7 @@ export function ParentOverview({ onStartCourse }) {
                     <span className="pp-row-tags">
                       <span><PlayCircle size={13} /> Instructor video</span>
                       <span><Gamepad2 size={13} /> {piece?.puzzles.length} puzzles</span>
+                      {user && (lockedIds.has(video?.id) ? <span className="pp-tag-lock"><Lock size={13} /> Full course</span> : lockedIds.size > 0 && <span className="pp-tag-open">Open to try</span>)}
                     </span>
                   </span>
                   <span className="pp-row-end">{section.suggestedTime?.total}<ArrowRight size={18} className="pp-row-arrow" /></span>

@@ -74,12 +74,12 @@ export function Scribble({ children, color = 'var(--clay)' }) {
 }
 
 /** Loads the YouTube player only when a parent presses play. */
-export function VideoFacade({ id, title, poster, caption }) {
+export function VideoFacade({ id, title, poster, caption, start = 0 }) {
   const [playing, setPlaying] = useState(false);
   return (
     <div className="pg-video">
       {playing ? (
-        <iframe src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`} title={title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+        <iframe src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0${start ? `&start=${start}` : ''}`} title={title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
       ) : (
         <button type="button" className="pg-video-cover" onClick={() => setPlaying(true)} aria-label={`Play video: ${title}`}
           style={{ backgroundImage: `url(${poster || `https://i.ytimg.com/vi/${id}/hqdefault.jpg`})` }}>
@@ -173,6 +173,7 @@ export function SiteHeader() {
           {NAV.map(([to, label]) => <NavLink key={to} to={to} className={({ isActive }) => (isActive ? 'is-active' : '')}>{label}</NavLink>)}
         </nav>
         <div className="ah-nav-end">
+          <Link to={`${HOME_COURSE}/preview`} className="pg-try-pill"><Play size={13} fill="currentColor" /> Try it now</Link>
           <Link to={user ? '/parents' : '/login'} className="ah-signin">{user ? 'My account' : 'Parent Login'}</Link>
           <Link className="ah-btn ah-btn-clay ah-btn-sm" to="/book"><span className="pg-hide-sm">{INTRO.cta}</span><span className="pg-show-sm">{INTRO.short}</span></Link>
           <button type="button" className="pg-burger" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-label={open ? 'Close menu' : 'Open menu'}>{open ? <X size={22} /> : <Menu size={22} />}</button>
@@ -181,6 +182,7 @@ export function SiteHeader() {
       <AnimatePresence>
         {open && (
           <motion.nav className="pg-drawer" aria-label="Menu" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+            <Link to={`${HOME_COURSE}/preview`} className="pg-drawer-try"><Play size={16} fill="currentColor" /> Try it now: preview the course</Link>
             <Link to="/">Home</Link>
             {NAV.map(([to, label]) => <Link key={to} to={to}>{label}</Link>)}
             <Link to="/book">{INTRO.cta}</Link>
@@ -212,6 +214,7 @@ export function SiteFooter() {
           <Link to="/programs">Live classes</Link>
           <Link to="/programs#plans">Plans and prices</Link>
           <Link to={HOME_COURSE}>Home Course</Link>
+          <Link to={`${HOME_COURSE}/preview`}>Course preview</Link>
         </div>
         <div>
           <h4>Academy</h4>

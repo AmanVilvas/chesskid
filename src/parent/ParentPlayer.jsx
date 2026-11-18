@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft, Check, ChevronDown, ChevronLeft, ChevronRight, Columns2, Gamepad2, ListTree, PlayCircle, Sparkles, X } from 'lucide-react';
+import { ArrowLeft, Check, ChevronDown, ChevronLeft, ChevronRight, Columns2, Gamepad2, ListTree, Lock, PlayCircle, Sparkles, X } from 'lucide-react';
 import { course1Sections, course1Days } from './course1Sections';
 import { coursePiecePracticeLessons } from '../data/coursePiecePracticeData';
 import CoursePiecePracticeView from '../components/CoursePiecePracticeView';
@@ -52,18 +52,22 @@ export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBac
   // ---- server progress ----
   const [completedItems, setCompletedItems] = useState({});
   const [courseLessons, setCourseLessons] = useState([]);
+  const [lessonsLoaded, setLessonsLoaded] = useState(false);
   useEffect(() => {
     let mounted = true;
     apiRequest('/api/courses/beginner-chess/lessons')
       .then(({ lessons }) => {
         if (!mounted) return;
         setCourseLessons(lessons);
+        setLessonsLoaded(true);
         setCompletedItems(Object.fromEntries(lessons.filter((l) => l.completed).map((l) => [l.id, true])));
       })
-      .catch(() => { if (mounted) { setCourseLessons([]); setCompletedItems({}); } });
+      .catch(() => { if (mounted) { setCourseLessons([]); setCompletedItems({}); setLessonsLoaded(true); } });
     return () => { mounted = false; };
   }, []);
   const activeCourseLesson = courseLessons.find((l) => l.id === activeLectureId);
+  const lockedIds = useMemo(() => new Set(courseLessons.filter((l) => l.locked).map((l) => l.id)), [courseLessons]);
+  const isLocked = lockedIds.has(activeLectureId);
 
   // ---- notes (same storage as before) ----
   const [notesByLesson, setNotesByLesson] = useState(() => {
@@ -124,6 +128,7 @@ export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBac
 
   const toggleComplete = async (lectureId, event) => {
     event?.stopPropagation();
+    if (lockedIds.has(lectureId)) return;
     const completed = !completedItems[lectureId];
     try {
       await apiRequest(`/api/lessons/${encodeURIComponent(lectureId)}/complete`, { method: 'POST', body: { completed } });
@@ -134,7 +139,7 @@ export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBac
     }
   };
   const completeLecture = async (lectureId) => {
-    if (completedItems[lectureId]) return;
+    if (completedItems[lectureId] || lockedIds.has(lectureId)) return;
     try {
       await apiRequest(`/api/lessons/${encodeURIComponent(lectureId)}/complete`, { method: 'POST', body: { completed: true } });
       recordLearningActivity();
@@ -179,7 +184,7 @@ export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBac
   const showVideo = !isPiecePractice && !isPracticeSoon;
   const showBoard = (isPiecePractice || isSplitMode) && !!practiceLecture;
   const isVideoLecture = activeLecture.type === 'video';
-  const stageKey = isPracticeSoon ? 'soon' : mode;
+  const stageKey = isLocked ? 'locked' : isPracticeSoon ? 'soon' : mode;
 
   const video = showVideo && (
     <div className="pp-video">
@@ -279,7 +284,20 @@ export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBac
               {isSplitMode && (
                 <label className="pp-balance"><span>Video</span><input type="range" min="35" max="65" value={videoRatio} onChange={(e) => setVideoRatio(Number(e.target.value))} aria-label="Video and board balance" /><span>Board</span></label>
               )}
-              {isPracticeSoon ? (
+              {isLocked ? (
+                <div className="pp-paywall">
+                  <span className="pp-paywall-icon"><Lock size={26} /></span>
+                  <span className="pp-kicker">{currentSection.label} · part of the full course</span>
+                  <h2 className="pp-serif">{currentSection.heading} is in the full course.</h2>
+                  <p>Day 1 (the Rook) and Day 2 (the Bishop) are open to try. Buy a course part to unlock the rest of the lessons and puzzles.</p>
+                  <div className="pp-paywall-actions">
+                    <Link to="/checkout?part=1&version=standard" className="pp-btn pp-btn-primary pp-btn-lg">Unlock the course</Link>
+                    <button type="button" className="pp-btn pp-btn-ghost pp-btn-lg" onClick={() => handleSelectLecture(1, 'u1-l1')}>Open Day 1</button>
+                  </div>
+                </div>
+              ) : !lessonsLoaded ? (
+                <div className="pp-video pp-video-wait" aria-busy="true" />
+              ) : isPracticeSoon ? (
                 <div className="pp-soon">
                   <span className="pp-kicker">Practice · {currentSection.label}</span>
                   <h2 className="pp-serif">Practice puzzles are on their way.</h2>
@@ -397,17 +415,18 @@ export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBac
                       const isDone = !!completedItems[lecture.id];
                       const isGame = lecture.type === 'game';
                       const soon = isGame && section.id > 6;
+                      const lockedItem = lockedIds.has(lecture.id);
                       return (
                         <div key={lecture.id}>
                           <div className={`pp-item ${isCurrent ? 'is-current' : ''}`}>
                             <button type="button" className="pp-item-main" onClick={() => handleSelectLecture(section.id, lecture.id)} aria-current={isCurrent ? 'true' : undefined}>
-                              {isGame ? <Gamepad2 size={16} /> : <PlayCircle size={16} />}
+                              {lockedItem ? <Lock size={16} /> : isGame ? <Gamepad2 size={16} /> : <PlayCircle size={16} />}
                               <span>
                                 <span className="pp-item-title">{lecture.title}</span>
-                                <span className="pp-item-meta">{soon ? 'Coming soon' : isGame && piece ? `${solved.length}/${piece.puzzles.length} puzzles` : lecture.duration}</span>
+                                <span className="pp-item-meta">{lockedItem ? 'Full course' : soon ? 'Coming soon' : isGame && piece ? `${solved.length}/${piece.puzzles.length} puzzles` : lecture.duration}</span>
                               </span>
                             </button>
-                            <button type="button" className="pp-check" aria-pressed={isDone} onClick={(e) => toggleComplete(lecture.id, e)} aria-label={`${isDone ? 'Mark as incomplete' : 'Mark as complete'}: ${lecture.title}`}>
+                            <button type="button" className="pp-check" aria-pressed={isDone} disabled={lockedItem} onClick={(e) => toggleComplete(lecture.id, e)} aria-label={`${isDone ? 'Mark as incomplete' : 'Mark as complete'}: ${lecture.title}`}>
                               <Check size={14} strokeWidth={3} />
                             </button>
                           </div>
