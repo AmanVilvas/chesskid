@@ -150,7 +150,7 @@
 .ah-call-top i { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 253, 249, .2); }
 .ah-call-top i:first-child { background: #E5664E; }
 .ah-call-top span { margin-left: auto; }
-.ah-call-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ah-call-grid { display: grid; grid-template-columns: minmax(0, 1fr) 1fr; gap: 10px; }
 .ah-call-tile { position: relative; display: grid; place-items: center; min-height: 128px; border-radius: 16px; }
 .ah-call-tile small { position: absolute; left: 10px; bottom: 8px; padding: 2px 8px; border-radius: 6px; background: rgba(43, 30, 24, .55); color: var(--paper); font-size: 11px; }
 .ah-call-coach { background: var(--peach); }
@@ -281,12 +281,12 @@
   .ah-nav nav { display: none; }
   .ah-nav-end { margin-left: auto; }
   .ah-coaches { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .ah-ladder-wrap { grid-template-columns: 1fr; }
-  .ah-cta { grid-template-columns: 1fr; }
+  .ah-ladder-wrap { grid-template-columns: minmax(0, 1fr); }
+  .ah-cta { grid-template-columns: minmax(0, 1fr); }
   .ah-cta-crew { justify-content: flex-start; }
 }
 @media (max-width: 860px) {
-  .ah-hero, .ah-way, .ah-steps, .ah-parents { grid-template-columns: 1fr; }
+  .ah-hero, .ah-way, .ah-steps, .ah-parents { grid-template-columns: minmax(0, 1fr); }
   .ah-hero { gap: 44px; padding-top: 40px; }
   .ah-hero-play { max-width: 460px; }
   .ah-stats-row { grid-template-columns: repeat(2, 1fr); }
@@ -295,10 +295,15 @@
   .ah-stats-row div:nth-child(-n+2) { border-top: 0; }
   .ah-head-split { flex-direction: column; align-items: flex-start; gap: 14px; }
   .ah-way { padding: 26px; gap: 30px; }
-  .ah-foot-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .ah-foot-grid { grid-template-columns: minmax(0, 1fr) 1fr; gap: 28px; }
 }
 @media (max-width: 560px) {
   .ah-wrap { padding: 0 16px; }
+  .ah-scribble { display: inline; white-space: normal; text-decoration: underline; text-decoration-color: var(--clay); text-decoration-thickness: 3px; text-underline-offset: 5px; text-decoration-skip-ink: none; }
+  .ah-scribble svg { display: none; }
+  .ah-lead { font-size: 17px; }
+  .ah-actions .ah-btn { white-space: normal; text-align: center; }
+  .ah-try-copy { min-width: 0; }
   .ah-nav { padding: 12px 16px; gap: 12px; }
   .ah-logo { font-size: 17px; }
   .ah-signin { display: none; }
@@ -325,7 +330,7 @@
   .ah-coaches { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .ah-cta { padding: 36px 22px; border-radius: 28px; }
   .ah-cta-crew { display: none; }
-  .ah-foot-grid { grid-template-columns: 1fr; }
+  .ah-foot-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ah-root *, .ah-root *::before, .ah-root *::after { animation: none !important; transition: none !important; }
@@ -365,4 +370,17 @@
 .ah-try-copy small { color: var(--ink-2); font-size: 13px; line-height: 1.4; }
 .ah-try > svg { color: var(--clay); transition: transform .2s; }
 .ah-try:hover > svg { transform: translateX(4px); }
-@media (max-width: 560px) { .ah-try { grid-template-columns: 1fr auto; } .ah-try-badge { grid-column: 1 / -1; justify-self: start; } .ah-try > svg { grid-column: 2; grid-row: 2; } }
+@media (max-width: 560px) { .ah-try { grid-template-columns: minmax(0, 1fr) auto; } .ah-try-badge { grid-column: 1 / -1; justify-self: start; } .ah-try > svg { grid-column: 2; grid-row: 2; } }
+
+/* Very small phones (320 to 360px): keep the header and wrapping rows inside the screen. */
+@media (max-width: 360px) {
+  .ah-nav { padding: 10px 12px; gap: 8px; }
+  .ah-logo { font-size: 14px; }
+  .ah-nav-end { gap: 6px; }
+  .ah-nav .ah-btn-sm { padding: 0 8px; font-size: 12px; }
+  .pg-burger { width: 38px; height: 38px; }
+  .ah-stats-row { grid-template-columns: minmax(0, 1fr); }
+  .ah-stats-row div { border-left: 0 !important; padding-left: 0 !important; }
+  .ah-stats-row div:nth-child(2) { border-top: 1px dashed var(--line); }
+  .ah-hero h1 { font-size: 40px; }
+}

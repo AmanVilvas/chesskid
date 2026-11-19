@@ -70,13 +70,13 @@
 .pv-fine { display: flex; align-items: center; gap: 8px; margin-top: 20px !important; color: rgba(255, 253, 249, .65); font-size: 14px; }
 
 @media (max-width: 1040px) { .pv-row { grid-template-columns: repeat(4, minmax(0, 1fr)); } .pv-row-head { grid-column: 1 / -1; } }
-@media (max-width: 860px) { .pv-hero { grid-template-columns: 1fr; gap: 30px; padding-top: 36px; } .pv-hero-art { justify-content: flex-start; } .pv-parts { grid-template-columns: 1fr; } .pv-viewer-head { flex-direction: column; align-items: flex-start; } }
+@media (max-width: 860px) { .pv-hero { grid-template-columns: minmax(0, 1fr); gap: 30px; padding-top: 36px; } .pv-hero-art { justify-content: flex-start; } .pv-parts { grid-template-columns: minmax(0, 1fr); } .pv-viewer-head { flex-direction: column; align-items: flex-start; } }
 @media (max-width: 560px) {
   .pv-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pv-tile { min-height: 96px; padding: 12px; }
   .pv-viewer { padding: 18px 14px; border-radius: 24px; }
   .pv-hero-card { width: 150px; padding: 18px 10px; }
-  .pv-lockgrid { grid-template-columns: 1fr; }
+  .pv-lockgrid { grid-template-columns: minmax(0, 1fr); }
 }
 @media print { .pv-page .ah-topbar, .pv-page .ah-nav, .pv-page .pg-drawer { display: none !important; } .pv-sheet.kids-root { max-height: none; overflow: visible; } }
 
@@ -136,6 +136,11 @@
 .co-maker input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--clay); background: #fff; }
 .co-saved { color: #3F5934; font-weight: 600; }
 
-@media (max-width: 860px) { .co-grid { grid-template-columns: 1fr; } .co-summary { position: static; } .co-wrap { padding: 32px 16px 72px; } .co-done-head { align-items: flex-start; } }
+@media (max-width: 860px) { .co-grid { grid-template-columns: minmax(0, 1fr); } .co-summary { position: static; } .co-wrap { padding: 32px 16px 72px; } .co-done-head { align-items: flex-start; } }
 @media (max-width: 560px) { .co-part { grid-template-columns: auto minmax(0, 1fr); } .co-part-price { grid-column: 2; } .co-card, .co-summary { padding: 20px 16px; } .co-stamp { position: static; display: inline-block; justify-self: start; transform: none; } }
 .pv-embed .ks-footer-left { gap: 16px; }
+
+@media (max-width: 360px) {
+  .pv-hero-art { gap: 10px; }
+  .pv-hero-card { width: auto; flex: 1 1 0; min-width: 0; }
+}
