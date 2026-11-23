@@ -23,7 +23,7 @@ function readPuzzleProgress() {
   try { return JSON.parse(localStorage.getItem('course-lichess-learn-v1') || '{}'); } catch { return {}; }
 }
 
-export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBackToOverview }) {
+export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBackToOverview, onSimpleMode }) {
   const { user, signOut } = useAuth();
   const reduce = useReducedMotion();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -263,6 +263,7 @@ export function ParentPlayer({ initialUnitId = 1, initialLectureId = null, onBac
           </span>
           <button type="button" className="pp-icon-btn" onClick={() => navigateCurriculum(-1)} disabled={currentIndex <= 0} aria-label="Previous lesson"><ChevronLeft size={18} /></button>
           <button type="button" className="pp-icon-btn" onClick={() => navigateCurriculum(1)} disabled={currentIndex < 0 || currentIndex >= curriculumItems.length - 1} aria-label="Next lesson"><ChevronRight size={18} /></button>
+          {onSimpleMode && <button type="button" className="pp-mode-link" onClick={onSimpleMode} title="Switch to the simple lesson view">Simple mode</button>}
           <Link to="/play" className="pp-kids-link"><Sparkles size={14} /><span>Kids view</span></Link>
           <button type="button" className="pp-icon-btn" onClick={() => setSidebarOpen((v) => !v)} aria-label={sidebarOpen ? 'Hide course outline' : 'Show course outline'} aria-expanded={sidebarOpen}><ListTree size={18} /></button>
           {user ? <button type="button" className="pp-account" onClick={signOut} title={`Signed in as ${user.email}`}>Sign out</button> : <Link to="/login" className="pp-account">Sign in</Link>}

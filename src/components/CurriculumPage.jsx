@@ -3,6 +3,7 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { LockKeyhole, ShieldCheck } from 'lucide-react';
 import { ParentOverview } from '../parent/ParentOverview';
 import { ParentPlayer } from '../parent/ParentPlayer';
+import { SimplePlayer } from '../parent/SimplePlayer';
 import '../parent/parent.css';
 import { useAuth } from './AuthContext';
 import { USE_SERVER_API, apiRequest } from '../data/apiClient';
@@ -49,7 +50,13 @@ function CourseAccessGate({ children }) {
   );
 }
 
+// Parents choose between a Simple lesson view (one video and a list) and the Advanced player; the choice is remembered.
+const PLAYER_MODE_KEY = 'pp-player-mode';
+const readPlayerMode = () => { try { return localStorage.getItem(PLAYER_MODE_KEY) === 'advanced' ? 'advanced' : 'simple'; } catch { return 'simple'; } };
+
 export const CurriculumPage = () => {
+  const [playerMode, setPlayerModeState] = useState(readPlayerMode);
+  const setPlayerMode = (mode) => { setPlayerModeState(mode); try { localStorage.setItem(PLAYER_MODE_KEY, mode); } catch { /* storage unavailable */ } };
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Read URL query parameters
@@ -97,11 +104,21 @@ export const CurriculumPage = () => {
     <div>
       {viewMode === 'player' ? (
         <CourseAccessGate>
-        <ParentPlayer
-          initialUnitId={selectedUnitId}
-          initialLectureId={selectedLectureId}
-          onBackToOverview={handleBackToOverview}
-        />
+        {playerMode === 'simple' ? (
+          <SimplePlayer
+            initialUnitId={selectedUnitId}
+            initialLectureId={selectedLectureId}
+            onAdvanced={() => setPlayerMode('advanced')}
+            onBackToOverview={handleBackToOverview}
+          />
+        ) : (
+          <ParentPlayer
+            initialUnitId={selectedUnitId}
+            initialLectureId={selectedLectureId}
+            onBackToOverview={handleBackToOverview}
+            onSimpleMode={() => setPlayerMode('simple')}
+          />
+        )}
         </CourseAccessGate>
       ) : (
         <ParentOverview onStartCourse={handleStartCourse} />
